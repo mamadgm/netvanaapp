@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:netvana/cuswidgets/cusprogress.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:provider/provider.dart';
@@ -6,16 +7,24 @@ import 'package:netvana/const/figma.dart';
 import 'package:netvana/data/ble/providerble.dart';
 
 class SmartTimer extends StatefulWidget {
-  const SmartTimer({super.key, required this.start, required this.stop});
-
+  const SmartTimer(
+      {super.key,
+      required this.start,
+      required this.stop,
+      required this.exit,
+      required this.resume,
+      required this.timepace});
+  final Function(bool) timepace;
   final Function start;
   final Function stop;
+  final Function exit;
+  final Function resume;
 
   @override
-  _SmartTimerState createState() => _SmartTimerState();
+  SmartTimerState createState() => SmartTimerState();
 }
 
-class _SmartTimerState extends State<SmartTimer> {
+class SmartTimerState extends State<SmartTimer> {
   late StopWatchTimer _stopWatchTimer;
   late int totalSeconds;
   bool isStopped = true;
@@ -32,6 +41,7 @@ class _SmartTimerState extends State<SmartTimer> {
 
     _stopWatchTimer.fetchEnded.listen((value) {
       setState(() {
+        widget.timepace(false);
         isStopped = value;
         debugPrint("isstoped $isStopped");
         _stopWatchTimer.onResetTimer();
@@ -59,14 +69,6 @@ class _SmartTimerState extends State<SmartTimer> {
           _stopWatchTimer.onResetTimer();
           _stopWatchTimer.setPresetTime(mSec: totalSeconds * 1000);
         }
-
-        int hours = totalSeconds ~/ 3600;
-        int minutes = (totalSeconds % 3600) ~/ 60;
-        int seconds = totalSeconds % 60;
-
-        String formattedTime =
-            "${hours}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
-
         return EasyContainer(
           borderWidth: 0,
           elevation: 0,
@@ -102,12 +104,14 @@ class _SmartTimerState extends State<SmartTimer> {
                   IconButton(
                     onPressed: () {
                       _stopWatchTimer.onResetTimer();
-                      value.setSmartTimerPaused(true);
                       isStopped = true;
+                      widget.exit();
+                      value.setSmartTimerPaused(true);
+                      widget.timepace(false);
                     },
                     icon: const Icon(
                       Icons.refresh_rounded,
-                      size: 36,
+                      size: 40,
                       color: FIGMA.Orn,
                     ),
                   ),
@@ -115,9 +119,16 @@ class _SmartTimerState extends State<SmartTimer> {
                     onPressed: () {
                       if (value.issmarttimerpaused) {
                         _stopWatchTimer.onStartTimer();
+                        widget.timepace(true);
+                        if (isStopped == true) {
+                          widget.start();
+                        } else {
+                          widget.resume();
+                        }
                         isStopped = false;
-                        widget.start();
                       } else {
+                        widget.timepace(false);
+                        widget.stop();
                         _stopWatchTimer.onStopTimer();
                       }
                       value.setSmartTimerPaused(!value.issmarttimerpaused);
@@ -126,12 +137,15 @@ class _SmartTimerState extends State<SmartTimer> {
                       value.issmarttimerpaused
                           ? Icons.play_circle_rounded
                           : Icons.stop_circle_rounded,
-                      size: 36,
+                      size: 40,
                       color: FIGMA.Grn,
                     ),
                   ),
                 ],
               ),
+              value.whereami == 2
+                  ? CusProgressBar(progress: (value.smarttimerpos - 1))
+                  : const CusProgressBar(progress: 0)
             ],
           ),
         );

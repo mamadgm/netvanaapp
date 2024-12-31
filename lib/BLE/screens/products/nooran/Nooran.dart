@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:async';
 
 import 'package:netvana/ble/logic/esp_ble.dart';
@@ -11,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_ble/universal_ble.dart';
-
+import 'package:record/record.dart';
 import 'smarttimer/smarttimer.dart';
 
 class Nooran extends StatefulWidget {
@@ -22,9 +24,29 @@ class Nooran extends StatefulWidget {
 }
 
 class _NooranState extends State<Nooran> {
+  double _loudness = 0;
+  final Record _record = Record();
   late List<Widget> Sliderwidgets;
+  Future<void> startRecording() async {
+    if (await _record.hasPermission()) {
+      await _record.start();
+      _record
+          .onAmplitudeChanged(const Duration(milliseconds: 200))
+          .listen((amp) {
+        final funcy = context.read<ProvData>();
+        _loudness = (((amp.current + 60) / 60) * 100) - 30;
+
+        if (funcy.maincycle_speed > 2500 && funcy.isConnected) {
+          // NooranBle.SendCval(_loudness.toInt().toString());
+          NooranBle.SendToEsp32("X${_loudness.toInt()}-");
+        }
+      });
+    }
+  }
+
   @override
   void initState() {
+    startRecording();
     debugPrint("NOORAN");
     super.initState();
     final funcy = context.read<ProvData>();
@@ -61,6 +83,7 @@ class _NooranState extends State<Nooran> {
 
   @override
   void dispose() {
+    _record.dispose();
     debugPrint("DisposeDisposeDisposeDisposeDisposeDispose 1");
     super.dispose();
     UniversalBle.onConnectionChange = null;
@@ -249,16 +272,7 @@ class _NooranState extends State<Nooran> {
                                         width: GetGoodW(context, 74, 111).width,
                                         child: Sleep_Button(
                                           state: true,
-                                          onDataChange: (s) {
-                                            final funcy =
-                                                context.read<ProvData>();
-                                            funcy.update_Appsync(
-                                                FIGMA.FLUTTER_ESSENTIALS);
-                                            NooranBle.SendAval(FIGMA
-                                                .FLUTTER_ESSENTIALS
-                                                .toString());
-                                            NooranBle.SendToEsp32("As-");
-                                          },
+                                          onDataChange: (s) {},
                                         )),
                                   ),
                                   Padding(
@@ -269,15 +283,7 @@ class _NooranState extends State<Nooran> {
                                       child: Timer_Button(
                                         time: 15,
                                         state: true,
-                                        onDataChange: () {
-                                          final funcy =
-                                              context.read<ProvData>();
-                                          funcy.update_Appsync(
-                                              FIGMA.FLUTTER_SPELCO);
-                                          NooranBle.SendAval(
-                                              FIGMA.FLUTTER_SPELCO.toString());
-                                          NooranBle.SendToEsp32("As-");
-                                        },
+                                        onDataChange: () {},
                                       ),
                                     ),
                                   )
@@ -350,12 +356,23 @@ class _NooranState extends State<Nooran> {
                                   ),
                                   */
                                   child: SmartTimer(
+                                    timepace: (p0) {
+                                      NooranBle.set_Intervaltimer(p0);
+                                    },
                                     start: () {
                                       NooranBle.SendAval("4");
                                       NooranBle.SendToEsp32("Cs-");
                                     },
+                                    resume: () {
+                                      NooranBle.SendAval("3");
+                                      NooranBle.SendToEsp32("Cs-");
+                                    },
                                     stop: () {
                                       NooranBle.SendAval("2");
+                                      NooranBle.SendToEsp32("Cs-");
+                                    },
+                                    exit: () {
+                                      NooranBle.SendAval("1");
                                       NooranBle.SendToEsp32("Cs-");
                                     },
                                   ),

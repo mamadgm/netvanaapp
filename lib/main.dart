@@ -1,3 +1,4 @@
+import 'package:netvana/BLE/logic/Music.dart';
 import 'package:netvana/Login/Login.dart';
 import 'package:netvana/NetvanaScreen/NetvanaScreen.dart';
 import 'package:netvana/ble/screens/Connecting/ble_manager.dart';
@@ -41,6 +42,7 @@ class _MyappState extends State<Myapp> {
     mybody = [
       const SettingScreen(),
       const NetvanaScreen(),
+      // const LedSimulator(),
       const netvanaHandel(),
       Consumer<ProvData>(
         builder: (context, value, child) {

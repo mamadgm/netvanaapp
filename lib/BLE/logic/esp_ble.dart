@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:async';
@@ -10,8 +12,13 @@ import 'package:universal_ble/universal_ble.dart';
 late Espnetvana NooranBle;
 
 class Espnetvana {
+  set_Intervaltimer(bool isfast) {
+    isfast ? interval = 3 : interval = 5;
+    _resetTimer();
+  }
+
   Timer? _timer;
-  static const int _interval = 10; // Interval in seconds
+  int interval = 5; // Interval in seconds
   late ProvData datky;
   late dynamic funcy;
 
@@ -143,7 +150,7 @@ class Espnetvana {
   //TIMERS
   void _startTimer() {
     _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: _interval), (timer) {
+    _timer = Timer.periodic(Duration(seconds: interval), (timer) {
       if (datky.isConnected) {
         _triggerFunction();
       } else {
@@ -157,9 +164,7 @@ class Espnetvana {
     // Your function logic here
     //funcy.update_Appsync(FIGMA.FLUTTER_ESSENTIALS);
 
-    NooranBle.SendAval(FIGMA.FLUTTER_ESSENTIALS.toString());
-    NooranBle.SendToEsp32("As-");
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 100));
     Uint8List input1 = await UniversalBle.readValue(
         datky.Device_UUID, FIGMA.ESP32_SERVICE_ID, FIGMA.ESP32_SERVICE_FAVAL);
     funcy.extractNumbers_UI(String.fromCharCodes(input1));
@@ -310,7 +315,8 @@ class Espnetvana {
     }
   }
 
-  Future<void> SendToEsp32(String value) async {
+  Future<void> SendToEsp32(String value,
+      {bool showwhathappened = false}) async {
     Uint8List output;
     try {
       output = Uint8List.fromList(hex.decode(EasyConvertuint8(value)));
@@ -330,8 +336,11 @@ class Espnetvana {
             ? BleOutputProperty.withoutResponse
             : BleOutputProperty.withResponse,
       );
-      debugPrint('Write$value');
-      funcy.Show_Snackbar("دیتا ارسال شد", 300);
+
+      if (showwhathappened) {
+        debugPrint('Write$value');
+        funcy.Show_Snackbar("دیتا ارسال شد", 300);
+      }
     } catch (e) {
       debugPrint('WriteError$e');
       funcy.Show_Snackbar("مشکلی پیش آمد", 1200);
