@@ -9,7 +9,7 @@ class ProvData extends ChangeNotifier {
   String Device_UUID = "null";
   String Device_NAME = "null";
   bool Isdevicefound = false;
-  int Current_screen = 2;
+  int Current_screen = 0;
   //netvana
   bool nextmoveisconnect = true;
   int current_sync_pos = 0;
@@ -19,6 +19,7 @@ class ProvData extends ChangeNotifier {
   int appsync = FIGMA.FLUTTER_ESSENTIALS;
   //Setting Screen
   bool NetvanaFlag = false;
+  bool NetvanaUpdateFlag = false;
   TextEditingController r_ssid_netvana = TextEditingController();
   TextEditingController r_pass_netvana = TextEditingController();
   //Nooran
@@ -34,20 +35,50 @@ class ProvData extends ChangeNotifier {
   int smarttimerpos = 0;
   int smarttimercolor = 0;
   bool issmarttimerpaused = true;
+  int ESPVersion = 10;
   //Loggin
-  int User_Log_Now = 1;
-  int User_Log_Next = 1;
+  int login_Counter = 0;
   bool Issigned = false;
+  String username = 'mamad';
   String email = "ss";
-  String pass = "ss";
+  String Token = "";
+  List Products = [];
   //Test
   String TEST_DATA = "EMPTY";
   //Smarttimer
 
   // Setters
+  void setProducts(List products) {
+    Products = products;
+
+    for (var i = 0; i < Products.length; i++) {
+      debugPrint("product $i = ${Products[i]}");
+    }
+    notifyListeners();
+  }
+
   void setIsDeviceOn(bool value) {
     isdeviceon = value;
     notifyListeners();
+  }
+
+  void setIssigned(bool p, String token) {
+    Issigned = p;
+    if (p) {
+      Token = token;
+    }
+    // notifyListeners();
+  }
+
+  void Set_Userdetails(
+      String Email, String Name, int Login_counter, bool update) {
+    login_Counter = Login_counter;
+    username = Name;
+    email = Email;
+    debugPrint('user logged In $email $username $login_Counter $Token');
+    if (update) {
+      notifyListeners();
+    }
   }
 
   void setIsNooranNet(bool value) {
@@ -125,6 +156,11 @@ class ProvData extends ChangeNotifier {
     notifyListeners();
   }
 
+  void update_NetvanaUpdateFlag(bool input) {
+    NetvanaUpdateFlag = input;
+    notifyListeners();
+  }
+
   void update_mynetvanadevice() {
     mynetvanaDevices = mynetvanaDevices;
     notifyListeners();
@@ -191,7 +227,7 @@ class ProvData extends ChangeNotifier {
 
   void extractNumbers_UI(String input) {
     List<int> result = [];
-    RegExp regExp = RegExp(r'([A-K])(\d+)');
+    RegExp regExp = RegExp(r'([A-L])(\d+)');
     Iterable<RegExpMatch> matches = regExp.allMatches(input);
 
     for (var match in matches) {
@@ -199,7 +235,7 @@ class ProvData extends ChangeNotifier {
       result.add(int.parse(number));
     }
     TEST_DATA = "";
-    for (var i = 0; i < 11; i++) {
+    for (var i = 0; i < 12; i++) {
       // debugPrint("letter : $i is ${result[i]}");
       TEST_DATA = "$TEST_DATA $i -> ${result[i]} \n";
     }
@@ -214,17 +250,19 @@ class ProvData extends ChangeNotifier {
     smartdelaysec = result[8];
     smarttimerpos = result[9];
     smarttimercolor = result[10];
-    debugPrint('isdeviceon: $isdeviceon');
-    debugPrint('isnooranNet: $isnooranNet');
-    debugPrint('whereami: $whereami');
-    debugPrint('timeroffvalue: $timeroffvalue');
-    debugPrint('Brightness: $Brightness');
-    debugPrint('maincycle_color: $maincycle_color');
-    debugPrint('maincycle_mode: $maincycle_mode');
-    debugPrint('maincycle_speed: $maincycle_speed');
-    debugPrint('smartdelaysec: $smartdelaysec');
-    debugPrint('smarttimerpos: $smarttimerpos');
-    debugPrint('smarttimercolor: $smarttimercolor');
+    ESPVersion = result[11];
+    // debugPrint('isdeviceon: $isdeviceon');
+    // debugPrint('isnooranNet: $isnooranNet');
+    // debugPrint('whereami: $whereami');
+    // debugPrint('timeroffvalue: $timeroffvalue');
+    // debugPrint('Brightness: $Brightness');
+    // debugPrint('maincycle_color: $maincycle_color');
+    // debugPrint('maincycle_mode: $maincycle_mode');
+    // debugPrint('maincycle_speed: $maincycle_speed');
+    // debugPrint('smartdelaysec: $smartdelaysec');
+    // debugPrint('smarttimerpos: $smarttimerpos');
+    // debugPrint('smarttimercolor: $smarttimercolor');
+    // debugPrint('ESPVersion: $ESPVersion');
     notifyListeners();
   }
 }

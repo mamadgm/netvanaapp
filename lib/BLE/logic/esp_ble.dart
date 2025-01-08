@@ -13,12 +13,12 @@ late Espnetvana NooranBle;
 
 class Espnetvana {
   set_Intervaltimer(bool isfast) {
-    isfast ? interval = 3 : interval = 5;
+    isfast ? interval = 2 : interval = 2;
     _resetTimer();
   }
 
   Timer? _timer;
-  int interval = 5; // Interval in seconds
+  int interval = 2; // Interval in seconds
   late ProvData datky;
   late dynamic funcy;
 
@@ -73,7 +73,7 @@ class Espnetvana {
 
   void LoginTheClient(context) {
     String Command = "[X]0000[F]";
-    int client = datky.User_Log_Now;
+    int client = datky.login_Counter;
     if (client < 10) {
       Command = "[X]000$client[F]";
     } else if (client < 100) {
@@ -85,7 +85,7 @@ class Espnetvana {
     }
 
     SendAval(Command);
-    SendBval(datky.User_Log_Next.toString());
+    SendBval({datky.login_Counter + 1}.toString());
     SendToEsp32("Cl-");
   }
 
@@ -96,10 +96,10 @@ class Espnetvana {
 
   void _handleValueChange(
       String deviceId, String characteristicId, Uint8List value) {
-    String s = String.fromCharCodes(value);
-    String data = '$s\nraw :  ${value.toString()}';
+    // String s = String.fromCharCodes(value);
+    // String data = '$s\nraw :  ${value.toString()}';
     // debugPrint('_handleValueChange $deviceId, $characteristicId, $s');
-    Future.delayed(const Duration(milliseconds: 500));
+    // Future.delayed(const Duration(milliseconds: 500));
 
     //funcy.Show_Snackbar("Value ", 500);
   }
@@ -130,22 +130,22 @@ class Espnetvana {
     return hex;
   }
 
-  Future<void> readmanual() async {
-    debugPrint("Reading");
-    try {
-      Uint8List input3 = await UniversalBle.readValue(datky.Device_UUID,
-              FIGMA.ESP32_SERVICE_ID, FIGMA.ESP32_SERVICE_FAVAL)
-          .timeout(const Duration(seconds: 5));
-      debugPrint("FLUTTER_SMARTTIMER${String.fromCharCodes(input3)}");
-      funcy.Show_Snackbar("Code is : ${String.fromCharCodes(input3)}", 5000);
-      funcy.Set_TEST_DATA(input3.toString());
-    } catch (e) {
-      funcy.Set_TEST_DATA(e.toString());
-      funcy.Show_Snackbar("Error is : ${e.toString()}", 5000);
-      debugPrint(e.toString());
-      throw e.toString();
-    }
-  }
+  // Future<void> readmanual() async {
+  //   debugPrint("Reading");
+  //   try {
+  //     Uint8List input3 = await UniversalBle.readValue(datky.Device_UUID,
+  //             FIGMA.ESP32_SERVICE_ID, FIGMA.ESP32_SERVICE_FAVAL)
+  //         .timeout(const Duration(seconds: 5));
+  //     debugPrint("FLUTTER_SMARTTIMER${String.fromCharCodes(input3)}");
+  //     funcy.Show_Snackbar("Code is : ${String.fromCharCodes(input3)}", 5000);
+  //     funcy.Set_TEST_DATA(input3.toString());
+  //   } catch (e) {
+  //     funcy.Set_TEST_DATA(e.toString());
+  //     funcy.Show_Snackbar("Error is : ${e.toString()}", 5000);
+  //     debugPrint(e.toString());
+  //     throw e.toString();
+  //   }
+  // }
 
   //TIMERS
   void _startTimer() {
@@ -154,31 +154,32 @@ class Espnetvana {
       if (datky.isConnected) {
         _triggerFunction();
       } else {
-        debugPrint("Sync Timer : device is Disconnected");
+        // debugPrint("Sync Timer : device is Disconnected");
       }
     });
   }
 
   Future<void> _triggerFunction() async {
-    debugPrint('netvana Function triggered!');
+    // debugPrint('netvana Function triggered!');
     // Your function logic here
     //funcy.update_Appsync(FIGMA.FLUTTER_ESSENTIALS);
 
     await Future.delayed(const Duration(milliseconds: 100));
     Uint8List input1 = await UniversalBle.readValue(
         datky.Device_UUID, FIGMA.ESP32_SERVICE_ID, FIGMA.ESP32_SERVICE_FAVAL);
+    // debugPrint(String.fromCharCodes(input1));
     funcy.extractNumbers_UI(String.fromCharCodes(input1));
   }
 
-  void manualTrigger() {
-    if (datky.isConnected) {
-      _triggerFunction();
-    } else {
-      debugPrint("Sync Manual : device is Disconnected");
-      funcy.Show_Snackbar("دستگاه قطع است", 500);
-    }
-    _resetTimer();
-  }
+  // void manualTrigger() {
+  //   if (datky.isConnected) {
+  //     _triggerFunction();
+  //   } else {
+  //     debugPrint("Sync Manual : device is Disconnected");
+  //     funcy.Show_Snackbar("دستگاه قطع است", 500);
+  //   }
+  //   _resetTimer();
+  // }
 
   void _resetTimer() {
     _timer?.cancel();

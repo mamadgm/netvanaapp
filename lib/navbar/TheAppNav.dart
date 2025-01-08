@@ -1,9 +1,10 @@
+// ignore_for_file: file_names
+
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
-
 
 class TheAppNav extends StatefulWidget {
   const TheAppNav({super.key});
@@ -36,23 +37,23 @@ class _TheAppNavState extends State<TheAppNav> {
             tabs: [
               GButton(
                 iconSize: iconSize,
-                icon: Icons.settings,
-                text: "تنظیمات",
-                textStyle: TextStyle(
+                icon: Icons.person_2_rounded,
+                text: "پروفایل",
+                textStyle: const TextStyle(
                     fontFamily: FIGMA.estbo, fontSize: 16, color: FIGMA.Prn),
               ),
               GButton(
                 iconSize: iconSize,
                 icon: Icons.wifi,
                 text: "نت وانا",
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                     fontFamily: FIGMA.estbo, fontSize: 16, color: FIGMA.Prn),
               ),
               GButton(
                 iconSize: iconSize,
                 icon: Icons.bluetooth,
                 text: "بلوتوث",
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                     fontFamily: FIGMA.estbo, fontSize: 16, color: FIGMA.Prn),
               ),
             ],

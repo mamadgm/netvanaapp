@@ -63,7 +63,7 @@ class SmartTimerState extends State<SmartTimer> {
       builder: (context, value, child) {
         int newTotalSeconds = value.smartdelaysec * 15;
         if (value.issmarttimerpaused && isStopped) {
-          debugPrint("UPDATING");
+          // debugPrint("UPDATING");
           totalSeconds = newTotalSeconds;
           _stopWatchTimer.clearPresetTime();
           _stopWatchTimer.onResetTimer();

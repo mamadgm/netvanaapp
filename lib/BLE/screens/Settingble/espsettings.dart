@@ -21,10 +21,10 @@ class _EspsettingsState extends State<Espsettings> {
       builder: (context, value, child) => NewTab(
         appbartext: "تنظیمات دستگاه",
         childrens: [
-          Directionality(
+          const Directionality(
             textDirection: TextDirection.rtl,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: Text(
                 "تنظیمات بلوتوثی",
                 style: TextStyle(
@@ -44,11 +44,11 @@ class _EspsettingsState extends State<Espsettings> {
                   Expanded(
                     flex: 15,
                     child: CheckboxListTile(
-                      title: Text(
+                      title: const Text(
                         "فعال سازی نتوانا در\n ریستارت بعدی",
                         style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 13),
                       ),
-                      value: value.NetvanaFlag,
+                      value: value.isnooranNet,
                       onChanged: (p0) {
                         final funcy = context.read<ProvData>();
                         funcy.update_netvana(p0 ?? false);
@@ -85,7 +85,7 @@ class _EspsettingsState extends State<Espsettings> {
                   NooranBle.send_big_string(value.r_ssid_netvana.text);
                   NooranBle.SendToEsp32("Ns-");
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.send_rounded,
                   color: FIGMA.Prn,
                 ),
@@ -118,7 +118,7 @@ class _EspsettingsState extends State<Espsettings> {
                   NooranBle.send_big_string(value.r_pass_netvana.text);
                   NooranBle.SendToEsp32("Np-");
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.send_rounded,
                   color: FIGMA.Prn,
                 ),
@@ -140,14 +140,14 @@ class _EspsettingsState extends State<Espsettings> {
                   Expanded(
                     flex: 15,
                     child: CheckboxListTile(
-                      title: Text(
+                      title: const Text(
                         "فعال سازی آپدیت سیستم",
                         style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 13),
                       ),
-                      value: value.NetvanaFlag,
+                      value: value.NetvanaUpdateFlag,
                       onChanged: (p0) {
                         final funcy = context.read<ProvData>();
-                        funcy.update_netvana(p0 ?? false);
+                        funcy.update_NetvanaUpdateFlag(p0 ?? false);
                         p0 == true
                             ? NooranBle.SendToEsp32("Ue-")
                             : NooranBle.SendToEsp32("Ud-");
@@ -171,29 +171,22 @@ class _EspsettingsState extends State<Espsettings> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    "دریافت ورژن",
+                  const Text(
+                    "ورژن",
                     textAlign: TextAlign.start,
                     textDirection: TextDirection.rtl,
-                    style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 13),
+                    style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 14),
                   ),
                   TextField(
                     readOnly: true,
-                    textAlign: TextAlign.end,
+                    textAlign: TextAlign.center,
                     decoration: InputDecoration(
                       fillColor: FIGMA.Orn,
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          Icons.download,
-                          color: FIGMA.Prn,
-                        ),
-                        onPressed: () {},
-                      ),
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                           fontFamily: FIGMA.abrlb,
                           fontSize: 12,
                           color: Colors.grey),
-                      hintText: "exp : NV-V1.0",
+                      hintText: "V.${value.ESPVersion}",
                       border: InputBorder.none,
                     ),
                   ),

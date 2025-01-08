@@ -20,10 +20,11 @@ class FIGMA {
   static const estre = 'estre';
   static const estsb = 'estsb';
 
-  static const urlnetwana = "https://netvana.ir/neol/handle/writeapp.php?part=";
+  static const urlnetwana = "http://192.168.1.13:8000";
+  static const HIVE = "Neol";
   static const int FLUTTER_ESSENTIALS = 1;
-  static const int FLUTTER_SPELCO = 2;
-  static const int FLUTTER_SMARTTIMER = 3;
+  // static const int FLUTTER_SPELCO = 2;
+  // static const int FLUTTER_SMARTTIMER = 3;
   static const ESP32_SERVICE_ID = "a7e40a4c-eec9-4910-bf7e-113c6ed2381b";
   static const ESP32_SERVICE_WHICH = "d9a127a9-bf6c-48dd-9d70-ba5bc06a83e6";
   static const ESP32_SERVICE_AVAL = "83d5317f-2c4d-4c0f-93bf-f2fa52d4e0dc";

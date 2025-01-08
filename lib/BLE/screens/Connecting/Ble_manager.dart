@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_ble/universal_ble.dart';
 
-class netvanaHandel extends StatefulWidget {
-  const netvanaHandel({super.key});
+class BLEHandel extends StatefulWidget {
+  const BLEHandel({super.key});
   @override
-  State<netvanaHandel> createState() => _netvanaHandelState();
+  State<BLEHandel> createState() => _BLEHandelState();
 }
 
-class _netvanaHandelState extends State<netvanaHandel> {
+class _BLEHandelState extends State<BLEHandel> {
   bool _isScanning = false;
   late My_Ble_Scan mynetvanascan;
   @override
@@ -154,12 +154,12 @@ class _netvanaHandelState extends State<netvanaHandel> {
                           ? Choose_Product(
                               onTrytoconnect: () {},
                               ondelete: () {},
-                              Prefix: "null",
+                              prefix: "null",
                               myheight: GetGoodW(context, 321, 400).height,
                               mywidth: GetGoodW(context, 321, 400).width,
                             )
                           : Choose_Product(
-                              Prefix: datky.mynetvanaDevices[0].name ?? "null",
+                              prefix: datky.mynetvanaDevices[0].name ?? "null",
                               myheight: GetGoodW(context, 321, 400).height,
                               mywidth: GetGoodW(context, 321, 400).width,
                               onTrytoconnect: () async {

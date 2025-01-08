@@ -1,4 +1,6 @@
+import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
+import 'package:netvana/const/figma.dart';
 
 class NetvanaScreen extends StatelessWidget {
   const NetvanaScreen({super.key});
@@ -8,18 +10,16 @@ class NetvanaScreen extends StatelessWidget {
     double MaxScreenWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Center(
-        child: ListView(
-          scrollDirection: Axis.vertical,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: (MaxScreenWidth * 0.95) * 0.40,
-                width: MaxScreenWidth * 0.95,
-                color: Colors.amber,
-              ),
-            ),
-          ],
+        child: EasyContainer(
+          height: (MaxScreenWidth * 0.95) * 0.40,
+          width: MaxScreenWidth * 0.95,
+          color: FIGMA.Prn,
+          borderRadius: 20,
+          child: const Text(
+            '...در حال توسعه',
+            style: TextStyle(
+                fontFamily: FIGMA.estbo, fontSize: 24, color: FIGMA.Wrn),
+          ),
         ),
       ),
     );

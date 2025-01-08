@@ -1,10 +1,10 @@
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -61,7 +61,7 @@ class _LoginState extends State<Login> {
                               height: _topPadding,
                             ),
                             // RTL text
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Column(
@@ -85,7 +85,7 @@ class _LoginState extends State<Login> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(
+                                SizedBox(
                                   width: 20,
                                 ),
                               ],
@@ -100,13 +100,13 @@ class _LoginState extends State<Login> {
                               borderRadius: 0,
                               child: TextField(
                                 textAlign: TextAlign.start,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintStyle: TextStyle(
                                       fontFamily: FIGMA.abrlb,
                                       fontSize: 12,
                                       color: Colors.grey),
                                   hintText: "Email",
-                                  border: const OutlineInputBorder(),
+                                  border: OutlineInputBorder(),
                                 ),
                                 controller: formemail,
                               ),
@@ -121,13 +121,13 @@ class _LoginState extends State<Login> {
                               borderRadius: 0,
                               child: TextField(
                                 textAlign: TextAlign.start,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintStyle: TextStyle(
                                       fontFamily: FIGMA.abrlb,
                                       fontSize: 12,
                                       color: Colors.grey),
                                   hintText: "Password",
-                                  border: const OutlineInputBorder(),
+                                  border: OutlineInputBorder(),
                                 ),
                                 controller: formpass,
                               ),
@@ -140,7 +140,7 @@ class _LoginState extends State<Login> {
                               elevation: 0,
                               padding: 0,
                               borderRadius: 17,
-                              child: Text(
+                              child: const Text(
                                 'ورود به نت وانا',
                                 style: TextStyle(
                                     color: Colors.white,
@@ -148,20 +148,31 @@ class _LoginState extends State<Login> {
                                     fontFamily: FIGMA.abreb),
                               ),
                               onTap: () async {
-                                FocusScope.of(context).unfocus();
-                                value.email = formemail.text.toString();
-                                value.pass = formpass.text.toString();
-                                var url = Uri.parse(
-                                    'https://netvana.ir/neol/handle/app.php?email=${value.email}&&pass=${value.pass}');
-
-                                var response = await http.get(url);
-
-                                if (response.statusCode == 200) {
-                                  //debugPrint('Response body: ${response.body}');
-                                } else {
-                                  // debugPrint(
-//                          'Request failed with status: ${response.statusCode}.');
-                                  final funcy = context.read<ProvData>();
+                                var box = Hive.box(FIGMA.HIVE);
+                                try {
+                                  var response = await NetClass()
+                                      .login(formemail.text, formpass.text)
+                                      .timeout(const Duration(seconds: 5));
+                                  if (response != null) {
+                                    String token = response['token'];
+                                    String name = response['name'];
+                                    int loginCounter =
+                                        response['login_counter'];
+                                    value.setIssigned(true, token);
+                                    box.put("token", token);
+                                    box.put("IS_SIGNED", true);
+                                    box.put("email", formemail.text);
+                                    box.put("name", name);
+                                    box.put("login_counter", loginCounter);
+                                    value.Set_Userdetails(formemail.text, name,
+                                        loginCounter, true);
+                                  } else {
+                                    debugPrint("response is null");
+                                    box.put("IS_SIGNED", false);
+                                  }
+                                } catch (e) {
+                                  box.put("IS_SIGNED", false);
+                                  debugPrint('Login failed: $e');
                                 }
                               },
                             ),

@@ -3,14 +3,14 @@ import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 
 class Choose_Product extends StatelessWidget {
-  String Prefix;
+  String prefix;
   double myheight;
   double mywidth;
   final Function onTrytoconnect;
   final Function ondelete;
   Choose_Product({
     super.key,
-    required this.Prefix,
+    required this.prefix,
     required this.myheight,
     required this.mywidth,
     required this.onTrytoconnect,
@@ -20,16 +20,16 @@ class Choose_Product extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int selectedWdiget = 0;
-    if (Prefix.contains("Nv-")) {
+    if (prefix.contains("Nv-")) {
       debugPrint("Selected Product is Nooran");
       selectedWdiget = 1;
-    } else if (Prefix.contains("Lp-")) {
+    } else if (prefix.contains("Lp-")) {
       debugPrint("Selected Product is Lamp");
       selectedWdiget = 2;
-    } else if (Prefix.contains("neol-gm")) {
+    } else if (prefix.contains("neol-gm")) {
       debugPrint("Selected Product is In Development");
       selectedWdiget = 3;
-    } else if (Prefix.contains("null")) {
+    } else if (prefix.contains("null")) {
       debugPrint("Selected Product is Null");
       selectedWdiget = 0;
     } else {
@@ -60,12 +60,9 @@ class Choose_Product extends StatelessWidget {
                     EasyContainer(
                       width: (mywidth / 2.2),
                       height: myheight * 0.30,
-                      child: Container(
-                        child: Text(
-                          "اتصال به دستگاه",
-                          style:
-                              TextStyle(fontFamily: FIGMA.abrlb, fontSize: 12),
-                        ),
+                      child: const Text(
+                        "اتصال به دستگاه",
+                        style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 12),
                       ),
                       onTap: () {
                         onTrytoconnect();
@@ -74,12 +71,9 @@ class Choose_Product extends StatelessWidget {
                     EasyContainer(
                       width: (mywidth / 2.2),
                       height: myheight * 0.30,
-                      child: Container(
-                        child: Text(
-                          "حذف دستگاه",
-                          style:
-                              TextStyle(fontFamily: FIGMA.abrlb, fontSize: 12),
-                        ),
+                      child: const Text(
+                        "حذف دستگاه",
+                        style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 12),
                       ),
                       onTap: () {
                         ondelete();

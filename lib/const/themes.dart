@@ -81,3 +81,11 @@ List<EspTheme> Allthemes = [
       path: "ass/themes/dance.png",
       property: "رقص و جشن"),
 ];
+int findThemeIndex(List<EspTheme> themes, int maincycleMode) {
+  for (int i = 0; i < themes.length; i++) {
+    if (themes[i].value == maincycleMode) {
+      return i;
+    }
+  }
+  return -1;
+}
