@@ -48,15 +48,19 @@ class _MyappState extends State<Myapp> {
     ];
     // Signing The User
     final funcy = context.read<ProvData>();
-    var box = Hive.box(FIGMA.HIVE);
-    bool temp = box.get("IS_SIGNED", defaultValue: false);
-    funcy.setIssigned(temp, box.get("token", defaultValue: "NULL"));
+    var sdcard = Hive.box(FIGMA.HIVE);
+    bool temp = sdcard.get("IS_SIGNED", defaultValue: false);
+    funcy.setIssigned(temp, sdcard.get("token", defaultValue: "NULL"));
     if (temp) {
-      funcy.Set_Userdetails(box.get("email"), box.get("name"),
-          box.get("login_counter", defaultValue: 0), false);
+      funcy.Set_Userdetails(sdcard.get("email"), sdcard.get("name"),
+          sdcard.get("login_counter", defaultValue: 0), false);
 
       // Fetch products
       fetchProducts(funcy.Token);
+      for (var i = 0; i < 5; i++) {
+        funcy.Defalult_colors[i] =
+            sdcard.get("COLOR$i", defaultValue: 0xFFFFFF);
+      }
     }
     super.initState();
   }

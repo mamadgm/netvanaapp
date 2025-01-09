@@ -23,6 +23,8 @@ class ThemeSelect extends StatelessWidget {
                 index: index,
                 update: (p0) {
                   update(p0);
+                  FocusScope.of(context).unfocus();
+                  Navigator.of(context).pop();
                 },
               ),
             );

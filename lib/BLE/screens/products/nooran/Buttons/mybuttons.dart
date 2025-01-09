@@ -1,5 +1,6 @@
-// ignore_for_file: non_constant_identifier_names, unused_local_varianetvana, camel_case_types, avoid_print, must_be_immutanetvana
+// ignore_for_file: non_constant_identifier_names, unused_local_varianetvana, camel_case_types, avoid_print, must_be_immutanetvana, deprecated_member_use
 
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:flutter/material.dart';
@@ -246,19 +247,69 @@ class _CirclecolorState extends State<Circlecolor> {
   Widget build(BuildContext context) {
     Color maincolor = Color(widget.color).withOpacity(1.0);
 
-    return Expanded(
-      flex: 10,
-      child: EasyContainer(
-        height: 80,
-        color: maincolor,
-        borderWidth: 0,
-        elevation: 0,
-        borderRadius: 13,
-        onTap: () async {
-          widget.onDataChange(widget.color.toRadixString(10));
-        },
-        child: Icon(Icons.color_lens, color: maincolor),
-      ),
+    return EasyContainer(
+      height: 80,
+      color: maincolor,
+      borderWidth: 0,
+      elevation: 0,
+      borderRadius: 13,
+      onTap: () async {
+        widget.onDataChange(widget.color.toRadixString(10));
+      },
+      onLongPress: () {
+        _showColorPicker(context);
+      },
+      child: Icon(Icons.color_lens, color: maincolor),
+    );
+  }
+
+  void _showColorPicker(BuildContext context) {
+    Color pickerColor = Color(widget.color).withAlpha(0xFF);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Center(
+            child: Text(
+              "رنگ دلخواه",
+              style: TextStyle(
+                  fontFamily: FIGMA.abreb, fontSize: 19, color: FIGMA.Orn),
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ColorPicker(
+              enableAlpha: false,
+              hexInputBar: false,
+              showLabel: false,
+              pickerColor: pickerColor,
+              onColorChanged: (Color color) {
+                setState(() {
+                  pickerColor = color.withAlpha(0xFF);
+                });
+              },
+            ),
+          ),
+          actions: <Widget>[
+            EasyContainer(
+              borderRadius: 15,
+              color: FIGMA.Prn,
+              child: const Text(
+                "ذخیره رنگ",
+                style: TextStyle(
+                    fontFamily: FIGMA.estbo, fontSize: 19, color: FIGMA.Wrn),
+              ),
+              onTap: () {
+                widget.onDataChange(((pickerColor.red * 65536) +
+                        (pickerColor.green * 256) +
+                        pickerColor.blue)
+                    .toString());
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

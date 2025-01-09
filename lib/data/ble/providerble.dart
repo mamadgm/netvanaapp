@@ -36,6 +36,7 @@ class ProvData extends ChangeNotifier {
   int smarttimercolor = 0;
   bool issmarttimerpaused = true;
   int ESPVersion = 10;
+  List<int> Defalult_colors = [0xFF0000, 1900288, 0x0000FF, 0xFFFFFF, 0x00A594];
   //Loggin
   int login_Counter = 0;
   bool Issigned = false;
@@ -46,6 +47,11 @@ class ProvData extends ChangeNotifier {
   //Test
   String TEST_DATA = "EMPTY";
   //Smarttimer
+
+  void set_Defalult_colors(int p, int which) {
+    Defalult_colors[which] = p;
+    notifyListeners();
+  }
 
   // Setters
   void setProducts(List products) {

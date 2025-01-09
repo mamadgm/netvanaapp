@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, deprecated_member_use
 
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -537,7 +538,9 @@ class _NooranState extends State<Nooran> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           image: DecorationImage(
-                            image: AssetImage(Allthemes[4].path),
+                            image: AssetImage(Allthemes[findThemeIndex(
+                                    Allthemes, value.maincycle_mode)]
+                                .path),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -611,44 +614,26 @@ class _NooranState extends State<Nooran> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Circlecolor(
-                        color: 0xFF0000,
-                        onDataChange: (String f) {
-                          NooranBle.SendAval(f);
-                          NooranBle.SendToEsp32("Lc-");
-                        },
-                      ),
-                      FASELE(value: 1),
-                      Circlecolor(
-                        color: 1900288,
-                        onDataChange: (String f) {
-                          NooranBle.SendAval(f);
-                          NooranBle.SendToEsp32("Lc-");
-                        },
-                      ),
-                      FASELE(value: 1),
-                      Circlecolor(
-                        color: 0x0000FF,
-                        onDataChange: (String f) {
-                          NooranBle.SendAval(f);
-                          NooranBle.SendToEsp32("Lc-");
-                        },
-                      ),
-                      FASELE(value: 1),
-                      Circlecolor(
-                        color: 0xFFFFFF,
-                        onDataChange: (String f) {
-                          NooranBle.SendAval(f);
-                          NooranBle.SendToEsp32("Lc-");
-                        },
-                      ),
-                      FASELE(value: 1),
-                      Circlecolor(
-                        color: 0x00A594,
-                        onDataChange: (String f) {
-                          NooranBle.SendAval(f);
-                          NooranBle.SendToEsp32("Lc-");
-                        },
+                      Row(
+                        children: List.generate(
+                          5,
+                          (index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8, left: 8),
+                              child: Circlecolor(
+                                color: value.Defalult_colors[index],
+                                onDataChange: (String f) {
+                                  value.set_Defalult_colors(
+                                      int.parse(f), index);
+                                  sdcard.put("COLOR$index", int.parse(f));
+                                  NooranBle.SendAval(f);
+                                  NooranBle.SendToEsp32("Lc-");
+                                  debugPrint(f);
+                                },
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
