@@ -78,68 +78,79 @@ class SmartTimerState extends State<SmartTimer> {
           color: FIGMA.Back,
           child: Column(
             children: [
-              StreamBuilder<int>(
-                stream: _stopWatchTimer.rawTime,
-                initialData: _stopWatchTimer.rawTime.value,
-                builder: (context, snapshot) {
-                  final value = snapshot.data!;
-                  final displayTime = StopWatchTimer.getDisplayTime(value,
-                      hours: true,
-                      minute: true,
-                      second: true,
-                      milliSecond: false);
-                  return Text(
-                    displayTime,
-                    style: const TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: FIGMA.abreb,
-                    ),
-                  );
-                },
-              ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      _stopWatchTimer.onResetTimer();
-                      isStopped = true;
-                      widget.exit();
-                      value.setSmartTimerPaused(true);
-                      widget.timepace(false);
-                    },
-                    icon: const Icon(
-                      Icons.refresh_rounded,
-                      size: 40,
-                      color: FIGMA.Orn,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      EasyContainer(
+                        onTap: () {
+                          _stopWatchTimer.onResetTimer();
+                          isStopped = true;
+                          widget.exit();
+                          value.setSmartTimerPaused(true);
+                          widget.timepace(false);
+                        },
+                        child: const Icon(
+                          Icons.refresh_rounded,
+                          size: 40,
+                          color: FIGMA.Orn,
+                        ),
+                      ),
+                      EasyContainer(
+                        onTap: () {
+                          if (value.issmarttimerpaused) {
+                            _stopWatchTimer.onStartTimer();
+                            widget.timepace(true);
+                            if (isStopped == true) {
+                              widget.start();
+                            } else {
+                              widget.resume();
+                            }
+                            isStopped = false;
+                          } else {
+                            widget.timepace(false);
+                            widget.stop();
+                            _stopWatchTimer.onStopTimer();
+                          }
+                          value.setSmartTimerPaused(!value.issmarttimerpaused);
+                        },
+                        child: Icon(
+                          value.issmarttimerpaused
+                              ? Icons.play_circle_rounded
+                              : Icons.stop_circle_rounded,
+                          size: 40,
+                          color: FIGMA.Grn,
+                        ),
+                      ),
+                      const EasyContainer(
+                        child: Icon(
+                          Icons.settings_rounded,
+                          size: 40,
+                          color: FIGMA.Grn,
+                        ),
+                      )
+                    ],
                   ),
-                  IconButton(
-                    onPressed: () {
-                      if (value.issmarttimerpaused) {
-                        _stopWatchTimer.onStartTimer();
-                        widget.timepace(true);
-                        if (isStopped == true) {
-                          widget.start();
-                        } else {
-                          widget.resume();
-                        }
-                        isStopped = false;
-                      } else {
-                        widget.timepace(false);
-                        widget.stop();
-                        _stopWatchTimer.onStopTimer();
-                      }
-                      value.setSmartTimerPaused(!value.issmarttimerpaused);
+                  StreamBuilder<int>(
+                    stream: _stopWatchTimer.rawTime,
+                    initialData: _stopWatchTimer.rawTime.value,
+                    builder: (context, snapshot) {
+                      final value = snapshot.data!;
+                      final displayTime = StopWatchTimer.getDisplayTime(value,
+                          hours: false,
+                          minute: true,
+                          second: true,
+                          milliSecond: false);
+                      return Text(
+                        displayTime,
+                        style: const TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: FIGMA.abreb,
+                        ),
+                      );
                     },
-                    icon: Icon(
-                      value.issmarttimerpaused
-                          ? Icons.play_circle_rounded
-                          : Icons.stop_circle_rounded,
-                      size: 40,
-                      color: FIGMA.Grn,
-                    ),
                   ),
                 ],
               ),

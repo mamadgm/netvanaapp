@@ -57,7 +57,7 @@ class CusProgressBarState extends State<CusProgressBar> {
       margin: const EdgeInsets.symmetric(horizontal: 2),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(15),
       ),
     );
   }
@@ -69,7 +69,7 @@ class CusProgressBarState extends State<CusProgressBar> {
       margin: const EdgeInsets.symmetric(horizontal: 2),
       decoration: BoxDecoration(
         color: _isBlinking ? Colors.green : Colors.transparent,
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(15),
       ),
     );
   }
