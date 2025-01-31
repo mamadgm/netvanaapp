@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:netvana/const/figma.dart';
+
 class CusProgressBar extends StatefulWidget {
   final int progress;
 
@@ -21,7 +23,7 @@ class CusProgressBarState extends State<CusProgressBar> {
   }
 
   void _startBlinking() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
       setState(() {
         _isBlinking = !_isBlinking;
       });
@@ -36,15 +38,24 @@ class CusProgressBarState extends State<CusProgressBar> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.progress == -100) {
+      return _buildRectangle(Colors.transparent);
+    } else if (widget.progress == -69) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(15, (index) => _buildBlinkingRectangle()),
+      );
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(15, (index) {
         if (index < widget.progress) {
-          return _buildRectangle(Colors.green);
+          return _buildRectangle(FIGMA.Prn);
         } else if (index == widget.progress) {
           return _buildBlinkingRectangle();
         } else {
-          return _buildRectangle(Colors.grey);
+          return _buildRectangle(FIGMA.Gray);
         }
       }),
     );
@@ -68,7 +79,7 @@ class CusProgressBarState extends State<CusProgressBar> {
       height: 15,
       margin: const EdgeInsets.symmetric(horizontal: 2),
       decoration: BoxDecoration(
-        color: _isBlinking ? Colors.green : Colors.transparent,
+        color: _isBlinking ? FIGMA.Prn : FIGMA.Gray,
         borderRadius: BorderRadius.circular(15),
       ),
     );

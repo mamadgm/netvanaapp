@@ -130,6 +130,8 @@ class _NooranState extends State<Nooran> {
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(
                   height: 25,
@@ -448,62 +450,40 @@ class _NooranState extends State<Nooran> {
                 const SizedBox(
                   height: 30,
                 ),
-                Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: Row(
-                    children: [
-                      EasyContainer(
-                        color: FIGMA.Back,
-                        borderWidth: 0,
-                        elevation: 0,
-                        customMargin: const EdgeInsets.only(right: 16),
-                        padding: 4,
-                        child: Container(
-                          color: FIGMA.Back,
-                          child: Container(
-                            color: Colors.amber,
-                            width: 360,
-                            height: 150,
-                            /*
-                                  Text(
-                                    value.TEST_DATA,
-                                    style: TextStyle(
-                                        fontFamily: FIGMA.abrlb, fontSize: 7),
-                                  ),
-                                  */
-                            child: SmartTimer(
-                              timepace: (p0) {
-                                NooranBle.set_Intervaltimer(p0);
-                              },
-                              start: () {
-                                NooranBle.SendAval("4");
-                                NooranBle.SendToEsp32("Cs-");
-                              },
-                              resume: () {
-                                NooranBle.SendAval("3");
-                                NooranBle.SendToEsp32("Cs-");
-                              },
-                              stop: () {
-                                NooranBle.SendAval("2");
-                                NooranBle.SendToEsp32("Cs-");
-                              },
-                              exit: () {
-                                NooranBle.SendAval("1");
-                                NooranBle.SendToEsp32("Cs-");
-                              },
-                            ),
-                          ),
-                        ),
-                        onTap: () async {
-                          // try {
-                          //   await NooranBle.readmanual();
-                          // } catch (e) {
-                          //   debugPrint(e.toString());
-                          // }
-                        },
-                      ),
-                    ],
+                EasyContainer(
+                  color: FIGMA.Back,
+                  borderWidth: 0,
+                  borderRadius: 15,
+                  padding: 4,
+                  margin: 16,
+                  child: SmartTimer(
+                    timepace: (p0) {
+                      NooranBle.set_Intervaltimer(p0);
+                    },
+                    start: () {
+                      NooranBle.SendAval("4");
+                      NooranBle.SendToEsp32("Cs-");
+                    },
+                    resume: () {
+                      NooranBle.SendAval("3");
+                      NooranBle.SendToEsp32("Cs-");
+                    },
+                    stop: () {
+                      NooranBle.SendAval("2");
+                      NooranBle.SendToEsp32("Cs-");
+                    },
+                    exit: () {
+                      NooranBle.SendAval("1");
+                      NooranBle.SendToEsp32("Cs-");
+                    },
                   ),
+                  onTap: () async {
+                    // try {
+                    //   await NooranBle.readmanual();
+                    // } catch (e) {
+                    //   debugPrint(e.toString());
+                    // }
+                  },
                 ),
                 const SizedBox(
                   height: 20,

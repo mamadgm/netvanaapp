@@ -10,9 +10,9 @@ import 'package:netvana/data/ble/providerble.dart';
 import 'package:provider/provider.dart';
 
 class Sleep_Button extends StatefulWidget {
-  bool state;
+  final bool state;
   final Function(String) onDataChange;
-  Sleep_Button({
+  const Sleep_Button({
     Key? key,
     required this.state,
     required this.onDataChange,
@@ -63,9 +63,9 @@ class _Sleep_ButtonState extends State<Sleep_Button> {
 
 class Power_Button extends StatefulWidget {
   final Function() onDataChange;
-  bool onof;
-  int netvana;
-  Power_Button({
+  final bool onof;
+  final int netvana;
+  const Power_Button({
     required this.onof,
     required this.onDataChange,
     required this.netvana,
@@ -73,10 +73,10 @@ class Power_Button extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<Power_Button> createState() => _Power_ButtonState();
+  State<Power_Button> createState() => Power_ButtonState();
 }
 
-class _Power_ButtonState extends State<Power_Button> {
+class Power_ButtonState extends State<Power_Button> {
   @override
   Widget build(BuildContext context) {
     return EasyContainer(

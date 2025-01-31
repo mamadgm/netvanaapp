@@ -72,91 +72,102 @@ class SmartTimerState extends State<SmartTimer> {
         return EasyContainer(
           borderWidth: 0,
           elevation: 0,
-          margin: 1,
-          padding: 0,
+          margin: 0,
+          padding: 10,
           borderRadius: 15,
           color: FIGMA.Back,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              StreamBuilder<int>(
+                stream: _stopWatchTimer.rawTime,
+                initialData: _stopWatchTimer.rawTime.value,
+                builder: (context, snapshot) {
+                  final value = snapshot.data!;
+                  final displayTime = StopWatchTimer.getDisplayTime(value,
+                      hours: false,
+                      minute: true,
+                      second: true,
+                      milliSecond: false);
+                  return SizedBox(
+                    height: 90,
+                    child: Text(
+                      displayTime,
+                      style: const TextStyle(
+                        fontSize: 60,
+                        fontFamily: FIGMA.abreb,
+                      ),
+                    ),
+                  );
+                },
+              ),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      EasyContainer(
-                        onTap: () {
-                          _stopWatchTimer.onResetTimer();
-                          isStopped = true;
-                          widget.exit();
-                          value.setSmartTimerPaused(true);
-                          widget.timepace(false);
-                        },
-                        child: const Icon(
-                          Icons.refresh_rounded,
-                          size: 40,
-                          color: FIGMA.Orn,
-                        ),
-                      ),
-                      EasyContainer(
-                        onTap: () {
-                          if (value.issmarttimerpaused) {
-                            _stopWatchTimer.onStartTimer();
-                            widget.timepace(true);
-                            if (isStopped == true) {
-                              widget.start();
-                            } else {
-                              widget.resume();
-                            }
-                            isStopped = false;
-                          } else {
-                            widget.timepace(false);
-                            widget.stop();
-                            _stopWatchTimer.onStopTimer();
-                          }
-                          value.setSmartTimerPaused(!value.issmarttimerpaused);
-                        },
-                        child: Icon(
-                          value.issmarttimerpaused
-                              ? Icons.play_circle_rounded
-                              : Icons.stop_circle_rounded,
-                          size: 40,
-                          color: FIGMA.Grn,
-                        ),
-                      ),
-                      const EasyContainer(
-                        child: Icon(
-                          Icons.settings_rounded,
-                          size: 40,
-                          color: FIGMA.Grn,
-                        ),
-                      )
-                    ],
-                  ),
-                  StreamBuilder<int>(
-                    stream: _stopWatchTimer.rawTime,
-                    initialData: _stopWatchTimer.rawTime.value,
-                    builder: (context, snapshot) {
-                      final value = snapshot.data!;
-                      final displayTime = StopWatchTimer.getDisplayTime(value,
-                          hours: false,
-                          minute: true,
-                          second: true,
-                          milliSecond: false);
-                      return Text(
-                        displayTime,
-                        style: const TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: FIGMA.abreb,
-                        ),
-                      );
+                  EasyContainer(
+                    color: FIGMA.Back,
+                    borderRadius: 17,
+                    onTap: () {
+                      _stopWatchTimer.onResetTimer();
+                      isStopped = true;
+                      widget.exit();
+                      value.setSmartTimerPaused(true);
+                      widget.timepace(false);
                     },
+                    child: const Icon(
+                      Icons.refresh_rounded,
+                      size: 40,
+                      color: FIGMA.Orn,
+                    ),
                   ),
+                  EasyContainer(
+                    color: FIGMA.Back,
+                    borderRadius: 17,
+                    onTap: () {
+                      if (value.issmarttimerpaused) {
+                        _stopWatchTimer.onStartTimer();
+                        widget.timepace(true);
+                        if (isStopped == true) {
+                          widget.start();
+                        } else {
+                          widget.resume();
+                        }
+                        isStopped = false;
+                      } else {
+                        widget.timepace(false);
+                        widget.stop();
+                        _stopWatchTimer.onStopTimer();
+                      }
+                      value.setSmartTimerPaused(!value.issmarttimerpaused);
+                    },
+                    child: Icon(
+                      value.issmarttimerpaused
+                          ? Icons.play_circle_rounded
+                          : Icons.stop_circle_rounded,
+                      size: 40,
+                      color: FIGMA.Grn,
+                    ),
+                  ),
+                  const EasyContainer(
+                    color: FIGMA.Back,
+                    borderRadius: 17,
+                    child: Icon(
+                      Icons.settings_rounded,
+                      size: 40,
+                      color: FIGMA.Grn,
+                    ),
+                  )
                 ],
               ),
-              value.whereami == 2
-                  ? CusProgressBar(progress: (value.smarttimerpos - 1))
-                  : const CusProgressBar(progress: 0)
+              CusProgressBar(
+                progress: value.whereami == 2
+                    ? (value.smarttimerpos - 1)
+                    : value.whereami == 3
+                        ? -69
+                        : -100,
+              ),
             ],
           ),
         );
