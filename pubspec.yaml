@@ -49,6 +49,7 @@ dependencies:
   flutter_svg: ^2.0.10+1
   stop_watch_timer: ^3.2.1
   flutter_colorpicker: ^1.0.3
+  time_picker_spinner_pop_up: ^2.0.0
   # record: ^4.4.4
 
 dev_dependencies:

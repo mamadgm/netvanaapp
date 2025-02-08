@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:netvana/BLE/logic/esp_ble.dart';
+import 'package:netvana/BLE/screens/Settingble/SmartTimerSet.dart';
+import 'package:netvana/BLE/screens/Settingble/espsettings.dart';
 import 'package:netvana/cuswidgets/cusprogress.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:easy_container/easy_container.dart';
@@ -13,8 +16,12 @@ class SmartTimer extends StatefulWidget {
       required this.stop,
       required this.exit,
       required this.resume,
-      required this.timepace});
+      required this.timepace,
+      required this.timeset,
+      required this.colorset});
   final Function(bool) timepace;
+  final Function(int) timeset;
+  final Function(String) colorset;
   final Function start;
   final Function stop;
   final Function exit;
@@ -150,15 +157,33 @@ class SmartTimerState extends State<SmartTimer> {
                       color: FIGMA.Grn,
                     ),
                   ),
-                  const EasyContainer(
+                  EasyContainer(
                     color: FIGMA.Back,
                     borderRadius: 17,
-                    child: Icon(
+                    child: const Icon(
                       Icons.settings_rounded,
                       size: 40,
                       color: FIGMA.Grn,
                     ),
-                  )
+                    onTap: () {
+                      value.isConnected == true
+                          ? Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SmrtSetting(
+                                  time: (val) {
+                                    widget.timeset(val);
+                                  },
+                                  color: (val) {
+                                    widget.colorset(val);
+                                  },
+                                ),
+                              ),
+                            )
+                          : value.Show_Snackbar(
+                              "ابتدا به نوران متصل شوید", 1000);
+                    },
+                  ),
                 ],
               ),
               CusProgressBar(

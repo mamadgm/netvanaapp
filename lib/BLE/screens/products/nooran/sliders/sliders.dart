@@ -138,14 +138,14 @@ class Speed_sliderState extends State<Speed_slider> {
         borderRadius: 17,
         child: FillingSlider(
           initialValue:
-              mapIntTodouble(value.maincycle_speed, 3000, 200, 1.0, 0.0),
+              mapIntTodouble(value.maincycle_speed, 2500, 100, 1.0, 0.0),
           width: MaxScreenWidth * 0.9,
           height: 80,
           direction: FillingSliderDirection.horizontal,
           color: FIGMA.Orn,
           fillColor: FIGMA.Gray,
           onFinish: (value) async {
-            int finalspeed = mapdoubleToInt(value, 1.0, 0.0, 3000, 200);
+            int finalspeed = mapdoubleToInt(value, 1.0, 0.0, 2500, 100);
             widget.senddata(finalspeed.toString());
             debugPrint(finalspeed.toString());
           },
