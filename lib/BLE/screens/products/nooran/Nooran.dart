@@ -457,6 +457,17 @@ class _NooranState extends State<Nooran> {
                   padding: 4,
                   margin: 16,
                   child: SmartTimer(
+                    timeset: (val) {
+                      NooranBle.SendAval(val.toString());
+                      NooranBle.SendToEsp32("Ss-");
+                      debugPrint("Time Updated");
+                    },
+                    colorset: (val) {
+                      NooranBle.SendAval(val.toString());
+                      NooranBle.SendToEsp32("Sc-");
+                      NooranBle.SendToEsp32("Sd-");
+                      debugPrint("Color Time Updated");
+                    },
                     timepace: (p0) {
                       NooranBle.set_Intervaltimer(p0);
                     },

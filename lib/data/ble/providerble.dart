@@ -23,6 +23,8 @@ class ProvData extends ChangeNotifier {
   TextEditingController r_ssid_netvana = TextEditingController();
   TextEditingController r_pass_netvana = TextEditingController();
   //Nooran
+  int SmartTimerMin = 0;
+  int SmartTimerSec = 0;
   bool isdeviceon = false;
   bool isnooranNet = false;
   int whereami = 0;
@@ -47,6 +49,12 @@ class ProvData extends ChangeNotifier {
   //Test
   String TEST_DATA = "EMPTY";
   //Smarttimer
+
+  void set_SmartTimerMinSec(int min, int sec, {bool update = false}) {
+    SmartTimerMin = min;
+    SmartTimerSec = sec;
+    update ? notifyListeners() : null;
+  }
 
   void set_Defalult_colors(int p, int which) {
     Defalult_colors[which] = p;
