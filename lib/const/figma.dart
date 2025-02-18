@@ -20,7 +20,7 @@ class FIGMA {
   static const estre = 'estre';
   static const estsb = 'estsb';
 
-  static const urlnetwana = "http://192.168.1.13:8000";
+  static const urlnetwana = "http://192.168.254.33:8000";
   static const HIVE = "Neol";
   static const int FLUTTER_ESSENTIALS = 1;
   // static const int FLUTTER_SPELCO = 2;

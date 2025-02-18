@@ -20,7 +20,7 @@ class Choose_Product extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int selectedWdiget = 0;
-    if (prefix.contains("Nv-")) {
+    if (prefix.contains("nv-")) {
       debugPrint("Selected Product is Nooran");
       selectedWdiget = 1;
     } else if (prefix.contains("Lp-")) {

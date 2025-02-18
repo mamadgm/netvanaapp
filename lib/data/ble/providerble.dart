@@ -232,6 +232,7 @@ class ProvData extends ChangeNotifier {
   }
 
   void extractNumbers_UI(String input) {
+    debugPrint(input);
     List<int> result = [];
     RegExp regExp = RegExp(r'([A-L])(\d+)');
     Iterable<RegExpMatch> matches = regExp.allMatches(input);
