@@ -1,3 +1,4 @@
+import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/cuswidgets/newtab.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:netvana/ble/logic/esp_ble.dart';
@@ -53,8 +54,8 @@ class _EspsettingsState extends State<Espsettings> {
                         final funcy = context.read<ProvData>();
                         funcy.update_netvana(p0 ?? false);
                         p0 == true
-                            ? NooranBle.SendToEsp32("Ne-")
-                            : NooranBle.SendToEsp32("Nd-");
+                            ? SingleBle().sendMain("Ne-")
+                            : SingleBle().sendMain("Nd-");
                       },
                     ),
                   ),
@@ -82,8 +83,8 @@ class _EspsettingsState extends State<Espsettings> {
               trailingWidget: IconButton(
                 onPressed: () {
                   debugPrint(value.r_ssid_netvana.text);
-                  NooranBle.send_big_string(value.r_ssid_netvana.text);
-                  NooranBle.SendToEsp32("Ns-");
+                  SingleBle().sendBigString(value.r_ssid_netvana.text);
+                  SingleBle().sendMain("Ns-");
                 },
                 icon: const Icon(
                   Icons.send_rounded,
@@ -115,8 +116,8 @@ class _EspsettingsState extends State<Espsettings> {
               trailingWidget: IconButton(
                 onPressed: () {
                   debugPrint(value.r_pass_netvana.text);
-                  NooranBle.send_big_string(value.r_pass_netvana.text);
-                  NooranBle.SendToEsp32("Np-");
+                  SingleBle().sendBigString(value.r_pass_netvana.text);
+                  SingleBle().sendMain("Np-");
                 },
                 icon: const Icon(
                   Icons.send_rounded,
@@ -149,8 +150,8 @@ class _EspsettingsState extends State<Espsettings> {
                         final funcy = context.read<ProvData>();
                         funcy.update_NetvanaUpdateFlag(p0 ?? false);
                         p0 == true
-                            ? NooranBle.SendToEsp32("Ue-")
-                            : NooranBle.SendToEsp32("Ud-");
+                            ? SingleBle().sendMain("Ue-")
+                            : SingleBle().sendMain("Ud-");
                       },
                     ),
                   ),
@@ -236,8 +237,8 @@ class _EspsettingsState extends State<Espsettings> {
                               final funcy = context.read<ProvData>();
                               funcy.update_netvana(p0 ?? false);
                               p0 == true
-                                  ? NooranBle.SendToEsp32("Ne-")
-                                  : NooranBle.SendToEsp32("Nd-");
+                                  ? SingleBle().sendMain("Ne-")
+                                  : SingleBle().sendMain("Nd-");
                             },
                           ),
                         ),
@@ -266,7 +267,7 @@ class _EspsettingsState extends State<Espsettings> {
                       onPressed: () {
                         debugPrint(value.r_ssid_netvana.text);
                         NooranBle.send_big_string(value.r_ssid_netvana.text);
-                        NooranBle.SendToEsp32("Ns-");
+                        SingleBle().sendMain("Ns-");
                       },
                       icon: Icon(
                         Icons.send_rounded,
@@ -299,7 +300,7 @@ class _EspsettingsState extends State<Espsettings> {
                       onPressed: () {
                         debugPrint(value.r_pass_netvana.text);
                         NooranBle.send_big_string(value.r_pass_netvana.text);
-                        NooranBle.SendToEsp32("Np-");
+                        SingleBle().sendMain("Np-");
                       },
                       icon: Icon(
                         Icons.send_rounded,
@@ -333,8 +334,8 @@ class _EspsettingsState extends State<Espsettings> {
                               final funcy = context.read<ProvData>();
                               funcy.update_netvana(p0 ?? false);
                               p0 == true
-                                  ? NooranBle.SendToEsp32("Ue-")
-                                  : NooranBle.SendToEsp32("Ud-");
+                                  ? SingleBle().sendMain("Ue-")
+                                  : SingleBle().sendMain("Ud-");
                             },
                           ),
                         ),

@@ -39,12 +39,7 @@ class _MyappState extends State<Myapp> {
     mybody = [
       const ProfileScr(),
       const NetvanaScreen(),
-      const BLEHandel(),
-      Consumer<ProvData>(
-        builder: (context, value, child) {
-          return value.Isdevicefound ? const Nooran() : Container();
-        },
-      ),
+      const Nooran(),
     ];
     // Signing The User
     final funcy = context.read<ProvData>();
@@ -102,9 +97,17 @@ class _MyappState extends State<Myapp> {
                   ),
                   bottomNavigationBar: const TheAppNav(),
                 )
-              : const Login();
+              : Scaffold(
+                  backgroundColor: FIGMA.Back,
+                  body: IndexedStack(
+                    index: value.Current_screen,
+                    children: mybody,
+                  ),
+                  bottomNavigationBar: const TheAppNav(),
+                );
         },
       ),
     );
   }
 }
+// flutter build web --web-renderer canvaskit

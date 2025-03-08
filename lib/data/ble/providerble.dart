@@ -202,13 +202,16 @@ class ProvData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void ChangeDeviceFound(bool value) {
-    Isdevicefound = value;
-    Change_current_screen(2);
-    notifyListeners();
-  }
+  // void ChangeDeviceFound(bool value) {
+  //   Isdevicefound = value;
+  //   Change_current_screen(2);
+  //   notifyListeners();
+  // }
 
   void Change_current_screen(int input) {
+    Current_screen = input;
+    notifyListeners();
+    return;
     switch (Isdevicefound) {
       case false:
         Current_screen = input;
@@ -266,6 +269,7 @@ class ProvData extends ChangeNotifier {
     smarttimerpos = result[9];
     smarttimercolor = result[10];
     ESPVersion = result[11];
+    // int Test = result[12];
     // debugPrint('isdeviceon: $isdeviceon');
     // debugPrint('isnooranNet: $isnooranNet');
     // debugPrint('whereami: $whereami');

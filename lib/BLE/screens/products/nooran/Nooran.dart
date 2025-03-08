@@ -1,12 +1,12 @@
 // ignore_for_file: non_constant_identifier_names, deprecated_member_use
 
 import 'dart:async';
-import 'dart:ffi';
+// import 'dart:ffi';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/screens/Settingble/Themeselect.dart';
-import 'package:netvana/ble/logic/esp_ble.dart';
+// import 'package:netvana/ble/logic/esp_ble.dart';
 import 'package:netvana/ble/screens/Settingble/espsettings.dart';
 import 'package:netvana/ble/screens/products/nooran/Buttons/mybuttons.dart';
 import 'package:netvana/ble/screens/products/nooran/Spelco/spelco.dart';
@@ -17,9 +17,10 @@ import 'package:netvana/data/ble/providerble.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:provider/provider.dart';
-import 'package:universal_ble/universal_ble.dart';
+// import 'package:universal_ble/universal_ble.dart';
 // import 'package:record/record.dart';
 import 'smarttimer/smarttimer.dart';
+import 'package:netvana/BLE/logic/SingleBle.dart';
 
 class Nooran extends StatefulWidget {
   const Nooran({super.key});
@@ -43,7 +44,7 @@ class _NooranState extends State<Nooran> {
 
     //     if (funcy.maincycle_speed > 2500 && funcy.isConnected) {
     //       // NooranBle.SendCval(_loudness.toInt().toString());
-    //       NooranBle.SendToEsp32("X${_loudness.toInt()}-");
+    //      SingleBle().sendMain("X${_loudness.toInt()}-");
     //     }
     //   });
     // }
@@ -54,31 +55,30 @@ class _NooranState extends State<Nooran> {
     startRecording();
     debugPrint("NOORAN");
     super.initState();
-    final funcy = context.read<ProvData>();
+
     final value = Provider.of<ProvData>(context, listen: false);
-    NooranBle = Espnetvana(value, funcy);
     Sliderwidgets = [
       Speed_slider(
         senddata: (speed) {
-          funcy.setMainCycleSpeed(int.parse(speed));
-          NooranBle.SendAval(speed);
-          NooranBle.SendToEsp32("Ls-");
+          value.setMainCycleSpeed(int.parse(speed));
+          SingleBle().sendAval(speed);
+          SingleBle().sendMain("Ls-");
         },
       ),
       Bright_slider(
         senddata: (bright) {
           debugPrint(bright);
           // debugPrint("brighttohex${NooranBle.EasyConvertuint8(bright)}");
-          NooranBle.SendAval(bright);
-          NooranBle.SendToEsp32("Lb-");
+          SingleBle().sendAval(bright);
+          SingleBle().sendMain("Lb-");
         },
-        brightness: funcy.Brightness,
+        brightness: value.Brightness,
         netvana: 1,
       ),
       Color_Picker_HSV(
         senddata: (p0) {
-          NooranBle.SendAval(p0);
-          NooranBle.SendToEsp32("Lc-");
+          SingleBle().sendAval(p0);
+          SingleBle().sendMain("Lc-");
         },
         color: "0xFFFFFFFF",
         netvana: 1,
@@ -88,14 +88,8 @@ class _NooranState extends State<Nooran> {
 
   @override
   void dispose() {
-    // _record.dispose();
     super.dispose();
-    UniversalBle.onConnectionChange = null;
-    UniversalBle.onValueChange = null;
-    // Disconnect when leaving the page
-    final value = Provider.of<ProvData>(context, listen: false);
-    if (value.isConnected) UniversalBle.disconnect(value.Device_UUID);
-    debugPrint("Dispose 2");
+    //TODO: Disconnect when leaving the page
   }
 
   Timer? Connecttimer;
@@ -107,15 +101,15 @@ class _NooranState extends State<Nooran> {
     // Start a new timer that fires once after 1 second
     Connecttimer = Timer(const Duration(seconds: 2), () {
       debugPrint('Loging in');
-      NooranBle.LoginTheClient(context);
+      // NooranBle.LoginTheClient(context);
     });
   }
 
   void TimerSend(int s) {
     calculateTimeStore(s);
     debugPrint("Minute $s");
-    NooranBle.SendAval(s.toString());
-    NooranBle.SendToEsp32("Tf-");
+    SingleBle().sendAval(s.toString());
+    SingleBle().sendMain("Tf-");
     FocusScope.of(context).unfocus();
     Navigator.of(context).pop();
   }
@@ -191,44 +185,67 @@ class _NooranState extends State<Nooran> {
                             },
                           ),
                           EasyContainer(
-                            color: FIGMA.Gray,
-                            borderWidth: 2,
-                            borderRadius: 15,
-                            elevation: 0,
-                            customMargin:
-                                const EdgeInsets.only(right: 4, left: 4),
-                            padding: 6,
-                            child: Icon(
-                              value.isConnected
-                                  ? Icons.bluetooth_connected
-                                  : Icons.bluetooth_disabled,
-                              color: value.isConnected
-                                  ? Colors.greenAccent
-                                  : Colors.red,
-                              size: 48,
-                            ),
-                            onTap: () async {
-                              final funcy = context.read<ProvData>();
-                              debugPrint(value.nextmoveisconnect == true
-                                  ? "Connect"
-                                  : "DisConnect");
-                              if (value.nextmoveisconnect == true) {
-                                try {
-                                  bool connected = await UniversalBle.connect(
-                                    value.Device_UUID,
-                                  );
-                                  debugPrint("ConnectionResult $connected");
-                                  startTimer();
-                                  funcy.change_nextmoveisconnect(false);
-                                } catch (e) {
-                                  debugPrint('ConnectError $e');
+                              color: FIGMA.Gray,
+                              borderWidth: 2,
+                              borderRadius: 15,
+                              elevation: 0,
+                              customMargin:
+                                  const EdgeInsets.only(right: 4, left: 4),
+                              padding: 6,
+                              child: Icon(
+                                value.isConnected
+                                    ? Icons.bluetooth_connected
+                                    : Icons.bluetooth_disabled,
+                                color: value.isConnected
+                                    ? Colors.greenAccent
+                                    : Colors.red,
+                                size: 48,
+                              ),
+                              onTap: () async {
+                                final funcy = context.read<ProvData>();
+                                debugPrint(value.nextmoveisconnect
+                                    ? "Connect"
+                                    : "Disconnect");
+
+                                if (value.nextmoveisconnect == false) {
+                                  // Device is connected → Disconnect
+                                  await SingleBle().disconnect();
+                                  funcy.change_nextmoveisconnect(true);
+                                  debugPrint("Device Disconnected");
+                                  return;
                                 }
-                              } else {
-                                UniversalBle.disconnect(value.Device_UUID);
-                                funcy.change_nextmoveisconnect(true);
-                              }
-                            },
-                          ),
+
+                                // Device is NOT connected → Start Scan
+                                try {
+                                  debugPrint("Starting BLE Scan...");
+
+                                  String? selectedDeviceId =
+                                      await SingleBle().startScanAndGetDevice();
+
+                                  if (selectedDeviceId == null) {
+                                    debugPrint("No device selected.");
+                                    return;
+                                  }
+
+                                  // Wait 1 second before connecting
+                                  await Future.delayed(Duration(seconds: 1));
+
+                                  debugPrint(
+                                      "Attempting to connect to $selectedDeviceId...");
+                                  bool connected = await SingleBle()
+                                      .connectToDevice(selectedDeviceId, 75);
+
+                                  if (connected) {
+                                    funcy.change_nextmoveisconnect(false);
+                                    debugPrint(
+                                        "Successfully Connected to $selectedDeviceId");
+                                  } else {
+                                    debugPrint("Failed to Connect.");
+                                  }
+                                } catch (e) {
+                                  debugPrint('Connection Error: $e');
+                                }
+                              }),
                           Directionality(
                             textDirection: TextDirection.ltr,
                             child: EasyContainer(
@@ -252,7 +269,7 @@ class _NooranState extends State<Nooran> {
                                   value.mynetvanaDevices.clear();
                                   funcy.update_mynetvanadevice();
                                   funcy.change_nextmoveisconnect(true);
-                                  value.ChangeDeviceFound(false);
+                                  // value.ChangeDeviceFound(false);
                                   setState(() {});
                                 } else {
                                   funcy.Show_Snackbar(
@@ -283,8 +300,8 @@ class _NooranState extends State<Nooran> {
                                   child: Sleep_Button(
                                     state: value.Brightness == 5,
                                     onDataChange: (s) {
-                                      NooranBle.SendAval("5");
-                                      NooranBle.SendToEsp32("Lb-");
+                                      SingleBle().sendAval("5");
+                                      SingleBle().sendMain("Lb-");
                                     },
                                   )),
                             ),
@@ -416,8 +433,8 @@ class _NooranState extends State<Nooran> {
                                 onof: true,
                                 onDataChange: () {
                                   value.isdeviceon == true
-                                      ? NooranBle.SendToEsp32("Co-")
-                                      : NooranBle.SendToEsp32("Cp-");
+                                      ? SingleBle().sendMain("Co-")
+                                      : SingleBle().sendMain("Cp-");
                                 },
                                 netvana: 1),
                           ),
@@ -458,34 +475,34 @@ class _NooranState extends State<Nooran> {
                   margin: 16,
                   child: SmartTimer(
                     timeset: (val) {
-                      NooranBle.SendAval(val.toString());
-                      NooranBle.SendToEsp32("Ss-");
+                      SingleBle().sendAval(val.toString());
+                      SingleBle().sendMain("Ss-");
                       debugPrint("Time Updated");
                     },
                     colorset: (val) {
-                      NooranBle.SendAval(val.toString());
-                      NooranBle.SendToEsp32("Sc-");
-                      NooranBle.SendToEsp32("Sd-");
+                      SingleBle().sendAval(val.toString());
+                      SingleBle().sendMain("Sc-");
+                      SingleBle().sendMain("Sd-");
                       debugPrint("Color Time Updated");
                     },
                     timepace: (p0) {
-                      NooranBle.set_Intervaltimer(p0);
+                      // NooranBle.set_Intervaltimer(p0);
                     },
                     start: () {
-                      NooranBle.SendAval("4");
-                      NooranBle.SendToEsp32("Cs-");
+                      SingleBle().sendAval("4");
+                      SingleBle().sendMain("Cs-");
                     },
                     resume: () {
-                      NooranBle.SendAval("3");
-                      NooranBle.SendToEsp32("Cs-");
+                      SingleBle().sendAval("3");
+                      SingleBle().sendMain("Cs-");
                     },
                     stop: () {
-                      NooranBle.SendAval("2");
-                      NooranBle.SendToEsp32("Cs-");
+                      SingleBle().sendAval("2");
+                      SingleBle().sendMain("Cs-");
                     },
                     exit: () {
-                      NooranBle.SendAval("1");
-                      NooranBle.SendToEsp32("Cs-");
+                      SingleBle().sendAval("1");
+                      SingleBle().sendMain("Cs-");
                     },
                   ),
                   onTap: () async {
@@ -580,9 +597,9 @@ class _NooranState extends State<Nooran> {
                             MaterialPageRoute(
                               builder: (context) => ThemeSelect(
                                 update: (int p) {
-                                  NooranBle.SendAval(
-                                      Allthemes[p].value.toString());
-                                  NooranBle.SendToEsp32("Lm-");
+                                  SingleBle()
+                                      .sendAval(Allthemes[p].value.toString());
+                                  SingleBle().sendMain("Lm-");
                                 },
                               ),
                             ),
@@ -617,8 +634,8 @@ class _NooranState extends State<Nooran> {
                                   value.set_Defalult_colors(
                                       int.parse(f), index);
                                   sdcard.put("COLOR$index", int.parse(f));
-                                  NooranBle.SendAval(f);
-                                  NooranBle.SendToEsp32("Lc-");
+                                  SingleBle().sendAval(f);
+                                  SingleBle().sendMain("Lc-");
                                   debugPrint(f);
                                 },
                               ),
