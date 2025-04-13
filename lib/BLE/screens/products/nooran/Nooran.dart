@@ -210,7 +210,8 @@ class _NooranState extends State<Nooran> {
                                 if (value.nextmoveisconnect == false) {
                                   // Device is connected → Disconnect
                                   await SingleBle().disconnect();
-                                  funcy.change_nextmoveisconnect(true);
+                                  value.ble_update_connected(false);
+                                  value.change_nextmoveisconnect(true);
                                   debugPrint("Device Disconnected");
                                   return;
                                 }
@@ -233,16 +234,19 @@ class _NooranState extends State<Nooran> {
                                   debugPrint(
                                       "Attempting to connect to $selectedDeviceId...");
                                   bool connected = await SingleBle()
-                                      .connectToDevice(selectedDeviceId, 75);
+                                      .connectToDevice(selectedDeviceId, 200);
 
                                   if (connected) {
-                                    funcy.change_nextmoveisconnect(false);
+                                    value.change_nextmoveisconnect(false);
+                                    value.ble_update_connected(true);
                                     debugPrint(
                                         "Successfully Connected to $selectedDeviceId");
                                   } else {
+                                    value.ble_update_connected(false);
                                     debugPrint("Failed to Connect.");
                                   }
                                 } catch (e) {
+                                  value.ble_update_connected(false);
                                   debugPrint('Connection Error: $e');
                                 }
                               }),
@@ -458,7 +462,7 @@ class _NooranState extends State<Nooran> {
                           ),
                         ),
                         onTap: () {
-                          // NooranBle.manualTrigger();
+                          SingleBle().triggerFunction();
                         },
                       ),
                     ),

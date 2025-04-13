@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/screens/Connecting/Ble_manager.dart';
+import 'package:netvana/BLE/screens/Connecting/widgets/PermissionHandler.dart';
 import 'package:netvana/NetvanaScreen/NetvanaScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:netvana/Login/Login.dart';
@@ -13,6 +14,7 @@ import 'package:netvana/const/figma.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
+  await Hive.deleteBoxFromDisk(FIGMA.HIVE);
   await Hive.openBox(FIGMA.HIVE);
   runApp(
     MultiProvider(
@@ -22,6 +24,7 @@ Future<void> main() async {
       child: const Myapp(),
     ),
   );
+  PermissionHandler.arePermissionsGranted();
 }
 
 class Myapp extends StatefulWidget {

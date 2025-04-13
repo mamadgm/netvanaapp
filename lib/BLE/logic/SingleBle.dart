@@ -63,20 +63,7 @@ class SingleBle {
   }
 
   void loginTheClient(int loginCounter) {
-    String command;
-
-    if (loginCounter < 10) {
-      command = "[X]000$loginCounter[F]";
-    } else if (loginCounter < 100) {
-      command = "[X]00$loginCounter[F]";
-    } else if (loginCounter < 1000) {
-      command = "[X]0$loginCounter[F]";
-    } else {
-      command = "[X]$loginCounter[F]";
-    }
-
-    sendAval(command);
-    sendBval((loginCounter + 1).toString());
+    sendAval("12345678");
     sendMain("Cl-");
   }
 
@@ -110,7 +97,7 @@ class SingleBle {
         FIGMA.ESP32_SERVICE_ID,
         characteristicId,
         output,
-        BleOutputProperty.withResponse,
+        BleOutputProperty.withoutResponse,
       );
 
       if (showwhathappened) {
@@ -140,6 +127,21 @@ class SingleBle {
     } catch (e) {
       debugPrint("Scan Error: $e");
       return null;
+    }
+  }
+
+  //Read Data
+  Future<void> triggerFunction() async {
+    try {
+      if (connectedDeviceId == null) {
+        throw Exception("connectedDeviceId Is Null");
+      }
+      Uint8List input1 = await UniversalBle.readValue(connectedDeviceId!,
+          FIGMA.ESP32_SERVICE_ID, FIGMA.ESP32_SERVICE_FAVAL);
+      String temp = extractNumbersUI(String.fromCharCodes(input1));
+      debugPrint("data From Esp32\n$temp");
+    } catch (e) {
+      debugPrint("Error in Reading From ESP32 ${e.toString()}");
     }
   }
 
@@ -181,5 +183,49 @@ class SingleBle {
     String hex =
         bytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join();
     return hex;
+  }
+
+  String extractNumbersUI(String input) {
+    List<int> results = [];
+    RegExp regExp = RegExp(r'([A-L])(\d+)');
+    Iterable<RegExpMatch> matches = regExp.allMatches(input);
+
+    for (var match in matches) {
+      String number = match.group(2)!;
+      results.add(int.parse(number));
+    }
+    String test = "";
+    for (int i = 0; i < results.length; i++) {
+      // debugPrint("letter : $i is ${result[i]}");
+      test = "$test $i -> ${results[i]}\n";
+    }
+
+    return test;
+    // isdeviceon = result[0].toInt() == 1;
+    // isnooranNet = result[1].toInt() == 1;
+    // whereami = result[2];
+    // timeroffvalue = result[3];
+    // Brightness = result[4];
+    // maincycle_color = result[5];
+    // maincycle_mode = result[6];
+    // maincycle_speed = result[7];
+    // smartdelaysec = result[8];
+    // smarttimerpos = result[9];
+    // smarttimercolor = result[10];
+    // ESPVersion = result[11];
+    // int Test = result[12];
+    // debugPrint('isdeviceon: $isdeviceon');
+    // debugPrint('isnooranNet: $isnooranNet');
+    // debugPrint('whereami: $whereami');
+    // debugPrint('timeroffvalue: $timeroffvalue');
+    // debugPrint('Brightness: $Brightness');
+    // debugPrint('maincycle_color: $maincycle_color');
+    // debugPrint('maincycle_mode: $maincycle_mode');
+    // debugPrint('maincycle_speed: $maincycle_speed');
+    // debugPrint('smartdelaysec: $smartdelaysec');
+    // debugPrint('smarttimerpos: $smarttimerpos');
+    // debugPrint('smarttimercolor: $smarttimercolor');
+    // debugPrint('ESPVersion: $ESPVersion');
+    // notifyListeners();
   }
 }

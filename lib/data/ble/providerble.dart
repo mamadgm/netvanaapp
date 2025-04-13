@@ -40,7 +40,7 @@ class ProvData extends ChangeNotifier {
   int ESPVersion = 10;
   List<int> Defalult_colors = [0xFF0000, 1900288, 0x0000FF, 0xFFFFFF, 0x00A594];
   //Loggin
-  int login_Counter = 0;
+  int login_Counter = 200;
   bool Issigned = false;
   String username = 'mamad';
   String email = "ss";
@@ -150,7 +150,7 @@ class ProvData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void netvana_update_connected(bool p) {
+  void ble_update_connected(bool p) {
     isConnected = p;
     notifyListeners();
   }
@@ -240,49 +240,6 @@ class ProvData extends ChangeNotifier {
         ),
       ),
     );
-  }
-
-  void extractNumbers_UI(String input) {
-    debugPrint(input);
-    List<int> result = [];
-    RegExp regExp = RegExp(r'([A-L])(\d+)');
-    Iterable<RegExpMatch> matches = regExp.allMatches(input);
-
-    for (var match in matches) {
-      String number = match.group(2)!;
-      result.add(int.parse(number));
-    }
-    TEST_DATA = "";
-    for (var i = 0; i < 12; i++) {
-      // debugPrint("letter : $i is ${result[i]}");
-      TEST_DATA = "$TEST_DATA $i -> ${result[i]} \n";
-    }
-    isdeviceon = result[0].toInt() == 1;
-    isnooranNet = result[1].toInt() == 1;
-    whereami = result[2];
-    timeroffvalue = result[3];
-    Brightness = result[4];
-    maincycle_color = result[5];
-    maincycle_mode = result[6];
-    maincycle_speed = result[7];
-    smartdelaysec = result[8];
-    smarttimerpos = result[9];
-    smarttimercolor = result[10];
-    ESPVersion = result[11];
-    // int Test = result[12];
-    // debugPrint('isdeviceon: $isdeviceon');
-    // debugPrint('isnooranNet: $isnooranNet');
-    // debugPrint('whereami: $whereami');
-    // debugPrint('timeroffvalue: $timeroffvalue');
-    // debugPrint('Brightness: $Brightness');
-    // debugPrint('maincycle_color: $maincycle_color');
-    // debugPrint('maincycle_mode: $maincycle_mode');
-    // debugPrint('maincycle_speed: $maincycle_speed');
-    // debugPrint('smartdelaysec: $smartdelaysec');
-    // debugPrint('smarttimerpos: $smarttimerpos');
-    // debugPrint('smarttimercolor: $smarttimercolor');
-    // debugPrint('ESPVersion: $ESPVersion');
-    notifyListeners();
   }
 }
 
