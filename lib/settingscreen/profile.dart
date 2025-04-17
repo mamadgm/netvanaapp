@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:netvana/BLE/screens/Setting/espsettings.dart';
 import 'package:netvana/const/figma.dart';
-import 'package:netvana/customwidgets/newtab.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:provider/provider.dart';
 

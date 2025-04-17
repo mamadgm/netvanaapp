@@ -4,7 +4,6 @@ import 'package:netvana/BLE/screens/Connecting/widgets/PermissionHandler.dart';
 import 'package:netvana/OtherTwo/Effects.dart';
 import 'package:netvana/OtherTwo/WSTimers.dart';
 import 'package:provider/provider.dart';
-import 'package:netvana/Login/Login.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/ble/screens/products/nooran/Nooran.dart';
 import 'package:netvana/data/ble/providerble.dart';

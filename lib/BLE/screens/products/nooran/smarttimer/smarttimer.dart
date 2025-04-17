@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:netvana/BLE/logic/esp_ble.dart';
 import 'package:netvana/BLE/screens/Setting/SmartTimerSet.dart';
 import 'package:netvana/customwidgets/cusprogress.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';

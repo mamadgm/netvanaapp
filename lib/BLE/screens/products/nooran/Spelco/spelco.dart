@@ -42,7 +42,7 @@ class _SpelcoState extends State<Spelco> {
                       iconSize: iconSize,
                       icon: Icons.speed,
                       text: "سرعت",
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                           fontFamily: FIGMA.estbo,
                           fontSize: 16,
                           color: FIGMA.Grn),
@@ -51,7 +51,7 @@ class _SpelcoState extends State<Spelco> {
                       iconSize: iconSize,
                       icon: Icons.sunny,
                       text: "روشنایی",
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                           fontFamily: FIGMA.estbo,
                           fontSize: 16,
                           color: FIGMA.Grn),
@@ -60,7 +60,7 @@ class _SpelcoState extends State<Spelco> {
                       iconSize: iconSize,
                       icon: Icons.color_lens,
                       text: "رنگ",
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                           fontFamily: FIGMA.estbo,
                           fontSize: 16,
                           color: FIGMA.Grn),

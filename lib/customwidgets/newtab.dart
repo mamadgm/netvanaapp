@@ -24,7 +24,7 @@ class NewTab extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back_ios_rounded,
               size: 24,
               color: FIGMA.Orn,
@@ -37,7 +37,7 @@ class NewTab extends StatelessWidget {
             textDirection: TextDirection.rtl,
             child: Text(
               appbartext,
-              style: TextStyle(
+              style: const TextStyle(
                   fontFamily: FIGMA.abrlb, fontSize: 16, color: FIGMA.Orn),
             ),
           ),

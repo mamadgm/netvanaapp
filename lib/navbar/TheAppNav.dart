@@ -1,6 +1,5 @@
 // ignore_for_file: file_names
 
-import 'package:easy_container/easy_container.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:flutter/material.dart';

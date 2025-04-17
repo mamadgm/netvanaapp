@@ -41,7 +41,7 @@ class SmrtSetting extends StatelessWidget {
                   children: List.generate(
                       90,
                       (index) => Text(
-                            "${index}",
+                            "$index",
                             style: mystyle,
                           )),
                 ),
@@ -62,7 +62,7 @@ class SmrtSetting extends StatelessWidget {
                   children: List.generate(
                       60,
                       (index) => Text(
-                            "${index}",
+                            "$index",
                             style: mystyle,
                           )),
                 ),
