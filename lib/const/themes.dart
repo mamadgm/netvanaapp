@@ -64,7 +64,7 @@ List<EspTheme> Allthemes = [
       name: "نور چرخان",
       value: 40,
       path: "ass/themes/circle.png",
-      property: "نور منظم دور لامپ می چرخد"),
+      property: "نور دور لامپ می چرخد"),
   EspTheme(
       name: "پلیسی",
       value: 41,

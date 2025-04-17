@@ -5,21 +5,20 @@ import 'dart:async';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:netvana/BLE/screens/Settingble/Themeselect.dart';
 // import 'package:netvana/ble/logic/esp_ble.dart';
-import 'package:netvana/ble/screens/Settingble/espsettings.dart';
+
 import 'package:netvana/ble/screens/products/nooran/Buttons/mybuttons.dart';
 import 'package:netvana/ble/screens/products/nooran/Spelco/spelco.dart';
 import 'package:netvana/ble/screens/products/nooran/sliders/sliders.dart';
 import 'package:netvana/const/figma.dart';
-import 'package:netvana/const/themes.dart';
+import 'package:netvana/customwidgets/newtab.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_container/easy_container.dart';
+import 'package:netvana/settingscreen/profile.dart';
 import 'package:provider/provider.dart';
 // import 'package:universal_ble/universal_ble.dart';
 // import 'package:record/record.dart';
-import 'smarttimer/smarttimer.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
 
 class Nooran extends StatefulWidget {
@@ -33,22 +32,7 @@ class _NooranState extends State<Nooran> {
   // double _loudness = 0;
   // final Record _record = Record();
   late List<Widget> Sliderwidgets;
-  Future<void> startRecording() async {
-    // if (await _record.hasPermission()) {
-    //   await _record.start();
-    //   _record
-    //       .onAmplitudeChanged(const Duration(milliseconds: 200))
-    //       .listen((amp) {
-    //     final funcy = context.read<ProvData>();
-    //     _loudness = (((amp.current + 60) / 60) * 100) - 30;
-
-    //     if (funcy.maincycle_speed > 2500 && funcy.isConnected) {
-    //       // NooranBle.SendCval(_loudness.toInt().toString());
-    //      SingleBle().sendMain("X${_loudness.toInt()}-");
-    //     }
-    //   });
-    // }
-  }
+  Future<void> startRecording() async {}
 
   @override
   void initState() {
@@ -67,8 +51,7 @@ class _NooranState extends State<Nooran> {
       ),
       Bright_slider(
         senddata: (bright) {
-          debugPrint(bright);
-          // debugPrint("brighttohex${NooranBle.EasyConvertuint8(bright)}");
+          value.setBrightness(int.parse(bright));
           SingleBle().sendAval(bright);
           SingleBle().sendMain("Lb-");
         },
@@ -93,26 +76,6 @@ class _NooranState extends State<Nooran> {
   }
 
   Timer? Connecttimer;
-
-  void startTimer() {
-    // Cancel any existing timer before starting a new one
-    Connecttimer?.cancel();
-
-    // Start a new timer that fires once after 1 second
-    Connecttimer = Timer(const Duration(seconds: 2), () {
-      debugPrint('Loging in');
-      // NooranBle.LoginTheClient(context);
-    });
-  }
-
-  void TimerSend(int s) {
-    calculateTimeStore(s);
-    debugPrint("Minute $s");
-    SingleBle().sendAval(s.toString());
-    SingleBle().sendMain("Tf-");
-    FocusScope.of(context).unfocus();
-    Navigator.of(context).pop();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -162,26 +125,21 @@ class _NooranState extends State<Nooran> {
                             customMargin:
                                 const EdgeInsets.only(left: 4, right: 4),
                             padding: 6,
-                            child: Icon(
-                              value.isConnected
-                                  ? Icons.settings_rounded
-                                  : Icons.settings_rounded,
-                              color: value.isConnected
-                                  ? FIGMA.Orn
-                                  : FIGMA.Orn.withOpacity(0.1),
+                            child: const Icon(
+                              Icons.person,
+                              color: FIGMA.Prn,
                               size: 48,
                             ),
                             onTap: () {
-                              value.isConnected == true
-                                  ? Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const Espsettings(),
-                                      ),
-                                    )
-                                  : value.Show_Snackbar(
-                                      "ابتدا به نوران متصل شوید", 1000);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const NewTab(
+                                    appbartext: "پروفایل",
+                                    childrens: [ProfileScr()],
+                                  ),
+                                ),
+                              );
                             },
                           ),
                           EasyContainer(
@@ -202,7 +160,6 @@ class _NooranState extends State<Nooran> {
                                 size: 48,
                               ),
                               onTap: () async {
-                                final funcy = context.read<ProvData>();
                                 debugPrint(value.nextmoveisconnect
                                     ? "Connect"
                                     : "Disconnect");
@@ -227,10 +184,6 @@ class _NooranState extends State<Nooran> {
                                     debugPrint("No device selected.");
                                     return;
                                   }
-
-                                  // Wait 1 second before connecting
-                                  await Future.delayed(Duration(seconds: 1));
-
                                   debugPrint(
                                       "Attempting to connect to $selectedDeviceId...");
                                   bool connected = await SingleBle()
@@ -241,6 +194,18 @@ class _NooranState extends State<Nooran> {
                                     value.ble_update_connected(true);
                                     debugPrint(
                                         "Successfully Connected to $selectedDeviceId");
+                                    value.triggerDelayedAction();
+                                    Future.delayed(
+                                        const Duration(milliseconds: 1200),
+                                        () async {
+                                      switch (value.current_selected_slider) {
+                                        case 0:
+                                          value.change_slider(1);
+                                          break;
+                                        default:
+                                          value.change_slider(0);
+                                      }
+                                    });
                                   } else {
                                     value.ble_update_connected(false);
                                     debugPrint("Failed to Connect.");
@@ -250,38 +215,9 @@ class _NooranState extends State<Nooran> {
                                   debugPrint('Connection Error: $e');
                                 }
                               }),
-                          Directionality(
-                            textDirection: TextDirection.ltr,
-                            child: EasyContainer(
-                              color: FIGMA.Gray,
-                              borderWidth: 2,
-                              borderRadius: 15,
-                              elevation: 0,
-                              customMargin:
-                                  const EdgeInsets.only(right: 4, left: 20),
-                              padding: 6,
-                              child: Icon(
-                                Icons.arrow_back_ios_rounded,
-                                color: value.isConnected
-                                    ? Colors.blue.withOpacity(0.1)
-                                    : Colors.blue,
-                                size: 48,
-                              ),
-                              onTap: () {
-                                final funcy = context.read<ProvData>();
-                                if (!value.isConnected) {
-                                  value.mynetvanaDevices.clear();
-                                  funcy.update_mynetvanadevice();
-                                  funcy.change_nextmoveisconnect(true);
-                                  // value.ChangeDeviceFound(false);
-                                  setState(() {});
-                                } else {
-                                  funcy.Show_Snackbar(
-                                      "از دستگاه قطع شوید", 3000);
-                                }
-                              },
-                            ),
-                          ),
+                          const SizedBox(
+                            width: 24,
+                          )
                         ],
                       )
                     ],
@@ -306,126 +242,11 @@ class _NooranState extends State<Nooran> {
                                     onDataChange: (s) {
                                       SingleBle().sendAval("5");
                                       SingleBle().sendMain("Lb-");
+                                      value.triggerDelayedAction();
                                     },
                                   )),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: SizedBox(
-                                height: GetGoodW(context, 74, 111).height,
-                                width: GetGoodW(context, 74, 111).width,
-                                child: NewPopup(
-                                  TempleteColor: !(value.timeroffvalue > 0)
-                                      ? FIGMA.Gray
-                                      : FIGMA.Grn,
-                                  Templete: [
-                                    SvgPicture.asset(
-                                      'ass/timer.svg',
-                                      width: 32,
-                                      color: !(value.timeroffvalue > 0)
-                                          ? FIGMA.Grn
-                                          : FIGMA.Wrn,
-                                    ),
-                                    Text(
-                                      'تایمر',
-                                      style: TextStyle(
-                                          fontFamily: FIGMA.estsb,
-                                          fontSize: 16,
-                                          color: !(value.timeroffvalue > 0)
-                                              ? FIGMA.Grn
-                                              : FIGMA.Wrn),
-                                    ),
-                                    Text(
-                                      value.timeroffvalue == 0
-                                          ? "غیرفعال"
-                                          : "${sdcard.get("Timeofdie", defaultValue: "00:00")}",
-                                      style: TextStyle(
-                                        fontFamily: FIGMA.estre,
-                                        fontSize: 14,
-                                        color: !(value.timeroffvalue > 0)
-                                            ? FIGMA.Grn
-                                            : FIGMA.Wrn,
-                                      ),
-                                    ),
-                                  ],
-                                  innerwidgets: [
-                                    const Expanded(
-                                      flex: 5,
-                                      child: Text(
-                                        "تایمر خاموش کننده",
-                                        style: TextStyle(
-                                            fontFamily: FIGMA.abrlb,
-                                            fontSize: 19),
-                                      ),
-                                    ),
-                                    FASELE(value: 2),
-                                    TimerMinutes(
-                                      Time: "15",
-                                      onDataChange: (s) {
-                                        TimerSend(s);
-                                      },
-                                      Time_int: 15,
-                                    ),
-                                    TimerMinutes(
-                                      Time: "30",
-                                      onDataChange: (s) {
-                                        TimerSend(s);
-                                      },
-                                      Time_int: 30,
-                                    ),
-                                    TimerMinutes(
-                                      Time: "60",
-                                      onDataChange: (s) {
-                                        TimerSend(s);
-                                      },
-                                      Time_int: 90,
-                                    ),
-                                    TimerMinutes(
-                                      Time: "90",
-                                      onDataChange: (s) {
-                                        TimerSend(s);
-                                      },
-                                      Time_int: 90,
-                                    ),
-                                    TimerMinutes(
-                                      Time: "999",
-                                      onDataChange: (s) {
-                                        TimerSend(0);
-                                      },
-                                      Time_int: 999,
-                                    ),
-                                    Expanded(
-                                        flex: 10,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Expanded(
-                                              child: EasyContainer(
-                                                margin: 4,
-                                                padding: 0,
-                                                borderRadius: 17,
-                                                color: FIGMA.Orn,
-                                                child: const Text(
-                                                  "خروج",
-                                                  style: TextStyle(
-                                                      fontFamily: FIGMA.estsb,
-                                                      fontSize: 16,
-                                                      color: FIGMA.Wrn),
-                                                ),
-                                                onTap: () {
-                                                  FocusScope.of(context)
-                                                      .unfocus();
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ))
-                                  ],
-                                ),
-                              ),
-                            )
+                            const ShortTimer(),
                           ],
                         ),
                         Padding(
@@ -439,6 +260,7 @@ class _NooranState extends State<Nooran> {
                                   value.isdeviceon == true
                                       ? SingleBle().sendMain("Co-")
                                       : SingleBle().sendMain("Cp-");
+                                  value.triggerDelayedAction();
                                 },
                                 netvana: 1),
                           ),
@@ -461,9 +283,7 @@ class _NooranState extends State<Nooran> {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        onTap: () {
-                          SingleBle().triggerFunction();
-                        },
+                        onTap: () async {},
                       ),
                     ),
                   ],
@@ -471,64 +291,15 @@ class _NooranState extends State<Nooran> {
                 const SizedBox(
                   height: 30,
                 ),
-                EasyContainer(
-                  color: FIGMA.Back,
-                  borderWidth: 0,
-                  borderRadius: 15,
-                  padding: 4,
-                  margin: 16,
-                  child: SmartTimer(
-                    timeset: (val) {
-                      SingleBle().sendAval(val.toString());
-                      SingleBle().sendMain("Ss-");
-                      debugPrint("Time Updated");
-                    },
-                    colorset: (val) {
-                      SingleBle().sendAval(val.toString());
-                      SingleBle().sendMain("Sc-");
-                      SingleBle().sendMain("Sd-");
-                      debugPrint("Color Time Updated");
-                    },
-                    timepace: (p0) {
-                      // NooranBle.set_Intervaltimer(p0);
-                    },
-                    start: () {
-                      SingleBle().sendAval("4");
-                      SingleBle().sendMain("Cs-");
-                    },
-                    resume: () {
-                      SingleBle().sendAval("3");
-                      SingleBle().sendMain("Cs-");
-                    },
-                    stop: () {
-                      SingleBle().sendAval("2");
-                      SingleBle().sendMain("Cs-");
-                    },
-                    exit: () {
-                      SingleBle().sendAval("1");
-                      SingleBle().sendMain("Cs-");
-                    },
-                  ),
-                  onTap: () async {
-                    // try {
-                    //   await NooranBle.readmanual();
-                    // } catch (e) {
-                    //   debugPrint(e.toString());
-                    // }
-                  },
-                ),
                 const SizedBox(
                   height: 20,
                 ),
                 SizedBox(
                   height: GetGoodW(context, 329, 80).height,
                   width: GetGoodW(context, 329, 80).width,
-                  child: Spelco(
-                      which: 0,
-                      handlechange: (index) {
-                        final funcy = context.read<ProvData>();
-                        funcy.change_slider(index);
-                      }),
+                  child: Spelco(handlechange: (index) {
+                    value.change_slider(index);
+                  }),
                 ),
                 const SizedBox(
                   height: 9,
@@ -539,77 +310,6 @@ class _NooranState extends State<Nooran> {
                 ),
                 const SizedBox(
                   height: 20,
-                ),
-                GestureDetector(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        height: GetGoodW(context, 320, 160).height,
-                        width: GetGoodW(context, 320, 160).width,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          image: DecorationImage(
-                            image: AssetImage(Allthemes[findThemeIndex(
-                                    Allthemes, value.maincycle_mode)]
-                                .path),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Container(
-                          height: GetGoodW(context, 320, 160).height,
-                          width: GetGoodW(context, 320, 160).width,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.black.withOpacity(0.6),
-                          )),
-                      Center(
-                        child: Column(
-                          children: [
-                            Text(
-                              Allthemes[findThemeIndex(
-                                      Allthemes, value.maincycle_mode)]
-                                  .name,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 28, // Adjust the font size
-                                fontWeight: FontWeight.bold,
-                                fontFamily: FIGMA.estbo,
-                              ),
-                            ),
-                            Text(
-                              Allthemes[findThemeIndex(
-                                      Allthemes, value.maincycle_mode)]
-                                  .property,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14, // Adjust the font size
-                                fontWeight: FontWeight.bold,
-                                fontFamily: FIGMA.estbo,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  onTap: () {
-                    value.isConnected == true
-                        ? Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ThemeSelect(
-                                update: (int p) {
-                                  SingleBle()
-                                      .sendAval(Allthemes[p].value.toString());
-                                  SingleBle().sendMain("Lm-");
-                                },
-                              ),
-                            ),
-                          )
-                        : value.Show_Snackbar("ابتدا به نوران متصل شوید", 1000);
-                  },
                 ),
                 const SizedBox(
                   height: 15,
@@ -640,6 +340,7 @@ class _NooranState extends State<Nooran> {
                                   sdcard.put("COLOR$index", int.parse(f));
                                   SingleBle().sendAval(f);
                                   SingleBle().sendMain("Lc-");
+                                  value.triggerDelayedAction();
                                   debugPrint(f);
                                 },
                               ),
@@ -656,5 +357,139 @@ class _NooranState extends State<Nooran> {
         ),
       );
     });
+  }
+}
+
+class ShortTimer extends StatelessWidget {
+  const ShortTimer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    void TimerSend(int s) {
+      calculateTimeStore(s);
+      debugPrint("Minute $s");
+      SingleBle().sendAval(s.toString());
+      SingleBle().sendMain("Tf-");
+      FocusScope.of(context).unfocus();
+      Navigator.of(context).pop();
+    }
+
+    return Consumer<ProvData>(
+      builder: (context, value, child) {
+        var sdcard = Hive.box(FIGMA.HIVE);
+        return Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: SizedBox(
+            height: GetGoodW(context, 74, 111).height,
+            width: GetGoodW(context, 74, 111).width,
+            child: NewPopup(
+              TempleteColor:
+                  !(value.timeroffvalue > 0) ? FIGMA.Gray : FIGMA.Grn,
+              Templete: [
+                SvgPicture.asset(
+                  'ass/timer.svg',
+                  width: 32,
+                  color: !(value.timeroffvalue > 0) ? FIGMA.Grn : FIGMA.Wrn,
+                ),
+                Text(
+                  'تایمر',
+                  style: TextStyle(
+                      fontFamily: FIGMA.estsb,
+                      fontSize: 16,
+                      color:
+                          !(value.timeroffvalue > 0) ? FIGMA.Grn : FIGMA.Wrn),
+                ),
+                Text(
+                  value.timeroffvalue == 0
+                      ? "غیرفعال"
+                      : "${sdcard.get("Timeofdie", defaultValue: "00:00")}",
+                  style: TextStyle(
+                    fontFamily: FIGMA.estre,
+                    fontSize: 14,
+                    color: !(value.timeroffvalue > 0) ? FIGMA.Grn : FIGMA.Wrn,
+                  ),
+                ),
+              ],
+              innerwidgets: [
+                const Expanded(
+                  flex: 5,
+                  child: Text(
+                    "تایمر خاموش کننده",
+                    style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 19),
+                  ),
+                ),
+                FASELE(value: 2),
+                TimerMinutes(
+                  Time: "15",
+                  onDataChange: (s) {
+                    TimerSend(s);
+                    value.triggerDelayedAction();
+                  },
+                  Time_int: 15,
+                ),
+                TimerMinutes(
+                  Time: "30",
+                  onDataChange: (s) {
+                    TimerSend(s);
+                    value.triggerDelayedAction();
+                  },
+                  Time_int: 30,
+                ),
+                TimerMinutes(
+                  Time: "60",
+                  onDataChange: (s) {
+                    TimerSend(s);
+                    value.triggerDelayedAction();
+                  },
+                  Time_int: 90,
+                ),
+                TimerMinutes(
+                  Time: "90",
+                  onDataChange: (s) {
+                    TimerSend(s);
+                    value.triggerDelayedAction();
+                  },
+                  Time_int: 90,
+                ),
+                TimerMinutes(
+                  Time: "999",
+                  onDataChange: (s) {
+                    TimerSend(0);
+                    value.triggerDelayedAction();
+                  },
+                  Time_int: 999,
+                ),
+                Expanded(
+                    flex: 10,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: EasyContainer(
+                            margin: 4,
+                            padding: 0,
+                            borderRadius: 17,
+                            color: FIGMA.Orn,
+                            child: const Text(
+                              "خروج",
+                              style: TextStyle(
+                                  fontFamily: FIGMA.estsb,
+                                  fontSize: 16,
+                                  color: FIGMA.Wrn),
+                            ),
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ),
+                      ],
+                    ))
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

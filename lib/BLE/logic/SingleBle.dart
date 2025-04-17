@@ -11,6 +11,9 @@ class SingleBle {
   factory SingleBle() => _instance;
   SingleBle._internal();
 
+  // Add explicit instance getter
+  static SingleBle get instance => _instance;
+
   List<BleDevice> discoveredDevices = [];
   String? connectedDeviceId;
 
@@ -47,7 +50,7 @@ class SingleBle {
         debugPrint("Connected to $deviceId");
 
         // Wait 2 seconds, then log in the client
-        Future.delayed(const Duration(seconds: 2), () {
+        Future.delayed(const Duration(milliseconds: 250), () {
           loginTheClient(loginCounter);
         });
 
@@ -131,18 +134,18 @@ class SingleBle {
   }
 
   //Read Data
-  Future<void> triggerFunction() async {
+  Future<String> triggerFunction() async {
     try {
       if (connectedDeviceId == null) {
         throw Exception("connectedDeviceId Is Null");
       }
       Uint8List input1 = await UniversalBle.readValue(connectedDeviceId!,
           FIGMA.ESP32_SERVICE_ID, FIGMA.ESP32_SERVICE_FAVAL);
-      String temp = extractNumbersUI(String.fromCharCodes(input1));
-      debugPrint("data From Esp32\n$temp");
+      return String.fromCharCodes(input1);
     } catch (e) {
       debugPrint("Error in Reading From ESP32 ${e.toString()}");
     }
+    return "Error";
   }
 
   // Specific functions for sending values to different characteristics
@@ -201,31 +204,5 @@ class SingleBle {
     }
 
     return test;
-    // isdeviceon = result[0].toInt() == 1;
-    // isnooranNet = result[1].toInt() == 1;
-    // whereami = result[2];
-    // timeroffvalue = result[3];
-    // Brightness = result[4];
-    // maincycle_color = result[5];
-    // maincycle_mode = result[6];
-    // maincycle_speed = result[7];
-    // smartdelaysec = result[8];
-    // smarttimerpos = result[9];
-    // smarttimercolor = result[10];
-    // ESPVersion = result[11];
-    // int Test = result[12];
-    // debugPrint('isdeviceon: $isdeviceon');
-    // debugPrint('isnooranNet: $isnooranNet');
-    // debugPrint('whereami: $whereami');
-    // debugPrint('timeroffvalue: $timeroffvalue');
-    // debugPrint('Brightness: $Brightness');
-    // debugPrint('maincycle_color: $maincycle_color');
-    // debugPrint('maincycle_mode: $maincycle_mode');
-    // debugPrint('maincycle_speed: $maincycle_speed');
-    // debugPrint('smartdelaysec: $smartdelaysec');
-    // debugPrint('smarttimerpos: $smarttimerpos');
-    // debugPrint('smarttimercolor: $smarttimercolor');
-    // debugPrint('ESPVersion: $ESPVersion');
-    // notifyListeners();
   }
 }

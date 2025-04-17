@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:netvana/BLE/screens/Connecting/Ble_manager.dart';
 import 'package:netvana/BLE/screens/Connecting/widgets/PermissionHandler.dart';
-import 'package:netvana/NetvanaScreen/NetvanaScreen.dart';
+import 'package:netvana/OtherTwo/Effects.dart';
+import 'package:netvana/OtherTwo/WSTimers.dart';
 import 'package:provider/provider.dart';
 import 'package:netvana/Login/Login.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/ble/screens/products/nooran/Nooran.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:netvana/navbar/TheAppNav.dart';
-import 'package:netvana/settingscreen/profile.dart';
 import 'package:netvana/const/figma.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
-  await Hive.deleteBoxFromDisk(FIGMA.HIVE);
+  // await Hive.deleteBoxFromDisk(FIGMA.HIVE);
   await Hive.openBox(FIGMA.HIVE);
   runApp(
     MultiProvider(
@@ -40,9 +39,9 @@ class _MyappState extends State<Myapp> {
   @override
   void initState() {
     mybody = [
-      const ProfileScr(),
-      const NetvanaScreen(),
-      const Nooran(),
+      const Timersscr(), // Timers
+      const Effectsscr(), // Effects
+      const Nooran(), // Main
     ];
     // Signing The User
     final funcy = context.read<ProvData>();
@@ -91,23 +90,17 @@ class _MyappState extends State<Myapp> {
       debugShowCheckedModeBanner: false,
       home: Consumer<ProvData>(
         builder: (context, value, child) {
-          return value.Issigned == true
-              ? Scaffold(
-                  backgroundColor: FIGMA.Back,
-                  body: IndexedStack(
-                    index: value.Current_screen,
-                    children: mybody,
-                  ),
-                  bottomNavigationBar: const TheAppNav(),
-                )
-              : Scaffold(
-                  backgroundColor: FIGMA.Back,
-                  body: IndexedStack(
-                    index: value.Current_screen,
-                    children: mybody,
-                  ),
-                  bottomNavigationBar: const TheAppNav(),
-                );
+          return Scaffold(
+            backgroundColor: FIGMA.Back,
+            body: IndexedStack(
+              index: value.Current_screen,
+              children: mybody,
+            ),
+            bottomNavigationBar: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TheAppNav(),
+            ),
+          );
         },
       ),
     );

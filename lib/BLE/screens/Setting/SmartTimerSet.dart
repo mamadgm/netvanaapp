@@ -2,7 +2,7 @@ import 'package:easy_container/easy_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:netvana/BLE/screens/products/nooran/Buttons/mybuttons.dart';
 import 'package:netvana/const/figma.dart';
-import 'package:netvana/cuswidgets/newtab.dart';
+import 'package:netvana/customwidgets/newtab.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

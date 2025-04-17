@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:easy_container/easy_container.dart';
+import 'package:netvana/BLE/screens/Setting/espsettings.dart';
 import 'package:netvana/const/figma.dart';
+import 'package:netvana/customwidgets/newtab.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:provider/provider.dart';
 
@@ -19,16 +21,16 @@ class ProfileScr extends StatelessWidget {
               child: Column(
                 children: [
                   // Picture
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 8.0),
                   CircleAvatar(
-                    radius: maxScreenWidth * 0.20,
+                    radius: maxScreenWidth * 0.10,
                     backgroundColor: Colors.grey[300],
                     child: Image.asset(
                       "ass/icon.png",
                       fit: BoxFit.cover,
                     ),
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 8.0),
                   // Name + Family
                   Text(
                     value.username,
@@ -48,10 +50,10 @@ class ProfileScr extends StatelessWidget {
                       color: Colors.grey[700],
                     ),
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 8.0),
 
                   SizedBox(
-                    height: 300,
+                    height: 200,
                     child: GridView.builder(
                       padding: const EdgeInsets.all(8),
                       gridDelegate:
@@ -63,14 +65,14 @@ class ProfileScr extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return EasyContainer(
                           color: FIGMA.Prn,
-                          height: 10,
+                          height: 7,
                           width: 10,
                           borderRadius: 15,
                           child: Text(
                             "${value.Products[index]}",
                             style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 16,
+                                fontSize: 8,
                                 fontFamily: FIGMA.abreb),
                           ),
                         );
@@ -85,14 +87,21 @@ class ProfileScr extends StatelessWidget {
                     color: FIGMA.Grn,
                     borderWidth: 0,
                     elevation: 0,
-                    padding: 16,
+                    padding: 8,
                     borderRadius: 17,
                     onTap: () {
-                      // Logout action
+                      //
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Espsettings()),
+                      );
+
+                      //
                     },
                     margin: 8,
                     child: const Text(
-                      "ارتباط با ما",
+                      "تنظیمات دستگاه (بلوتوث)",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -105,7 +114,7 @@ class ProfileScr extends StatelessWidget {
                     color: FIGMA.Orn,
                     borderWidth: 0,
                     elevation: 0,
-                    padding: 16,
+                    padding: 8,
                     borderRadius: 17,
                     onTap: () {
                       // Logout action

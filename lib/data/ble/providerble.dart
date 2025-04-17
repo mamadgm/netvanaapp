@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_ble/universal_ble.dart';
@@ -9,7 +10,10 @@ class ProvData extends ChangeNotifier {
   String Device_UUID = "null";
   String Device_NAME = "null";
   bool Isdevicefound = false;
-  int Current_screen = 0;
+  int Current_screen = 1;
+
+  List<int> Favorites = [];
+
   //netvana
   bool nextmoveisconnect = true;
   int current_sync_pos = 0;
@@ -202,28 +206,8 @@ class ProvData extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void ChangeDeviceFound(bool value) {
-  //   Isdevicefound = value;
-  //   Change_current_screen(2);
-  //   notifyListeners();
-  // }
-
   void Change_current_screen(int input) {
     Current_screen = input;
-    notifyListeners();
-    return;
-    switch (Isdevicefound) {
-      case false:
-        Current_screen = input;
-        break;
-      case true:
-        if (input == 2) {
-          Current_screen = 3;
-        } else {
-          Current_screen = input;
-        }
-        break;
-    }
     notifyListeners();
   }
 
@@ -235,24 +219,59 @@ class ProvData extends ChangeNotifier {
         content: Text(
           value,
           textAlign: TextAlign.end,
-          style: TextStyle(
+          style: const TextStyle(
               fontFamily: FIGMA.abrlb, fontSize: 12, color: FIGMA.Grn),
         ),
       ),
     );
   }
-}
 
-/*
-db.PowerNooran, 
-db.getNetstatus(),
-db.whereami, 
-db.Timeroffvalue,
-db.getBrightness(),
-db.getMainCycelMode_color(),
-db.getMainCycelMode_mode(),
-db.getMainCycelMode_speed(),
-db.getSmarttimerdelaysec(), 
-db.Smarttimerpos, 
-db.getSmarttimerColor1()
-*/
+  final SingleBle singleble = SingleBle.instance; // Use the singleton instance
+
+  void triggerDelayedAction() {
+    debugPrint("Updating UI...");
+    Future.delayed(const Duration(milliseconds: 300), () async {
+      debugPrint("Now !");
+      String Temp = await SingleBle().triggerFunction();
+      if (Temp != "Error") {
+        Set_Screen_Values(Temp);
+      } else {
+        Show_Snackbar("نتوانستم بخونم", 500);
+      }
+    });
+  }
+
+  void Set_Screen_Values(String input) {
+    debugPrint(input);
+    List<int> result = [];
+    RegExp regExp = RegExp(r'([A-L])(\d+)');
+    Iterable<RegExpMatch> matches = regExp.allMatches(input);
+
+    for (var match in matches) {
+      String number = match.group(2)!;
+      result.add(int.parse(number));
+    }
+    TEST_DATA = "";
+    for (var i = 0; i < 12; i++) {
+      // debugPrint("letter : $i is ${result[i]}");
+      TEST_DATA = "$TEST_DATA $i -> ${result[i]} \n";
+    }
+    isdeviceon = result[0].toInt() == 1;
+    isnooranNet = result[1].toInt() == 1;
+    whereami = result[2];
+    timeroffvalue = result[3];
+    Brightness = result[4];
+    maincycle_color = result[5];
+    maincycle_mode = result[6];
+    maincycle_speed = result[7];
+    smartdelaysec = result[8];
+    smarttimerpos = result[9];
+    smarttimercolor = result[10];
+    ESPVersion = result[11];
+    notifyListeners();
+  }
+
+  void hand_update() {
+    notifyListeners();
+  }
+}
