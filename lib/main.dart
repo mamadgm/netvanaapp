@@ -1,108 +1,107 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:netvana/BLE/screens/Connecting/widgets/PermissionHandler.dart';
-import 'package:netvana/BLE/screens/products/nooran/Nooran.dart';
-import 'package:netvana/OtherTwo/Effects.dart';
-import 'package:netvana/OtherTwo/WSTimers.dart';
-import 'package:provider/provider.dart';
-import 'package:netvana/Network/netmain.dart';
-import 'package:netvana/data/ble/providerble.dart';
-import 'package:netvana/navbar/TheAppNav.dart';
-import 'package:netvana/const/figma.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
-Future<void> main() async {
-  await Hive.initFlutter();
-  // await Hive.deleteBoxFromDisk(FIGMA.HIVE);
-  await Hive.openBox(FIGMA.HIVE);
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ProvData()),
-      ],
-      child: const Myapp(),
-    ),
-  );
-  PermissionHandler.arePermissionsGranted();
+void main() {
+  runApp(MyApp());
 }
 
-class Myapp extends StatefulWidget {
-  const Myapp({super.key});
-
+class MyApp extends StatelessWidget {
   @override
-  State<Myapp> createState() => _MyappState();
+  Widget build(BuildContext context) => MaterialApp(
+        title: 'ESP32 Bluetooth',
+        theme: ThemeData(primarySwatch: Colors.blue),
+        home: BluetoothHome(),
+      );
 }
 
-class _MyappState extends State<Myapp> {
-  late List<Widget> mybody;
+class BluetoothHome extends StatefulWidget {
+  @override
+  _BluetoothHomeState createState() => _BluetoothHomeState();
+}
+
+class _BluetoothHomeState extends State<BluetoothHome> {
+  BluetoothConnection? connection;
+  String log = '';
+  bool isConnected = false;
 
   @override
   void initState() {
-    mybody = [
-      const Timersscr(), // Timers
-      const Effectsscr(), // Effects
-      const Nooran(), // Main
-    ];
-    // Signing The User
-    final funcy = context.read<ProvData>();
-    var sdcard = Hive.box(FIGMA.HIVE);
-    bool temp = sdcard.get("IS_SIGNED", defaultValue: false);
-    funcy.setIssigned(temp, sdcard.get("token", defaultValue: "NULL"));
-    if (temp) {
-      funcy.Set_Userdetails(sdcard.get("email"), sdcard.get("name"),
-          sdcard.get("login_counter", defaultValue: 0), false);
-
-      // Fetch products
-      fetchProducts(funcy.Token);
-      for (var i = 0; i < 5; i++) {
-        funcy.Defalult_colors[i] =
-            sdcard.get("COLOR$i", defaultValue: 0xFFFFFF);
-      }
-    }
     super.initState();
+    _connectToESP32();
   }
 
-  Future<void> fetchProducts(String? token) async {
-    final funcy = context.read<ProvData>();
+  Future<void> _connectToESP32() async {
     try {
-      if (token != null && token != "NULL") {
-        var response = await NetClass().getProducts(token);
-        if (response != null && response['products'] != null) {
-          debugPrint('Products: ${response['products']}');
-          List<String> productNames = response['products']
-              .map<String>((product) => product['name'].toString())
-              .toList();
-          funcy.setProducts(productNames);
-        } else {
-          debugPrint("No products found.");
-        }
-      }
+      List<BluetoothDevice> devices =
+          await FlutterBluetoothSerial.instance.getBondedDevices();
+
+      final espDevice = devices.firstWhere((d) => d.name == 'ESP32_BT',
+          orElse: () => throw 'ESP32_BT not paired');
+
+      BluetoothConnection.toAddress(espDevice.address).then((_connection) {
+        connection = _connection;
+        setState(() => isConnected = true);
+        _addLog('Connected to ${espDevice.name}');
+
+        connection!.input!.listen((Uint8List data) {
+          String received = utf8.decode(data);
+          _addLog('ESP32: $received');
+        }).onDone(() {
+          _addLog('Connection closed by ESP32');
+          setState(() => isConnected = false);
+        });
+      });
     } catch (e) {
-      funcy.setIssigned(false, "");
-      debugPrint('Failed to fetch products: $e');
+      _addLog('Error: $e');
     }
+  }
+
+  void _sendMessage(String message) {
+    if (connection != null && isConnected) {
+      connection!.output.add(utf8.encode('$message\n'));
+      _addLog('Me: $message');
+    }
+  }
+
+  void _addLog(String message) {
+    setState(() {
+      log = '$message\n$log';
+    });
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      scaffoldMessengerKey: scaffoldMessengerKey,
-      debugShowCheckedModeBanner: false,
-      home: Consumer<ProvData>(
-        builder: (context, value, child) {
-          return Scaffold(
-            backgroundColor: FIGMA.Back,
-            body: IndexedStack(
-              index: value.Current_screen,
-              children: mybody,
-            ),
-            bottomNavigationBar: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TheAppNav(),
-            ),
-          );
-        },
-      ),
-    );
+  void dispose() {
+    connection?.dispose();
+    super.dispose();
   }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(title: Text('ESP32 Bluetooth')),
+        body: Column(
+          children: [
+            ElevatedButton(
+              onPressed: isConnected
+                  ? () => _sendMessage("Hello from Flutter!")
+                  : null,
+              child: Text("Send Message"),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Logs:",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                reverse: true,
+                child: Text(log),
+              ),
+            ),
+          ],
+        ),
+      );
 }
-// flutter build web --web-renderer canvaskit
