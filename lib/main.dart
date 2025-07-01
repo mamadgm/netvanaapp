@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/screens/Connecting/widgets/PermissionHandler.dart';
+import 'package:netvana/BLE/screens/products/nooran/Nooran.dart';
 import 'package:netvana/OtherTwo/Effects.dart';
 import 'package:netvana/OtherTwo/WSTimers.dart';
 import 'package:provider/provider.dart';
 import 'package:netvana/Network/netmain.dart';
-import 'package:netvana/ble/screens/products/nooran/Nooran.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:netvana/navbar/TheAppNav.dart';
 import 'package:netvana/const/figma.dart';

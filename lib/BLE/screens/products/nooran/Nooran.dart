@@ -5,11 +5,11 @@ import 'dart:async';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:netvana/BLE/screens/products/nooran/Buttons/mybuttons.dart';
+import 'package:netvana/BLE/screens/products/nooran/Spelco/spelco.dart';
+import 'package:netvana/BLE/screens/products/nooran/sliders/sliders.dart';
 // import 'package:netvana/ble/logic/esp_ble.dart';
 
-import 'package:netvana/ble/screens/products/nooran/Buttons/mybuttons.dart';
-import 'package:netvana/ble/screens/products/nooran/Spelco/spelco.dart';
-import 'package:netvana/ble/screens/products/nooran/sliders/sliders.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/newtab.dart';
 import 'package:netvana/data/ble/providerble.dart';
