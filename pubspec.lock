@@ -267,14 +267,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_bluetooth_serial:
-    dependency: "direct main"
-    description:
-      name: flutter_bluetooth_serial
-      sha256: "85ae82c4099b2b1facdc54e75e1bcfa88dc7f719e55dc886bb0b648cb16636b1"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.4.0"
   flutter_colorpicker:
     dependency: "direct main"
     description:
@@ -308,10 +300,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_web_bluetooth
-      sha256: fcd03e2e5f82edcedcbc940f1b6a0635a50757374183254f447640886c53208e
+      sha256: ad26a1b3fef95b86ea5f63793b9a0cdc1a33490f35d754e4e711046cae3ebbf8
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.4"
+    version: "1.1.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -838,10 +830,10 @@ packages:
     dependency: "direct main"
     description:
       name: universal_ble
-      sha256: "0dfbd6b64bff3ad61ed7a895c232530d9614e9b01ab261a74433a43267edb7f3"
+      sha256: "422e4346ea5e247a9a2f00be06f3093585ab63e2dfd8c9750273f19ed233f3b2"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.12.0"
+    version: "0.20.1"
   vector_graphics:
     dependency: transitive
     description:

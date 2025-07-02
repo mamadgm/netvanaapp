@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
@@ -24,8 +26,8 @@ class ThemeCard extends StatelessWidget {
     return Consumer<ProvData>(
         builder: (context, value, child) => EasyContainer(
               onTap: () {
-                SingleBle().sendAval(id.toString());
-                SingleBle().sendMain("Lm-");
+                String jsonPayload = jsonEncode({"Lm": id.toString()});
+                SingleBle().sendMain(jsonPayload);
                 value.triggerDelayedAction();
               },
               hoverColor: FIGMA.Back,

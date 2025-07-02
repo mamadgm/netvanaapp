@@ -140,7 +140,7 @@ class SingleBle {
         throw Exception("connectedDeviceId Is Null");
       }
       Uint8List input1 = await UniversalBle.readValue(connectedDeviceId!,
-          FIGMA.ESP32_SERVICE_ID, FIGMA.ESP32_SERVICE_FAVAL);
+          FIGMA.ESP32_SERVICE_ID, FIGMA.ESP32_SERVICE_Micro);
       return String.fromCharCodes(input1);
     } catch (e) {
       debugPrint("Error in Reading From ESP32 ${e.toString()}");

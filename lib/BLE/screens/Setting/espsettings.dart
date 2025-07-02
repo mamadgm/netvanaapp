@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/customwidgets/newtab.dart';
 import 'package:netvana/data/ble/providerble.dart';
@@ -52,9 +54,14 @@ class _EspsettingsState extends State<Espsettings> {
                       onChanged: (p0) {
                         final funcy = context.read<ProvData>();
                         funcy.update_netvana(p0 ?? false);
-                        p0 == true
-                            ? SingleBle().sendMain("Ne-")
-                            : SingleBle().sendMain("Nd-");
+
+                        if (p0 == true) {
+                          String jsonPayload = jsonEncode({"Ne": 1});
+                          SingleBle().sendMain(jsonPayload);
+                        } else {
+                          String jsonPayload = jsonEncode({"Nd": 1});
+                          SingleBle().sendMain(jsonPayload);
+                        }
 
                         value.triggerDelayedAction();
                       },
@@ -84,8 +91,9 @@ class _EspsettingsState extends State<Espsettings> {
               trailingWidget: IconButton(
                 onPressed: () {
                   debugPrint(value.r_ssid_netvana.text);
-                  SingleBle().sendBigString(value.r_ssid_netvana.text);
-                  SingleBle().sendMain("Ns-");
+                  String jsonPayload =
+                      jsonEncode({"Ns": value.r_ssid_netvana.text});
+                  SingleBle().sendMain(jsonPayload);
                   value.triggerDelayedAction();
                 },
                 icon: const Icon(
@@ -118,8 +126,10 @@ class _EspsettingsState extends State<Espsettings> {
               trailingWidget: IconButton(
                 onPressed: () {
                   debugPrint(value.r_pass_netvana.text);
-                  SingleBle().sendBigString(value.r_pass_netvana.text);
-                  SingleBle().sendMain("Np-");
+
+                  String jsonPayload =
+                      jsonEncode({"Np": value.r_pass_netvana.text});
+                  SingleBle().sendMain(jsonPayload);
                   value.triggerDelayedAction();
                 },
                 icon: const Icon(
@@ -152,9 +162,14 @@ class _EspsettingsState extends State<Espsettings> {
                       onChanged: (p0) {
                         final funcy = context.read<ProvData>();
                         funcy.update_NetvanaUpdateFlag(p0 ?? false);
-                        p0 == true
-                            ? SingleBle().sendMain("Ue-")
-                            : SingleBle().sendMain("Ud-");
+
+                        if (p0 == true) {
+                          String jsonPayload = jsonEncode({"Ue": 1});
+                          SingleBle().sendMain(jsonPayload);
+                        } else {
+                          String jsonPayload = jsonEncode({"Ud": 1});
+                          SingleBle().sendMain(jsonPayload);
+                        }
                         value.triggerDelayedAction();
                       },
                     ),

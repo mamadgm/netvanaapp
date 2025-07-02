@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, deprecated_member_use
 
 import 'dart:async';
+import 'dart:convert';
 // import 'dart:ffi';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -45,23 +46,23 @@ class _NooranState extends State<Nooran> {
       Speed_slider(
         senddata: (speed) {
           value.setMainCycleSpeed(int.parse(speed));
-          SingleBle().sendAval(speed);
-          SingleBle().sendMain("Ls-");
+          String jsonPayload = jsonEncode({"Ls": speed});
+          SingleBle().sendMain(jsonPayload);
         },
       ),
       Bright_slider(
         senddata: (bright) {
           value.setBrightness(int.parse(bright));
-          SingleBle().sendAval(bright);
-          SingleBle().sendMain("Lb-");
+          String jsonPayload = jsonEncode({"Lb": bright});
+          SingleBle().sendMain(jsonPayload);
         },
         brightness: value.Brightness,
         netvana: 1,
       ),
       Color_Picker_HSV(
         senddata: (p0) {
-          SingleBle().sendAval(p0);
-          SingleBle().sendMain("Lc-");
+          String jsonPayload = jsonEncode({"Lc": p0});
+          SingleBle().sendMain(jsonPayload);
         },
         color: "0xFFFFFFFF",
         netvana: 1,
@@ -240,8 +241,10 @@ class _NooranState extends State<Nooran> {
                                   child: Sleep_Button(
                                     state: value.Brightness == 5,
                                     onDataChange: (s) {
-                                      SingleBle().sendAval("5");
-                                      SingleBle().sendMain("Lb-");
+                                      String jsonPayload =
+                                          jsonEncode({"Lb": 5});
+                                      SingleBle().sendMain(jsonPayload);
+
                                       value.triggerDelayedAction();
                                     },
                                   )),
@@ -257,10 +260,13 @@ class _NooranState extends State<Nooran> {
                             child: Power_Button(
                                 onof: true,
                                 onDataChange: () {
-                                  value.isdeviceon == true
-                                      ? SingleBle().sendMain("Co-")
-                                      : SingleBle().sendMain("Cp-");
-                                  value.triggerDelayedAction();
+                                  if (value.isdeviceon == true) {
+                                    String jsonPayload = jsonEncode({"Co": 1});
+                                    SingleBle().sendMain(jsonPayload);
+                                  } else {
+                                    String jsonPayload = jsonEncode({"Cp": 1});
+                                    SingleBle().sendMain(jsonPayload);
+                                  }
                                 },
                                 netvana: 1),
                           ),
@@ -338,8 +344,9 @@ class _NooranState extends State<Nooran> {
                                   value.set_Defalult_colors(
                                       int.parse(f), index);
                                   sdcard.put("COLOR$index", int.parse(f));
-                                  SingleBle().sendAval(f);
-                                  SingleBle().sendMain("Lc-");
+                                  String jsonPayload = jsonEncode({"Lc": f});
+                                  SingleBle().sendMain(jsonPayload);
+
                                   value.triggerDelayedAction();
                                   debugPrint(f);
                                 },
@@ -368,8 +375,8 @@ class ShortTimer extends StatelessWidget {
     void TimerSend(int s) {
       calculateTimeStore(s);
       debugPrint("Minute $s");
-      SingleBle().sendAval(s.toString());
-      SingleBle().sendMain("Tf-");
+      String jsonPayload = jsonEncode({"Td": s.toString()});
+      SingleBle().sendMain(jsonPayload);
       FocusScope.of(context).unfocus();
       Navigator.of(context).pop();
     }
