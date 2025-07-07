@@ -27,13 +27,13 @@ class FIGMA {
   // static const int FLUTTER_SMARTTIMER = 3;
   static const ESP32_SERVICE_ID = "a7e40a4c-eec9-4910-bf7e-113c6ed2381b";
   static const ESP32_SERVICE_WHICH = "d9a127a9-bf6c-48dd-9d70-ba5bc06a83e6";
-  static const ESP32_SERVICE_AVAL = "83d5317f-2c4d-4c0f-93bf-f2fa52d4e0dc";
-  static const ESP32_SERVICE_BVAL = "73398be2-a70a-4455-8560-abb4957666ab";
-  static const ESP32_SERVICE_CVAL = "4ea4edec-d39b-4ea6-9c4e-bd64ccd613a4";
+  // static const ESP32_SERVICE_AVAL = "83d5317f-2c4d-4c0f-93bf-f2fa52d4e0dc";
+  // static const ESP32_SERVICE_BVAL = "73398be2-a70a-4455-8560-abb4957666ab";
+  // static const ESP32_SERVICE_CVAL = "4ea4edec-d39b-4ea6-9c4e-bd64ccd613a4";
   static const ESP32_SERVICE_Micro = "903ff0ee-4d92-4815-8dae-bcbc9aec61e4";
-  static const ESP32_SERVICE_FAVAL = "cede8c92-5dad-4b90-bb88-5300a5566598";
-  static const ESP32_SERVICE_FBVAL = "f1e50997-b8b4-475b-89c3-bc08fa1c4b2e";
-  static const ESP32_SERVICE_FCVAL = "66905ac6-9820-4942-bd40-79bac9c3501c";
+  // static const ESP32_SERVICE_FAVAL = "cede8c92-5dad-4b90-bb88-5300a5566598";
+  // static const ESP32_SERVICE_FBVAL = "f1e50997-b8b4-475b-89c3-bc08fa1c4b2e";
+  // static const ESP32_SERVICE_FCVAL = "66905ac6-9820-4942-bd40-79bac9c3501c";
 }
 
 Size GetGoodW(BuildContext context, double inwidth, double inheight) {

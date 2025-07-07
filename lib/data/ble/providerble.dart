@@ -11,7 +11,9 @@ class ProvData extends ChangeNotifier {
   String Device_NAME = "null";
   bool Isdevicefound = false;
   int Current_screen = 1;
-
+  Duration SmartTimerTime = Duration(seconds: 300);
+  Duration Remaining = Duration(seconds: 300);
+  String SmartTimerColor = "0xFFFFFFFF";
   List<int> Favorites = [];
 
   //netvana
@@ -27,8 +29,6 @@ class ProvData extends ChangeNotifier {
   TextEditingController r_ssid_netvana = TextEditingController();
   TextEditingController r_pass_netvana = TextEditingController();
   //Nooran
-  int SmartTimerMin = 0;
-  int SmartTimerSec = 0;
   bool isdeviceon = false;
   bool isnooranNet = false;
   int whereami = 0;
@@ -54,10 +54,15 @@ class ProvData extends ChangeNotifier {
   String TEST_DATA = "EMPTY";
   //Smarttimer
 
-  void set_SmartTimerMinSec(int min, int sec, {bool update = false}) {
-    SmartTimerMin = min;
-    SmartTimerSec = sec;
-    update ? notifyListeners() : null;
+  void set_SmartTimerMinSec(int hour, int minute, {bool update = false}) {
+    SmartTimerTime = Duration(hours: hour, minutes: minute);
+    Remaining = Duration(hours: hour, minutes: minute);
+    notifyListeners();
+  }
+
+  void set_SmartTimerColor(String color) {
+    SmartTimerColor = color;
+    notifyListeners();
   }
 
   void set_Defalult_colors(int p, int which) {
@@ -131,11 +136,6 @@ class ProvData extends ChangeNotifier {
 
   void setMainCycleSpeed(int value) {
     maincycle_speed = value;
-    notifyListeners();
-  }
-
-  void setSmartDelaySec(int value) {
-    smartdelaysec = value;
     notifyListeners();
   }
 
@@ -227,19 +227,6 @@ class ProvData extends ChangeNotifier {
   }
 
   final SingleBle singleble = SingleBle.instance; // Use the singleton instance
-
-  void triggerDelayedAction() {
-    debugPrint("Updating UI...");
-    Future.delayed(const Duration(milliseconds: 300), () async {
-      debugPrint("Now !");
-      String Temp = await SingleBle().triggerFunction();
-      if (Temp != "Error") {
-        Set_Screen_Values(Temp);
-      } else {
-        Show_Snackbar("نتوانستم بخونم", 500);
-      }
-    });
-  }
 
   void Set_Screen_Values(String input) {
     debugPrint(input);

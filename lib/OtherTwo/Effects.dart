@@ -26,36 +26,46 @@ class Effectsscr extends StatelessWidget {
                   const SizedBox(
                     height: 25,
                   ),
-                  Directionality(
-                    textDirection: TextDirection.rtl,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        EasyContainer(
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      EasyContainer(
+                        color: FIGMA.Back,
+                        borderWidth: 0,
+                        elevation: 0,
+                        customMargin: const EdgeInsets.only(right: 36),
+                        padding: 0,
+                        child: Container(
                           color: FIGMA.Back,
-                          borderWidth: 0,
-                          elevation: 0,
-                          customMargin: const EdgeInsets.only(right: 36),
-                          padding: 0,
-                          child: Container(
-                            color: FIGMA.Back,
-                            child: const Text(
-                              "افکت های اختصاصی",
-                              style: TextStyle(
-                                  fontFamily: FIGMA.abrlb, fontSize: 24),
-                            ),
+                          child: const Text(
+                            "افکت های اختصاصی",
+                            style: TextStyle(
+                                fontFamily: FIGMA.abrlb, fontSize: 28),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 36,
                   ),
-                  Column(
-                    children: buildRows(Allthemes),
-                  ),
+                  GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 8,
+                    childAspectRatio: 3 / 4, // Adjust based on your card size
+                    children: Allthemes.map((theme) {
+                      return ThemeCard(
+                        id: theme.value,
+                        picUrl: theme.path,
+                        bigText: theme.name,
+                        smallText: theme.property,
+                      );
+                    }).toList(),
+                  )
                 ],
               ),
             ),
@@ -74,7 +84,6 @@ List<Widget> buildRows(List<EspTheme> themes) {
       Padding(
         padding: const EdgeInsets.only(bottom: 16.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
               child: ThemeCard(
@@ -84,7 +93,7 @@ List<Widget> buildRows(List<EspTheme> themes) {
                 smallText: themes[i].property,
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 32),
             if (i + 1 < themes.length)
               Expanded(
                 child: ThemeCard(

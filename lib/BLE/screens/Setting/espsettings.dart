@@ -54,16 +54,9 @@ class _EspsettingsState extends State<Espsettings> {
                       onChanged: (p0) {
                         final funcy = context.read<ProvData>();
                         funcy.update_netvana(p0 ?? false);
-
-                        if (p0 == true) {
-                          String jsonPayload = jsonEncode({"Ne": 1});
-                          SingleBle().sendMain(jsonPayload);
-                        } else {
-                          String jsonPayload = jsonEncode({"Nd": 1});
-                          SingleBle().sendMain(jsonPayload);
-                        }
-
-                        value.triggerDelayedAction();
+                        String jsonPayload =
+                            jsonEncode({"Ne": !value.isnooranNet});
+                        SingleBle().sendMain(jsonPayload);
                       },
                     ),
                   ),
@@ -94,7 +87,6 @@ class _EspsettingsState extends State<Espsettings> {
                   String jsonPayload =
                       jsonEncode({"Ns": value.r_ssid_netvana.text});
                   SingleBle().sendMain(jsonPayload);
-                  value.triggerDelayedAction();
                 },
                 icon: const Icon(
                   Icons.send_rounded,
@@ -130,7 +122,6 @@ class _EspsettingsState extends State<Espsettings> {
                   String jsonPayload =
                       jsonEncode({"Np": value.r_pass_netvana.text});
                   SingleBle().sendMain(jsonPayload);
-                  value.triggerDelayedAction();
                 },
                 icon: const Icon(
                   Icons.send_rounded,
@@ -170,7 +161,6 @@ class _EspsettingsState extends State<Espsettings> {
                           String jsonPayload = jsonEncode({"Ud": 1});
                           SingleBle().sendMain(jsonPayload);
                         }
-                        value.triggerDelayedAction();
                       },
                     ),
                   ),

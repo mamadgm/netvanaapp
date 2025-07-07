@@ -40,8 +40,8 @@ class _NooranState extends State<Nooran> {
     startRecording();
     debugPrint("NOORAN");
     super.initState();
-
     final value = Provider.of<ProvData>(context, listen: false);
+    SingleBle().init(value);
     Sliderwidgets = [
       Speed_slider(
         senddata: (speed) {
@@ -195,7 +195,7 @@ class _NooranState extends State<Nooran> {
                                     value.ble_update_connected(true);
                                     debugPrint(
                                         "Successfully Connected to $selectedDeviceId");
-                                    value.triggerDelayedAction();
+
                                     Future.delayed(
                                         const Duration(milliseconds: 1200),
                                         () async {
@@ -244,8 +244,6 @@ class _NooranState extends State<Nooran> {
                                       String jsonPayload =
                                           jsonEncode({"Lb": 5});
                                       SingleBle().sendMain(jsonPayload);
-
-                                      value.triggerDelayedAction();
                                     },
                                   )),
                             ),
@@ -258,15 +256,11 @@ class _NooranState extends State<Nooran> {
                             height: GetGoodW(context, 156, 73).height,
                             width: GetGoodW(context, 156, 73).width,
                             child: Power_Button(
-                                onof: true,
+                                onof: value.isdeviceon,
                                 onDataChange: () {
-                                  if (value.isdeviceon == true) {
-                                    String jsonPayload = jsonEncode({"Co": 1});
-                                    SingleBle().sendMain(jsonPayload);
-                                  } else {
-                                    String jsonPayload = jsonEncode({"Cp": 1});
-                                    SingleBle().sendMain(jsonPayload);
-                                  }
+                                  String jsonPayload =
+                                      jsonEncode({"Cp": !value.isdeviceon});
+                                  SingleBle().sendMain(jsonPayload);
                                 },
                                 netvana: 1),
                           ),
@@ -312,7 +306,10 @@ class _NooranState extends State<Nooran> {
                 ),
                 SizedBox(
                   height: GetGoodW(context, 329, 70).height,
-                  child: Sliderwidgets[value.current_selected_slider],
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 12, right: 12),
+                    child: Sliderwidgets[value.current_selected_slider],
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -347,7 +344,6 @@ class _NooranState extends State<Nooran> {
                                   String jsonPayload = jsonEncode({"Lc": f});
                                   SingleBle().sendMain(jsonPayload);
 
-                                  value.triggerDelayedAction();
                                   debugPrint(f);
                                 },
                               ),
@@ -430,7 +426,6 @@ class ShortTimer extends StatelessWidget {
                   Time: "15",
                   onDataChange: (s) {
                     TimerSend(s);
-                    value.triggerDelayedAction();
                   },
                   Time_int: 15,
                 ),
@@ -438,7 +433,6 @@ class ShortTimer extends StatelessWidget {
                   Time: "30",
                   onDataChange: (s) {
                     TimerSend(s);
-                    value.triggerDelayedAction();
                   },
                   Time_int: 30,
                 ),
@@ -446,7 +440,6 @@ class ShortTimer extends StatelessWidget {
                   Time: "60",
                   onDataChange: (s) {
                     TimerSend(s);
-                    value.triggerDelayedAction();
                   },
                   Time_int: 90,
                 ),
@@ -454,7 +447,6 @@ class ShortTimer extends StatelessWidget {
                   Time: "90",
                   onDataChange: (s) {
                     TimerSend(s);
-                    value.triggerDelayedAction();
                   },
                   Time_int: 90,
                 ),
@@ -462,7 +454,6 @@ class ShortTimer extends StatelessWidget {
                   Time: "999",
                   onDataChange: (s) {
                     TimerSend(0);
-                    value.triggerDelayedAction();
                   },
                   Time_int: 999,
                 ),

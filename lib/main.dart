@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:netvana/BLE/screens/Connecting/widgets/PermissionHandler.dart';
 import 'package:netvana/BLE/screens/products/nooran/Nooran.dart';
 import 'package:netvana/OtherTwo/Effects.dart';
 import 'package:netvana/OtherTwo/WSTimers.dart';
@@ -22,7 +21,6 @@ Future<void> main() async {
       child: const Myapp(),
     ),
   );
-  PermissionHandler.arePermissionsGranted();
 }
 
 class Myapp extends StatefulWidget {

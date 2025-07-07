@@ -28,7 +28,6 @@ class ThemeCard extends StatelessWidget {
               onTap: () {
                 String jsonPayload = jsonEncode({"Lm": id.toString()});
                 SingleBle().sendMain(jsonPayload);
-                value.triggerDelayedAction();
               },
               hoverColor: FIGMA.Back,
               padding: 8,

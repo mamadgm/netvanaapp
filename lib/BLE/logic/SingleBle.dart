@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/const/figma.dart';
+import 'package:netvana/data/ble/providerble.dart';
+import 'package:provider/provider.dart';
 import 'package:universal_ble/universal_ble.dart';
 
 class SingleBle {
@@ -18,6 +20,12 @@ class SingleBle {
   String? connectedDeviceId;
 
   ScanFilter? scanFilter = ScanFilter(withServices: [FIGMA.ESP32_SERVICE_ID]);
+
+  late ProvData _provider;
+
+  void init(ProvData providerInstance) {
+    _provider = providerInstance;
+  }
 
   // Start scanning for devices
   Future<void> startScan() async {
@@ -44,31 +52,23 @@ class SingleBle {
 
   Future<bool> connectToDevice(String deviceId, int loginCounter) async {
     try {
-      bool connected = await UniversalBle.connect(deviceId);
-      if (connected) {
-        connectedDeviceId = deviceId;
-        debugPrint("Connected to $deviceId");
+      await UniversalBle.connect(deviceId);
 
-        // Wait 2 seconds, then log in the client
-        Future.delayed(const Duration(milliseconds: 250), () {
-          loginTheClient(loginCounter);
-        });
-
-        return true; // Connection was successful
-      } else {
-        debugPrint("Failed to connect to $deviceId");
-        return false; // Connection failed
-      }
+      connectedDeviceId = deviceId;
+      debugPrint("Connected to $deviceId");
+      await listenToNotifications();
+      return true; // Connection was successful
     } catch (e) {
+      debugPrint("Failed to connect to $deviceId");
       debugPrint("Connection failed: $e");
-      return false; // Handle the exception
+      return false; // Connection failed
     }
   }
 
-  void loginTheClient(int loginCounter) {
-    sendAval("12345678");
-    sendMain("Cl-");
-  }
+  // void loginTheClient(int loginCounter) {
+  //   sendAval("12345678");
+  //   sendMain("Cl-");
+  // }
 
   // Disconnect from the device
   Future<void> disconnect() async {
@@ -95,12 +95,11 @@ class SingleBle {
     }
 
     try {
-      await UniversalBle.writeValue(
+      await UniversalBle.write(
         connectedDeviceId!,
         FIGMA.ESP32_SERVICE_ID,
         characteristicId,
         output,
-        BleOutputProperty.withoutResponse,
       );
 
       if (showwhathappened) {
@@ -113,13 +112,48 @@ class SingleBle {
     }
   }
 
+  Future<void> listenToNotifications() async {
+    if (connectedDeviceId == null) {
+      debugPrint("No device connected to listen to.");
+      return;
+    }
+
+    final device = discoveredDevices.firstWhere(
+      (d) => d.deviceId == connectedDeviceId,
+      orElse: () {
+        debugPrint("Connected device not found in discoveredDevices.");
+        return BleDevice(deviceId: connectedDeviceId!, name: "Unknown");
+      },
+    );
+
+    try {
+      final characteristic = await device.getCharacteristic(
+        FIGMA.ESP32_SERVICE_Micro,
+        service: FIGMA.ESP32_SERVICE_ID,
+      );
+
+      debugPrint("characteristic micro${characteristic.uuid}");
+
+      await characteristic.notifications.subscribe();
+
+      characteristic.onValueReceived.listen((value) async {
+        String str = String.fromCharCodes(value);
+        _provider.Set_Screen_Values(str); // <— use directly
+        _provider.Show_Snackbar("🔔 Notification received", 500);
+      });
+      _provider.Show_Snackbar("✅ Subscribed to notifications.", 500);
+    } catch (e) {
+      _provider.Show_Snackbar("❌ Failed to set up notifications: $e", 200);
+    }
+  }
+
   Future<String?> startScanAndGetDevice() async {
     try {
       await startScan(); // Start scanning (triggers the native UI)
 
       // Wait for the user to select a device
       await Future.delayed(
-          const Duration(seconds: 2)); // Give some time for selection
+          const Duration(seconds: 1)); // Give some time for selection
 
       if (discoveredDevices.isNotEmpty) {
         return discoveredDevices
@@ -139,7 +173,7 @@ class SingleBle {
       if (connectedDeviceId == null) {
         throw Exception("connectedDeviceId Is Null");
       }
-      Uint8List input1 = await UniversalBle.readValue(connectedDeviceId!,
+      Uint8List input1 = await UniversalBle.read(connectedDeviceId!,
           FIGMA.ESP32_SERVICE_ID, FIGMA.ESP32_SERVICE_Micro);
       return String.fromCharCodes(input1);
     } catch (e) {
@@ -149,37 +183,37 @@ class SingleBle {
   }
 
   // Specific functions for sending values to different characteristics
-  Future<void> sendAval(String value) async {
-    await sendToEsp32(value, FIGMA.ESP32_SERVICE_AVAL);
-  }
+  // Future<void> sendAval(String value) async {
+  //   await sendToEsp32(value, FIGMA.ESP32_SERVICE_AVAL);
+  // }
 
   Future<void> sendMain(String value) async {
     await sendToEsp32(value, FIGMA.ESP32_SERVICE_WHICH);
   }
 
-  Future<void> sendBval(String value) async {
-    await sendToEsp32(value, FIGMA.ESP32_SERVICE_BVAL);
-  }
+  // Future<void> sendBval(String value) async {
+  //   await sendToEsp32(value, FIGMA.ESP32_SERVICE_BVAL);
+  // }
 
-  Future<void> sendCval(String value) async {
-    await sendToEsp32(value, FIGMA.ESP32_SERVICE_CVAL);
-  }
+  // Future<void> sendCval(String value) async {
+  //   await sendToEsp32(value, FIGMA.ESP32_SERVICE_CVAL);
+  // }
 
-  void sendBigString(String input) {
-    input = "$input[|]"; // Append the delimiter
-    List<String> chunks = [];
+  // void sendBigString(String input) {
+  //   input = "$input[|]"; // Append the delimiter
+  //   List<String> chunks = [];
 
-    // Split input into chunks of 20 characters
-    for (int i = 0; i < input.length; i += 20) {
-      chunks.add(
-          input.substring(i, i + 20 > input.length ? input.length : i + 20));
-    }
+  //   // Split input into chunks of 20 characters
+  //   for (int i = 0; i < input.length; i += 20) {
+  //     chunks.add(
+  //         input.substring(i, i + 20 > input.length ? input.length : i + 20));
+  //   }
 
-    // Send chunks to corresponding characteristics
-    if (chunks.isNotEmpty) sendAval(chunks[0]);
-    if (chunks.length > 1) sendBval(chunks[1]);
-    if (chunks.length > 2) sendCval(chunks[2]);
-  }
+  //   // Send chunks to corresponding characteristics
+  //   if (chunks.isNotEmpty) sendAval(chunks[0]);
+  //   if (chunks.length > 1) sendBval(chunks[1]);
+  //   if (chunks.length > 2) sendCval(chunks[2]);
+  // }
 
   String easyconvertunit8(String input) {
     List<int> bytes = utf8.encode(input);
