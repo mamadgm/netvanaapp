@@ -18,20 +18,40 @@ class Timersscr extends StatelessWidget {
     return SafeArea(child: Consumer<ProvData>(
       builder: (context, value, child) {
         return const Padding(
-          padding: EdgeInsets.only(right: 16, left: 16),
+          padding: EdgeInsets.all(16),
           child: SingleChildScrollView(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              Text("تایمر هوشمند",
-                  style: TextStyle(fontSize: 24, fontFamily: FIGMA.abreb)),
-              SizedBox(height: 10),
+              SizedBox(height: 2),
               EasyContainer(
                   elevation: 0,
                   color: Colors.white,
                   padding: 10,
                   margin: 12,
                   borderRadius: 15,
-                  child: CircleTimerWidget())
+                  child: CircleTimerWidget(
+                    index: 0,
+                  )),
+              SizedBox(height: 2),
+              EasyContainer(
+                  elevation: 0,
+                  color: Colors.white,
+                  padding: 10,
+                  margin: 12,
+                  borderRadius: 15,
+                  child: CircleTimerWidget(
+                    index: 1,
+                  )),
+              SizedBox(height: 2),
+              EasyContainer(
+                  elevation: 0,
+                  color: Colors.white,
+                  padding: 10,
+                  margin: 12,
+                  borderRadius: 15,
+                  child: CircleTimerWidget(
+                    index: 2,
+                  )),
             ]),
           ),
         );

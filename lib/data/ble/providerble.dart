@@ -1,21 +1,36 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_ble/universal_ble.dart';
+
+enum ThemeFilter { liked, single, multiple, none }
 
 class ProvData extends ChangeNotifier {
   //App
   String Device_UUID = "null";
   String Device_NAME = "null";
   bool Isdevicefound = false;
-  int Current_screen = 1;
-  Duration SmartTimerTime = Duration(seconds: 300);
-  Duration Remaining = Duration(seconds: 300);
-  String SmartTimerColor = "0xFFFFFFFF";
-  List<int> Favorites = [];
+  int Current_screen = 0;
 
+  List<Duration> SmartTimerTime = [
+    const Duration(minutes: 5),
+    const Duration(minutes: 30),
+    const Duration(minutes: 60)
+  ];
+  List<Duration> Remaining = [
+    const Duration(minutes: 5),
+    const Duration(minutes: 30),
+    const Duration(minutes: 60)
+  ];
+  List<String> SmartTimerColor = ["0xFFFF00FF", "0xFFFFFF00", "0xFFFFFF00"];
+  List<String> SmartTimerTitle = ["تایمر سریع", "پومودورو", "تایمر طولانی"];
+  List<bool> SmarttimerActive = [false, false, false];
+
+  List<int> Favorites = [];
   //netvana
   bool nextmoveisconnect = true;
   int current_sync_pos = 0;
@@ -54,15 +69,84 @@ class ProvData extends ChangeNotifier {
   String TEST_DATA = "EMPTY";
   //Smarttimer
 
-  void set_SmartTimerMinSec(int hour, int minute, {bool update = false}) {
-    SmartTimerTime = Duration(hours: hour, minutes: minute);
-    Remaining = Duration(hours: hour, minutes: minute);
+  ThemeFilter selectedFilter = ThemeFilter.none;
+
+  void toggleFilter(ThemeFilter filter) {
+    selectedFilter = (selectedFilter == filter) ? ThemeFilter.none : filter;
     notifyListeners();
   }
 
-  void set_SmartTimerColor(String color) {
-    SmartTimerColor = color;
+  void loadFavoritesFromHive() {
+    final box = Hive.box(FIGMA.HIVE);
+    final stored = box.get('Favorites', defaultValue: []);
+    Favorites = List<int>.from(stored);
+  }
+
+  void setSmartTimerMinSec(int index, int hour, int minute, String color,
+      {bool update = false}) {
+    final duration = Duration(hours: hour, minutes: minute);
+
+    if (index >= SmartTimerTime.length) return;
+
+    SmartTimerTime[index] = duration;
+    Remaining[index] = duration;
+    SmartTimerColor[index] = color;
+
+    if (update) {
+      final box = Hive.box(FIGMA.HIVE);
+
+      // Combine all values into a list of maps
+      final timers = List.generate(
+          SmartTimerTime.length,
+          (i) => {
+                "time": SmartTimerTime[i].inSeconds,
+                "remaining": Remaining[i].inSeconds,
+                "color": SmartTimerColor[i],
+              });
+
+      box.put("timers", timers);
+
+      notifyListeners();
+    }
+  }
+
+  disable_Smarttimer(int index, {bool value = false}) {
+    SmarttimerActive[index] = value;
     notifyListeners();
+  }
+
+  are_all_false() {
+    for (var i = 0; i < SmartTimerTime.length; i++) {
+      if (SmarttimerActive[i]) {
+        // debugPrint("FALSE $i");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  Future<void> loadTimersFromHive() async {
+    final box = Hive.box(FIGMA.HIVE);
+    final stored = box.get("timers");
+
+    SmartTimerTime = [];
+    Remaining = [];
+    SmartTimerColor = [];
+
+    if (stored != null && stored is List) {
+      for (var item in stored) {
+        if (item is Map) {
+          SmartTimerTime.add(Duration(seconds: item["time"] ?? 300));
+          Remaining.add(Duration(seconds: item["remaining"] ?? 300));
+          SmartTimerColor.add(item["color"] ?? "0xFFFFFFFF");
+        }
+      }
+    } else {
+      // fallback default values
+      SmartTimerTime = List.generate(3, (_) => const Duration(seconds: 300));
+      Remaining = List.from(SmartTimerTime);
+      SmartTimerColor = List.generate(3, (_) => "0xFFFFFFFF");
+    }
   }
 
   void set_Defalult_colors(int p, int which) {
@@ -260,5 +344,27 @@ class ProvData extends ChangeNotifier {
 
   void hand_update() {
     notifyListeners();
+  }
+
+  Color StringToColor(String input) {
+    // debugPrint("input : $input");
+    try {
+      // Strip "0x" if present
+      input = input.trim().replaceAll("0x", "");
+
+      // Parse hex string as int
+      int temp = int.parse(input, radix: 16);
+
+      // Ensure color is ARGB by forcing full opacity if not specified
+      if (input.length <= 6) {
+        temp |= 0xFF000000;
+      }
+
+      // debugPrint("temp : $temp");
+      return Color(temp);
+    } catch (e) {
+      debugPrint("Invalid color string: $input");
+      return Colors.red;
+    }
   }
 }

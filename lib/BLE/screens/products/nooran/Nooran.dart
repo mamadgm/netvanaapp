@@ -41,6 +41,9 @@ class _NooranState extends State<Nooran> {
     debugPrint("NOORAN");
     super.initState();
     final value = Provider.of<ProvData>(context, listen: false);
+    value.loadFavoritesFromHive();
+    value.loadTimersFromHive();
+
     SingleBle().init(value);
     Sliderwidgets = [
       Speed_slider(

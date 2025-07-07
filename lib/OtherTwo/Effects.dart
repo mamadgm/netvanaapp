@@ -14,6 +14,7 @@ class Effectsscr extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ProvData>(
       builder: (context, value, child) {
+        final themes = getFilteredAndSortedThemes(value, Allthemes);
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(right: 8, left: 8),
@@ -48,8 +49,9 @@ class Effectsscr extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(
-                    height: 36,
+                    height: 4,
                   ),
+                  buildFilters(context),
                   GridView.count(
                     crossAxisCount: 2,
                     shrinkWrap: true,
@@ -57,7 +59,7 @@ class Effectsscr extends StatelessWidget {
                     mainAxisSpacing: 16,
                     crossAxisSpacing: 8,
                     childAspectRatio: 3 / 4, // Adjust based on your card size
-                    children: Allthemes.map((theme) {
+                    children: themes.map((theme) {
                       return ThemeCard(
                         id: theme.value,
                         picUrl: theme.path,

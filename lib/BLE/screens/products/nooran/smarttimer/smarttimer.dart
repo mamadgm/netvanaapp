@@ -1,17 +1,19 @@
 import 'dart:async';
+
 import 'dart:convert';
 import 'dart:math';
 import 'package:easy_container/easy_container.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/BLE/screens/products/nooran/sliders/sliders.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/data/ble/providerble.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 
 class CircleTimerWidget extends StatefulWidget {
-  const CircleTimerWidget({super.key});
+  final int index;
+  const CircleTimerWidget({super.key, required this.index});
 
   @override
   State<CircleTimerWidget> createState() => _CircleTimerWidgetState();
@@ -25,14 +27,23 @@ class _CircleTimerWidgetState extends State<CircleTimerWidget> {
   void initState() {
     final value = Provider.of<ProvData>(context, listen: false);
     super.initState();
-    value.Remaining = value.SmartTimerTime;
+    value.Remaining[widget.index] = value.SmartTimerTime[widget.index];
   }
 
   bool _wasPaused = false;
 
+  int stripAlpha(String hexColor) {
+    try {
+      int fullColor = int.parse(hexColor.replaceFirst("0x", ""), radix: 16);
+      return fullColor & 0x00FFFFFF; // Mask out alpha
+    } catch (e) {
+      return 0; // fallback
+    }
+  }
+
   void _startPause() {
     final value = Provider.of<ProvData>(context, listen: false);
-
+    value.disable_Smarttimer(widget.index, value: true);
     if (_isRunning) {
       // Pause
       _timer?.cancel();
@@ -47,8 +58,8 @@ class _CircleTimerWidgetState extends State<CircleTimerWidget> {
       // Resume or Start
       _timer = Timer.periodic(const Duration(seconds: 1), (_) {
         setState(() {
-          if (value.Remaining > Duration.zero) {
-            value.Remaining -= const Duration(seconds: 1);
+          if (value.Remaining[widget.index] > Duration.zero) {
+            value.Remaining[widget.index] -= const Duration(seconds: 1);
           } else {
             _timer?.cancel();
             _isRunning = false;
@@ -66,8 +77,8 @@ class _CircleTimerWidgetState extends State<CircleTimerWidget> {
         } else {
           String jsonPayload = jsonEncode({
             "Cs": 4,
-            "Ss": value.SmartTimerTime.inSeconds,
-            "Sc": value.SmartTimerColor
+            "Ss": value.SmartTimerTime[widget.index].inSeconds,
+            "Sc": stripAlpha(value.SmartTimerColor[widget.index])
           });
           SingleBle().sendMain(jsonPayload);
           debugPrint("Started");
@@ -80,12 +91,18 @@ class _CircleTimerWidgetState extends State<CircleTimerWidget> {
 
   void _reset() {
     final value = Provider.of<ProvData>(context, listen: false);
+    value.disable_Smarttimer(widget.index);
     _timer?.cancel();
     setState(() {
-      value.Remaining = value.SmartTimerTime;
+      // Create new instances of Duration to avoid reference issues
+      value.Remaining =
+          value.SmartTimerTime.map((d) => Duration(seconds: d.inSeconds))
+              .toList();
+
       _isRunning = false;
-      _wasPaused = false; // Clear the resume state
+      _wasPaused = false;
     });
+
     debugPrint("Reset");
     String jsonPayload = jsonEncode({"Cs": 1});
     SingleBle().sendMain(jsonPayload);
@@ -95,12 +112,13 @@ class _CircleTimerWidgetState extends State<CircleTimerWidget> {
     final value = Provider.of<ProvData>(context, listen: false);
     final newDuration = await showDialog<Duration>(
       context: context,
-      builder: (_) => _SettingsDialog(current: value.SmartTimerTime),
+      builder: (_) => _SettingsDialog(
+          index: widget.index, current: value.SmartTimerTime[widget.index]),
     );
     if (newDuration != null) {
       setState(() {
-        value.SmartTimerTime = newDuration;
-        value.Remaining = newDuration;
+        value.SmartTimerTime[widget.index] = newDuration;
+        value.Remaining[widget.index] = newDuration;
         _isRunning = false;
       });
       debugPrint("Settings Updated");
@@ -115,9 +133,11 @@ class _CircleTimerWidgetState extends State<CircleTimerWidget> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ProvData>(builder: (context, value, child) {
-      double progress =
-          (value.Remaining.inSeconds / value.SmartTimerTime.inSeconds)
-              .clamp(0.0, 1.0);
+      double progress = (value.Remaining[widget.index].inSeconds /
+              value.SmartTimerTime[widget.index].inSeconds)
+          .clamp(0.0, 1.0);
+      Color color = value.StringToColor(value.SmartTimerColor[widget.index])
+          .withAlpha(100);
       return Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
@@ -129,13 +149,13 @@ class _CircleTimerWidgetState extends State<CircleTimerWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text("زمان تمرکز",
-                      style: TextStyle(
+                  Text(value.SmartTimerTitle[widget.index],
+                      style: const TextStyle(
                           fontSize: 16,
                           fontFamily: FIGMA.estre,
                           color: Colors.black38)),
                   const SizedBox(height: 10),
-                  Text(_formatTime(value.Remaining),
+                  Text(_formatTime(value.Remaining[widget.index]),
                       style: const TextStyle(
                           fontSize: 48, fontFamily: FIGMA.abreb)),
                   const SizedBox(height: 20),
@@ -154,7 +174,14 @@ class _CircleTimerWidgetState extends State<CircleTimerWidget> {
                           borderColor: Colors.black12,
                           showBorder: true,
                           borderRadius: 15,
-                          onTap: _reset,
+                          onTap: () {
+                            if (value.SmarttimerActive[widget.index]) {
+                              _reset();
+                            } else {
+                              value.Show_Snackbar(
+                                  "این تایمر در حال اجرا نیست", 1000);
+                            }
+                          },
                           child: const Icon(
                             Icons.refresh,
                             size: 36,
@@ -170,7 +197,13 @@ class _CircleTimerWidgetState extends State<CircleTimerWidget> {
                           borderColor: Colors.black12,
                           showBorder: true,
                           borderRadius: 15,
-                          onTap: _openSettings,
+                          onTap: () {
+                            if (value.are_all_false()) {
+                              _openSettings();
+                            } else {
+                              value.Show_Snackbar("تایمر در حال اجراست", 1000);
+                            }
+                          },
                           child: const Icon(
                             Icons.settings,
                             size: 36,
@@ -183,9 +216,9 @@ class _CircleTimerWidgetState extends State<CircleTimerWidget> {
                 padding: 8,
                 margin: 0,
                 elevation: 0,
-                color: Colors.blue[50],
-                width: 210,
-                height: 210,
+                color: color,
+                width: MediaQuery.of(context).size.width * 0.3,
+                height: MediaQuery.of(context).size.width * 0.3,
                 borderRadius: 15,
                 child: Stack(
                   alignment: Alignment.center,
@@ -202,7 +235,15 @@ class _CircleTimerWidgetState extends State<CircleTimerWidget> {
                       margin: 0,
                       color: Colors.white,
                       borderRadius: 100,
-                      onTap: _startPause,
+                      onTap: () {
+                        if (value.are_all_false() ||
+                            value.SmarttimerActive[widget.index]) {
+                          _startPause();
+                        } else {
+                          value.Show_Snackbar(
+                              "تایمر دیگری در حال اجراست", 1000);
+                        }
+                      },
                       child: Center(
                           child: Icon(
                         _isRunning ? Icons.pause : Icons.play_arrow,
@@ -271,8 +312,8 @@ class CirclePainter extends CustomPainter {
 
 class _SettingsDialog extends StatefulWidget {
   final Duration current;
-
-  const _SettingsDialog({required this.current});
+  final index;
+  const _SettingsDialog({required this.current, required this.index});
 
   @override
   State<_SettingsDialog> createState() => _SettingsDialogState();
@@ -288,8 +329,8 @@ class _SettingsDialogState extends State<_SettingsDialog> {
     final value = Provider.of<ProvData>(context, listen: false);
 
     super.initState();
-    hours = value.SmartTimerTime.inHours;
-    minutes = value.SmartTimerTime.inMinutes % 60;
+    hours = value.SmartTimerTime[widget.index].inHours;
+    minutes = value.SmartTimerTime[widget.index].inMinutes % 60;
 
     if (hours == 0 && minutes < 2) minutes = 2;
   }
@@ -303,12 +344,25 @@ class _SettingsDialogState extends State<_SettingsDialog> {
   @override
   Widget build(BuildContext context) {
     final value = Provider.of<ProvData>(context, listen: false);
+
+    TextStyle disabled = const TextStyle(
+      color: Colors.grey,
+      fontSize: 24,
+      fontFamily: FIGMA.abrlb,
+    );
+
+    TextStyle enabled = const TextStyle(
+      color: Colors.black,
+      fontSize: 32,
+      fontFamily: FIGMA.abrlb,
+    );
+
     return AlertDialog(
       elevation: 0,
       backgroundColor: Colors.white,
       content: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.80,
-        height: MediaQuery.of(context).size.height * 0.9,
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: MediaQuery.of(context).size.height * 0.7,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -319,14 +373,14 @@ class _SettingsDialogState extends State<_SettingsDialog> {
                   color: Colors.white,
                   showBorder: true,
                   elevation: 0,
-                  padding: 18,
+                  padding: 8,
                   margin: 0,
                   borderRadius: 15,
                   borderColor: Colors.black12,
                   child: const Center(
                       child: Icon(
                     Icons.close_rounded,
-                    size: 48,
+                    size: 32,
                     color: Colors.black38,
                   )),
                   onTap: () {
@@ -335,72 +389,80 @@ class _SettingsDialogState extends State<_SettingsDialog> {
                 ),
                 const Text(
                   "تایمر",
-                  style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 32),
+                  style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 24),
                 ),
                 EasyContainer(
                   color: Colors.white,
                   showBorder: true,
                   elevation: 0,
-                  padding: 18,
+                  padding: 8,
                   margin: 0,
                   borderRadius: 15,
                   borderColor: Colors.black12,
                   child: const Center(
                       child: Icon(
                     Icons.check_rounded,
-                    size: 48,
+                    size: 32,
                     color: FIGMA.Prn,
                   )),
                   onTap: () {
-                    value.set_SmartTimerMinSec(hours, minutes, update: true);
+                    value.setSmartTimerMinSec(
+                        widget.index, hours, minutes, selectedColor,
+                        update: true);
                     Navigator.of(context).pop();
                   },
                 ),
               ],
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height *
-                  0.60, // enough for smooth scroll
+              height: MediaQuery.of(context).size.height * 0.50,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Hour picker
                   Expanded(
-                    child: CupertinoPicker(
-                      itemExtent:
-                          100, // increase this to match total height (text + spacing)
-                      scrollController:
-                          FixedExtentScrollController(initialItem: hours),
-
-                      onSelectedItemChanged: (value) {
-                        setState(() => hours = value);
-                      },
-                      children: List.generate(
-                          3,
-                          (i) => Center(
-                                  child: Text(
-                                '$i',
-                                style: myStyle,
-                              ))),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context)
+                              .copyWith(scrollbars: false),
+                          child: NumberPicker(
+                              value: hours,
+                              minValue: 0,
+                              maxValue: 2,
+                              itemHeight: 60,
+                              axis: Axis.vertical,
+                              onChanged: (value) =>
+                                  setState(() => hours = value),
+                              textStyle: disabled,
+                              selectedTextStyle: enabled),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(width: 10),
                   // Minute picker
                   Expanded(
-                    child: CupertinoPicker(
-                      scrollController:
-                          FixedExtentScrollController(initialItem: minutes),
-                      itemExtent: 100,
-                      onSelectedItemChanged: (value) {
-                        setState(() => minutes = value);
-                      },
-                      children: List.generate(
-                          60,
-                          (i) => Center(
-                                  child: Text(
-                                '$i',
-                                style: myStyle,
-                              ))),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context)
+                              .copyWith(scrollbars: false),
+                          child: NumberPicker(
+                              itemCount: 5,
+                              value: minutes,
+                              minValue: 0,
+                              maxValue: 59,
+                              itemHeight: 60,
+                              axis: Axis.vertical,
+                              onChanged: (value) =>
+                                  setState(() => minutes = value),
+                              textStyle: disabled,
+                              selectedTextStyle: enabled),
+                        )
+                      ],
                     ),
                   ),
                 ],
@@ -410,8 +472,21 @@ class _SettingsDialogState extends State<_SettingsDialog> {
               height: GetGoodW(context, 329, 70).height,
               child: Color_Picker_HSV(
                 senddata: (p0) {
-                  selectedColor = p0;
-                  value.set_SmartTimerColor(p0);
+                  setState(() {
+                    try {
+                      int intValue = int.parse(p0);
+                      intValue |= 0xFF000000; // Force full alpha if not present
+                      final hexString = intValue
+                          .toRadixString(16)
+                          .padLeft(8, '0')
+                          .toUpperCase();
+                      selectedColor = '0x$hexString';
+                      debugPrint('Converted Color: $selectedColor');
+                    } catch (e) {
+                      debugPrint('Invalid input: $p0');
+                      selectedColor = '0xFFFFFFFF'; // fallback
+                    }
+                  });
                 },
                 color: selectedColor,
                 netvana: 1,
