@@ -150,29 +150,39 @@ class _LoginState extends State<Login> {
                               onTap: () async {
                                 var box = Hive.box(FIGMA.HIVE);
                                 try {
-                                  var response = await NetClass()
+                                  var loginResponse = await NetClass()
                                       .login(formemail.text, formpass.text)
                                       .timeout(const Duration(seconds: 5));
-                                  if (response != null) {
-                                    String token = response['token'];
-                                    String name = response['name'];
-                                    int loginCounter =
-                                        response['login_counter'];
-                                    value.setIssigned(true, token);
-                                    box.put("token", token);
-                                    box.put("IS_SIGNED", true);
-                                    box.put("email", formemail.text);
-                                    box.put("name", name);
-                                    box.put("login_counter", loginCounter);
-                                    value.Set_Userdetails(formemail.text, name,
-                                        loginCounter, true);
+
+                                  if (loginResponse != null) {
+                                    debugPrint(loginResponse.toString());
+
+                                    box.put("access_token",
+                                        loginResponse["access_token"]);
+
+                                    var meResponse = await NetClass()
+                                        .getProducts(
+                                            loginResponse['access_token'])
+                                        .timeout(const Duration(seconds: 5));
+
+                                    if (meResponse != null) {
+                                      value.setProducts(meResponse["devices"]);
+                                      box.put(
+                                          "products", meResponse["devices"]);
+                                      box.put("name", meResponse["first_name"]);
+                                      box.put("last", meResponse["last_name"]);
+                                      box.put("phone", meResponse["phone"]);
+
+                                      debugPrint("Got Devices");
+                                    } else {
+                                      debugPrint("getProducts returned null");
+                                    }
                                   } else {
-                                    debugPrint("response is null");
-                                    box.put("IS_SIGNED", false);
+                                    debugPrint(
+                                        "Login response is null or missing token");
                                   }
                                 } catch (e) {
-                                  box.put("IS_SIGNED", false);
-                                  debugPrint('Login failed: $e');
+                                  debugPrint('Error: $e');
                                 }
                               },
                             ),

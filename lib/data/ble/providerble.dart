@@ -14,7 +14,7 @@ class ProvData extends ChangeNotifier {
   String Device_UUID = "null";
   String Device_NAME = "null";
   bool Isdevicefound = false;
-  int Current_screen = 0;
+  int Current_screen = 2;
 
   List<Duration> SmartTimerTime = [
     const Duration(minutes: 5),
@@ -59,11 +59,9 @@ class ProvData extends ChangeNotifier {
   int ESPVersion = 10;
   List<int> Defalult_colors = [0xFF0000, 1900288, 0x0000FF, 0xFFFFFF, 0x00A594];
   //Loggin
-  int login_Counter = 200;
-  bool Issigned = false;
-  String username = 'mamad';
-  String email = "ss";
-  String Token = "";
+  String name_last = 'mamad';
+  String phone_number = "ss";
+  String Token = "empty";
   List Products = [];
   //Test
   String TEST_DATA = "EMPTY";
@@ -161,7 +159,7 @@ class ProvData extends ChangeNotifier {
     for (var i = 0; i < Products.length; i++) {
       debugPrint("product $i = ${Products[i]}");
     }
-    notifyListeners();
+    // notifyListeners();
   }
 
   void setIsDeviceOn(bool value) {
@@ -169,23 +167,9 @@ class ProvData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setIssigned(bool p, String token) {
-    Issigned = p;
-    if (p) {
-      Token = token;
-    }
-    // notifyListeners();
-  }
-
-  void Set_Userdetails(
-      String Email, String Name, int Login_counter, bool update) {
-    login_Counter = Login_counter;
-    username = Name;
-    email = Email;
-    debugPrint('user logged In $email $username $login_Counter $Token');
-    if (update) {
-      notifyListeners();
-    }
+  void Set_Userdetails(String phone, String Name, String Last) {
+    name_last = "$Name $Last";
+    phone_number = phone;
   }
 
   void setIsNooranNet(bool value) {

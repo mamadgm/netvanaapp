@@ -147,19 +147,20 @@ class SingleBle {
     }
   }
 
-  Future<String?> startScanAndGetDevice() async {
+  Future<Map<String, String>?> startScanAndGetDevice() async {
     try {
-      await startScan(); // Start scanning (triggers the native UI)
+      await startScan(); // Start scanning
 
-      // Wait for the user to select a device
-      await Future.delayed(
-          const Duration(seconds: 1)); // Give some time for selection
+      await Future.delayed(const Duration(seconds: 1)); // Wait
 
       if (discoveredDevices.isNotEmpty) {
-        return discoveredDevices
-            .last.deviceId; // Return the last selected device
+        var device = discoveredDevices.last;
+        return {
+          'deviceId': device.deviceId,
+          'name': device.name ?? 'Unknown',
+        };
       } else {
-        return null; // No device selected
+        return null;
       }
     } catch (e) {
       debugPrint("Scan Error: $e");

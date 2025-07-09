@@ -181,13 +181,26 @@ class _NooranState extends State<Nooran> {
                                 try {
                                   debugPrint("Starting BLE Scan...");
 
-                                  String? selectedDeviceId =
+                                  var result =
                                       await SingleBle().startScanAndGetDevice();
+                                  String? selectedDeviceId;
+                                  String? selectedDeviceName;
+                                  if (result != null) {
+                                    selectedDeviceId = result['deviceId'];
+                                    selectedDeviceName = result['name'];
+                                  }
 
                                   if (selectedDeviceId == null) {
                                     debugPrint("No device selected.");
                                     return;
+                                  } else if (!value.Products.any((product) =>
+                                      "${product["category_name"]}-${product["part_number"]}" ==
+                                      selectedDeviceName)) {
+                                    value.Show_Snackbar(
+                                        "این دستگاه مال شما نیست", 1000);
+                                    return;
                                   }
+
                                   debugPrint(
                                       "Attempting to connect to $selectedDeviceId...");
                                   bool connected = await SingleBle()
