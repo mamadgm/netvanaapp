@@ -21,8 +21,8 @@ class FIGMA {
   static const estsb = 'estsb';
 
   static const urlnetwana = "http://192.168.1.139:8000";
-  static const HIVE = "Neol-Tetad";
-  // static const HIVE = "Neol-Tetadme";
+  // static const HIVE = "Neol-Tetad";
+  static const HIVE = "Neol-Tetadme";
   static const int FLUTTER_ESSENTIALS = 1;
   // static const int FLUTTER_SPELCO = 2;
   // static const int FLUTTER_SMARTTIMER = 3;
