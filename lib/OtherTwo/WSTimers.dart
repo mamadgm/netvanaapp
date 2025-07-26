@@ -32,26 +32,6 @@ class Timersscr extends StatelessWidget {
                   child: CircleTimerWidget(
                     index: 0,
                   )),
-              SizedBox(height: 2),
-              EasyContainer(
-                  elevation: 0,
-                  color: Colors.white,
-                  padding: 10,
-                  margin: 12,
-                  borderRadius: 15,
-                  child: CircleTimerWidget(
-                    index: 1,
-                  )),
-              SizedBox(height: 2),
-              EasyContainer(
-                  elevation: 0,
-                  color: Colors.white,
-                  padding: 10,
-                  margin: 12,
-                  borderRadius: 15,
-                  child: CircleTimerWidget(
-                    index: 2,
-                  )),
             ]),
           ),
         );

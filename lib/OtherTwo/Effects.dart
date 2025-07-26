@@ -65,6 +65,7 @@ class Effectsscr extends StatelessWidget {
                         picUrl: theme.path,
                         bigText: theme.name,
                         smallText: theme.property,
+                        scale: theme.speedScale,
                       );
                     }).toList(),
                   )
@@ -93,6 +94,7 @@ List<Widget> buildRows(List<EspTheme> themes) {
                 picUrl: themes[i].path,
                 bigText: themes[i].name,
                 smallText: themes[i].property,
+                scale: themes[i].speedScale,
               ),
             ),
             const SizedBox(width: 32),
@@ -103,6 +105,7 @@ List<Widget> buildRows(List<EspTheme> themes) {
                   picUrl: themes[i + 1].path,
                   bigText: themes[i + 1].name,
                   smallText: themes[i + 1].property,
+                  scale: themes[i].speedScale,
                 ),
               )
             else

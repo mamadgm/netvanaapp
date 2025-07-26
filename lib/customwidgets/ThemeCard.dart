@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -14,14 +16,15 @@ class ThemeCard extends StatelessWidget {
   final String picUrl;
   final String bigText;
   final String smallText;
-
-  const ThemeCard({
-    Key? key,
-    required this.id,
-    required this.picUrl,
-    required this.bigText,
-    required this.smallText,
-  }) : super(key: key);
+  final int scale;
+  const ThemeCard(
+      {Key? key,
+      required this.id,
+      required this.picUrl,
+      required this.bigText,
+      required this.smallText,
+      required this.scale})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,11 @@ class ThemeCard extends StatelessWidget {
 
         return EasyContainer(
           onTap: () {
-            String jsonPayload = jsonEncode({"Lm": id.toString()});
+            String jsonPayload = jsonEncode({
+              "Mode": [
+                {"s": 0, "e": 15, "m": id, "sc": scale},
+              ]
+            });
             SingleBle().sendMain(jsonPayload);
           },
           padding: 8,
@@ -129,6 +136,7 @@ Widget buildFilters(BuildContext context) {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         FilterChip(
+          backgroundColor: FIGMA.Back,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -144,6 +152,7 @@ Widget buildFilters(BuildContext context) {
         ),
         const SizedBox(width: 8),
         FilterChip(
+          backgroundColor: FIGMA.Back,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -159,6 +168,7 @@ Widget buildFilters(BuildContext context) {
         ),
         const SizedBox(width: 8),
         FilterChip(
+          backgroundColor: FIGMA.Back,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),

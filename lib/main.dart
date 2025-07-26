@@ -94,7 +94,17 @@ class _MyappState extends State<Myapp> {
                     child: TheAppNav(),
                   ),
                 )
-              : const Login();
+              : Scaffold(
+                  backgroundColor: FIGMA.Back,
+                  body: IndexedStack(
+                    index: value.Current_screen,
+                    children: mybody,
+                  ),
+                  bottomNavigationBar: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: TheAppNav(),
+                  ),
+                );
         },
       ),
     );

@@ -32,24 +32,20 @@ class _Color_Picker_HSVState extends State<Color_Picker_HSV> {
     int colorInt = int.parse(widget.color, radix: 16); // convert to int
     Color maincolor = Color(colorInt).withOpacity(1.0); //
 
-    return EasyContainer(
-      color: FIGMA.Gray,
-      borderWidth: 0,
-      elevation: 0,
-      customMargin:
-          const EdgeInsets.only(right: 16, left: 16, top: 6, bottom: 6),
-      padding: 6,
-      borderRadius: 17,
-      child: EasyContainer(
-        //color: Color(0xFFF9F9F9),
-        color: FIGMA.Wrn,
+    return LayoutBuilder(builder: (context, constsize) {
+      return EasyContainer(
+        color: FIGMA.Gray,
+        borderWidth: 0,
+        elevation: 0,
+        padding: 8,
         margin: 0,
-        padding: 0,
-        borderRadius: 17,
+        borderRadius: 20,
         child: Container(
-          height: 600,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
+          height: constsize.maxHeight,
+          width: constsize.maxWidth,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: const LinearGradient(
               end: Alignment.centerRight,
               begin: Alignment.centerLeft,
               colors: [
@@ -64,13 +60,8 @@ class _Color_Picker_HSVState extends State<Color_Picker_HSV> {
             ),
           ),
           child: HuePicker(
-            thumbShape: const HueSliderThumbShape(
-              radius: 20,
-              color: Colors.white,
-              filled: false,
-              showBorder: false,
-              strokeWidth: 4,
-            ),
+            thumbShape: HueSliderThumbShape(
+                radius: 28, color: maincolor, borderColor: maincolor),
             trackHeight: 10,
             initialColor: HSVColor.fromColor(maincolor),
             onChanged: (color) {
@@ -94,8 +85,88 @@ class _Color_Picker_HSVState extends State<Color_Picker_HSV> {
             },
           ),
         ),
-      ),
+      );
+    });
+  }
+}
+
+//////////////////////////////
+class HueSliderThumbShape extends RoundSliderThumbShape {
+  final double radius;
+  final bool filled;
+  final Color color;
+  final double strokeWidth;
+  final bool showBorder;
+  final Color borderColor;
+  final double borderWidth;
+
+  const HueSliderThumbShape({
+    this.radius = 10,
+    this.filled = false,
+    this.color = Colors.white,
+    this.strokeWidth = 3,
+    this.showBorder = false,
+    this.borderColor = Colors.black,
+    this.borderWidth = 1,
+  }) : super(enabledThumbRadius: radius);
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    required bool isDiscrete,
+    required TextPainter labelPainter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required TextDirection textDirection,
+    required double value,
+    required double textScaleFactor,
+    required Size sizeWithOverflow,
+  }) {
+    assert(sliderTheme.disabledThumbColor != null);
+    assert(sliderTheme.thumbColor != null);
+
+    final Canvas canvas = context.canvas;
+    final Tween<double> radiusTween = Tween<double>(
+      begin: disabledThumbRadius ?? enabledThumbRadius,
+      end: enabledThumbRadius,
     );
+    final double currentRadius = radiusTween.evaluate(enableAnimation);
+
+    // 🌟 Glow Effect
+    final glowPaint = Paint()
+      ..color = color.withOpacity(0.3)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+    canvas.drawCircle(center, currentRadius + 8, glowPaint);
+
+    // 🎨 Main thumb circle
+    final circlePaint = Paint()
+      ..color = color
+      ..style = filled ? PaintingStyle.fill : PaintingStyle.stroke;
+    if (!filled) circlePaint.strokeWidth = strokeWidth;
+
+    canvas.drawCircle(
+      center,
+      showBorder ? currentRadius - borderWidth : currentRadius,
+      circlePaint,
+    );
+
+    // 🟢 Optional border
+    if (showBorder) {
+      double borderRadius = currentRadius - borderWidth;
+      if (!filled) borderRadius += strokeWidth / 2;
+
+      canvas.drawCircle(
+        center,
+        borderRadius,
+        Paint()
+          ..color = borderColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = borderWidth,
+      );
+    }
   }
 }
 
@@ -126,31 +197,31 @@ class Speed_sliderState extends State<Speed_slider> {
 
   @override
   Widget build(BuildContext context) {
-    double MaxScreenWidth = MediaQuery.of(context).size.width;
-    return Consumer<ProvData>(builder: (context, value, child) {
-      return EasyContainer(
-        color: FIGMA.Gray,
-        borderWidth: 0,
-        elevation: 0,
-        customMargin:
-            const EdgeInsets.only(right: 16, left: 16, top: 6, bottom: 6),
-        padding: 6,
-        borderRadius: 17,
-        child: FillingSlider(
-          initialValue:
-              mapIntTodouble(value.maincycle_speed, 2500, 100, 1.0, 0.0),
-          width: MaxScreenWidth * 0.9,
-          height: 80,
-          direction: FillingSliderDirection.horizontal,
-          color: FIGMA.Orn,
-          fillColor: FIGMA.Gray,
-          onFinish: (value) async {
-            int finalspeed = mapdoubleToInt(value, 1.0, 0.0, 2500, 100);
-            widget.senddata(finalspeed.toString());
-            debugPrint(finalspeed.toString());
-          },
-        ),
-      );
+    return LayoutBuilder(builder: (context, constsize) {
+      return Consumer<ProvData>(builder: (context, value, child) {
+        return EasyContainer(
+          color: FIGMA.Gray,
+          borderWidth: 0,
+          elevation: 0,
+          margin: 0,
+          padding: 8,
+          borderRadius: 17,
+          child: FillingSlider(
+            initialValue:
+                mapIntTodouble(value.maincycle_speed, 2500, 100, 1.0, 0.0),
+            width: constsize.maxWidth,
+            height: constsize.maxHeight,
+            direction: FillingSliderDirection.horizontal,
+            color: FIGMA.Orn,
+            fillColor: FIGMA.Gray,
+            onFinish: (value) async {
+              int finalspeed = mapdoubleToInt(value, 1.0, 0.0, 2500, 100);
+              widget.senddata(finalspeed.toString());
+              debugPrint(finalspeed.toString());
+            },
+          ),
+        );
+      });
     });
   }
 }
@@ -177,32 +248,32 @@ class _Bright_sliderState extends State<Bright_slider> {
   double brightd = 0.5;
   @override
   Widget build(BuildContext context) {
-    double MaxScreenWidth = MediaQuery.of(context).size.width;
-    return Consumer<ProvData>(builder: (context, value, child) {
-      brightd = mapIntTodouble(value.Brightness, 1, 255, 1.0, 0.0);
-      return EasyContainer(
-        color: FIGMA.Gray,
-        borderWidth: 0,
-        elevation: 0,
-        customMargin:
-            const EdgeInsets.only(right: 16, left: 16, top: 6, bottom: 6),
-        padding: 6,
-        borderRadius: 17,
-        child: FillingSlider(
-          initialValue: brightd,
-          width: MaxScreenWidth * 0.9,
-          height: MaxScreenWidth,
-          direction: FillingSliderDirection.horizontal,
-          color: FIGMA.Orn,
-          fillColor: FIGMA.Gray,
-          onChange: (val1, val2) {},
-          onFinish: (value) async {
-            int finallight = mapdoubleToInt(value, 1.0, 0.0, 1, 255);
-            debugPrint(finallight.toString());
-            widget.senddata(finallight.toString());
-          },
-        ),
-      );
+    return LayoutBuilder(builder: (context, constsize) {
+      return Consumer<ProvData>(builder: (context, value, child) {
+        brightd = mapIntTodouble(value.Brightness, 1, 255, 1.0, 0.0);
+        return EasyContainer(
+          color: FIGMA.Gray,
+          borderWidth: 0,
+          elevation: 0,
+          margin: 0,
+          padding: 8,
+          borderRadius: 17,
+          child: FillingSlider(
+            initialValue: brightd,
+            width: constsize.maxWidth,
+            height: constsize.maxHeight,
+            direction: FillingSliderDirection.horizontal,
+            color: FIGMA.Orn,
+            fillColor: FIGMA.Gray,
+            onChange: (val1, val2) {},
+            onFinish: (value) async {
+              int finallight = mapdoubleToInt(value, 1.0, 0.0, 1, 255);
+              debugPrint(finallight.toString());
+              widget.senddata(finallight.toString());
+            },
+          ),
+        );
+      });
     });
   }
 }

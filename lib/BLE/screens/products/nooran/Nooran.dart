@@ -99,145 +99,137 @@ class _NooranState extends State<Nooran> {
                 ),
                 Directionality(
                   textDirection: TextDirection.rtl,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      EasyContainer(
-                        color: FIGMA.Back,
-                        borderWidth: 0,
-                        elevation: 0,
-                        customMargin: const EdgeInsets.only(right: 16),
-                        padding: 0,
-                        child: Container(
-                          color: FIGMA.Back,
-                          child: const Text(
-                            "نوران",
+                  child: SizedBox(
+                    width: GetGoodW(context, 329, 80).width,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(right: 8),
+                          child: Text(
+                            "نوروانا",
                             style: TextStyle(
-                                fontFamily: FIGMA.abrlb, fontSize: 24),
+                                fontFamily: FIGMA.abrlb, fontSize: 28),
                           ),
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          EasyContainer(
-                            color: FIGMA.Gray,
-                            borderWidth: 2,
-                            borderRadius: 15,
-                            elevation: 0,
-                            customMargin:
-                                const EdgeInsets.only(left: 4, right: 4),
-                            padding: 6,
-                            child: const Icon(
-                              Icons.person,
-                              color: FIGMA.Prn,
-                              size: 48,
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const NewTab(
-                                    appbartext: "پروفایل",
-                                    childrens: [ProfileScr()],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          EasyContainer(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            EasyContainer(
                               color: FIGMA.Gray,
                               borderWidth: 2,
                               borderRadius: 15,
                               elevation: 0,
-                              customMargin:
-                                  const EdgeInsets.only(right: 4, left: 4),
+                              margin: 0,
                               padding: 6,
-                              child: Icon(
-                                value.isConnected
-                                    ? Icons.bluetooth_connected
-                                    : Icons.bluetooth_disabled,
-                                color: value.isConnected
-                                    ? Colors.greenAccent
-                                    : Colors.red,
+                              child: const Icon(
+                                Icons.person,
+                                color: FIGMA.Prn,
                                 size: 48,
                               ),
-                              onTap: () async {
-                                debugPrint(value.nextmoveisconnect
-                                    ? "Connect"
-                                    : "Disconnect");
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const NewTab(
+                                      appbartext: "پروفایل",
+                                      childrens: [ProfileScr()],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            EasyContainer(
+                                color: FIGMA.Gray,
+                                borderWidth: 2,
+                                borderRadius: 15,
+                                elevation: 0,
+                                customMargin:
+                                    const EdgeInsets.only(right: 4, left: 4),
+                                padding: 6,
+                                child: Icon(
+                                  value.isConnected
+                                      ? Icons.bluetooth_connected
+                                      : Icons.bluetooth_disabled,
+                                  color: value.isConnected
+                                      ? Colors.greenAccent
+                                      : Colors.red,
+                                  size: 48,
+                                ),
+                                onTap: () async {
+                                  debugPrint(value.nextmoveisconnect
+                                      ? "Connect"
+                                      : "Disconnect");
 
-                                if (value.nextmoveisconnect == false) {
-                                  // Device is connected → Disconnect
-                                  await SingleBle().disconnect();
-                                  value.ble_update_connected(false);
-                                  value.change_nextmoveisconnect(true);
-                                  debugPrint("Device Disconnected");
-                                  return;
-                                }
-
-                                // Device is NOT connected → Start Scan
-                                try {
-                                  debugPrint("Starting BLE Scan...");
-
-                                  var result =
-                                      await SingleBle().startScanAndGetDevice();
-                                  String? selectedDeviceId;
-                                  String? selectedDeviceName;
-                                  if (result != null) {
-                                    selectedDeviceId = result['deviceId'];
-                                    selectedDeviceName = result['name'];
-                                  }
-
-                                  if (selectedDeviceId == null) {
-                                    debugPrint("No device selected.");
-                                    return;
-                                  } else if (!value.Products.any((product) =>
-                                      "${product["category_name"]}-${product["part_number"]}" ==
-                                      selectedDeviceName)) {
-                                    value.Show_Snackbar(
-                                        "این دستگاه مال شما نیست", 1000);
-                                    return;
-                                  }
-
-                                  debugPrint(
-                                      "Attempting to connect to $selectedDeviceId...");
-                                  bool connected = await SingleBle()
-                                      .connectToDevice(selectedDeviceId, 200);
-
-                                  if (connected) {
-                                    value.change_nextmoveisconnect(false);
-                                    value.ble_update_connected(true);
-                                    debugPrint(
-                                        "Successfully Connected to $selectedDeviceId");
-
-                                    Future.delayed(
-                                        const Duration(milliseconds: 1200),
-                                        () async {
-                                      switch (value.current_selected_slider) {
-                                        case 0:
-                                          value.change_slider(1);
-                                          break;
-                                        default:
-                                          value.change_slider(0);
-                                      }
-                                    });
-                                  } else {
+                                  if (value.nextmoveisconnect == false) {
+                                    // Device is connected → Disconnect
+                                    await SingleBle().disconnect();
                                     value.ble_update_connected(false);
-                                    debugPrint("Failed to Connect.");
+                                    value.change_nextmoveisconnect(true);
+                                    debugPrint("Device Disconnected");
+                                    return;
                                   }
-                                } catch (e) {
-                                  value.ble_update_connected(false);
-                                  debugPrint('Connection Error: $e');
-                                }
-                              }),
-                          const SizedBox(
-                            width: 24,
-                          )
-                        ],
-                      )
-                    ],
+
+                                  // Device is NOT connected → Start Scan
+                                  try {
+                                    debugPrint("Starting BLE Scan...");
+
+                                    var result = await SingleBle()
+                                        .startScanAndGetDevice();
+                                    String? selectedDeviceId;
+                                    String? selectedDeviceName;
+                                    if (result != null) {
+                                      selectedDeviceId = result['deviceId'];
+                                      selectedDeviceName = result['name'];
+                                    }
+
+                                    if (selectedDeviceId == null) {
+                                      debugPrint("No device selected.");
+                                      return;
+                                    } else if (!value.Products.any((product) =>
+                                        "${product["category_name"]}-${product["part_number"]}" ==
+                                        selectedDeviceName)) {
+                                      value.Show_Snackbar(
+                                          "این دستگاه مال شما نیست", 1000);
+                                      // return;
+                                    }
+
+                                    debugPrint(
+                                        "Attempting to connect to $selectedDeviceId...");
+                                    bool connected = await SingleBle()
+                                        .connectToDevice(selectedDeviceId, 200);
+
+                                    if (connected) {
+                                      value.change_nextmoveisconnect(false);
+                                      value.ble_update_connected(true);
+                                      debugPrint(
+                                          "Successfully Connected to $selectedDeviceId");
+
+                                      Future.delayed(
+                                          const Duration(milliseconds: 1200),
+                                          () async {
+                                        switch (value.current_selected_slider) {
+                                          case 0:
+                                            value.change_slider(1);
+                                            break;
+                                          default:
+                                            value.change_slider(0);
+                                        }
+                                      });
+                                    } else {
+                                      value.ble_update_connected(false);
+                                      debugPrint("Failed to Connect.");
+                                    }
+                                  } catch (e) {
+                                    value.ble_update_connected(false);
+                                    debugPrint('Connection Error: $e');
+                                  }
+                                }),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -250,7 +242,7 @@ class _NooranState extends State<Nooran> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(4.0),
+                              padding: const EdgeInsets.all(4),
                               child: SizedBox(
                                   height: GetGoodW(context, 74, 111).height,
                                   width: GetGoodW(context, 74, 111).width,
@@ -267,7 +259,7 @@ class _NooranState extends State<Nooran> {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(4.0),
+                          padding: const EdgeInsets.all(4),
                           child: SizedBox(
                             height: GetGoodW(context, 156, 73).height,
                             width: GetGoodW(context, 156, 73).width,
@@ -283,33 +275,39 @@ class _NooranState extends State<Nooran> {
                         )
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(0.0),
-                      child: EasyContainer(
-                        color: FIGMA.Gray,
-                        height: GetGoodW(context, 165, 192).height,
-                        width: GetGoodW(context, 165, 192).width,
-                        margin: 4,
-                        padding: 0,
-                        borderRadius: 17,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            "ass/icon.png",
-                            fit: BoxFit.cover,
-                          ),
+                    EasyContainer(
+                      color: FIGMA.Gray,
+                      height: GetGoodW(context, 165, 192).height,
+                      width: GetGoodW(context, 165, 192).width,
+                      margin: 4,
+                      padding: 0,
+                      borderRadius: 17,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          "ass/icon.png",
+                          fit: BoxFit.cover,
                         ),
-                        onTap: () async {},
                       ),
+                      onTap: () async {},
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 30,
+                const SizedBox(height: 20),
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: SizedBox(
+                    width: GetGoodW(context, 329, 80).width,
+                    child: const Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: Text(
+                        "تنظیمات اختصاصی",
+                        style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 18),
+                      ),
+                    ),
+                  ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 SizedBox(
                   height: GetGoodW(context, 329, 80).height,
                   width: GetGoodW(context, 329, 80).width,
@@ -322,54 +320,49 @@ class _NooranState extends State<Nooran> {
                 ),
                 SizedBox(
                   height: GetGoodW(context, 329, 70).height,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 12, right: 12),
-                    child: Sliderwidgets[value.current_selected_slider],
-                  ),
+                  width: GetGoodW(context, 329, 70).width,
+                  child: Sliderwidgets[value.current_selected_slider],
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                EasyContainer(
-                  height: 80,
-                  color: FIGMA.Gray,
-                  borderWidth: 0,
-                  elevation: 0,
-                  customMargin: const EdgeInsets.only(
-                      right: 16, left: 16, top: 6, bottom: 6),
-                  padding: 6,
-                  borderRadius: 17,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: List.generate(
-                          5,
-                          (index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8, left: 8),
-                              child: Circlecolor(
-                                color: value.Defalult_colors[index],
-                                onDataChange: (String f) {
-                                  value.set_Defalult_colors(
-                                      int.parse(f), index);
-                                  sdcard.put("COLOR$index", int.parse(f));
-                                  String jsonPayload = jsonEncode({"Lc": f});
-                                  SingleBle().sendMain(jsonPayload);
+                // EasyContainer(
+                //   height: 80,
+                //   color: FIGMA.Gray,
+                //   borderWidth: 0,
+                //   elevation: 0,
+                //   customMargin: const EdgeInsets.only(
+                //       right: 16, left: 16, top: 6, bottom: 6),
+                //   padding: 6,
+                //   borderRadius: 17,
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Row(
+                //         children: List.generate(
+                //           5,
+                //           (index) {
+                //             return Padding(
+                //               padding: const EdgeInsets.only(right: 8, left: 8),
+                //               child: Circlecolor(
+                //                 color: value.Defalult_colors[index],
+                //                 onDataChange: (String f) {
+                //                   value.set_Defalult_colors(
+                //                       int.parse(f), index);
+                //                   sdcard.put("COLOR$index", int.parse(f));
+                //                   String jsonPayload = jsonEncode({"Lc": f});
+                //                   SingleBle().sendMain(jsonPayload);
 
-                                  debugPrint(f);
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                //                   debugPrint(f);
+                //                 },
+                //               ),
+                //             );
+                //           },
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),

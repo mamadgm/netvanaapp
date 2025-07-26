@@ -139,11 +139,11 @@ class SingleBle {
       characteristic.onValueReceived.listen((value) async {
         String str = String.fromCharCodes(value);
         _provider.Set_Screen_Values(str); // <— use directly
-        _provider.Show_Snackbar("🔔 Notification received", 500);
+        _provider.Show_Snackbar("Notification received", 500);
       });
-      _provider.Show_Snackbar("✅ Subscribed to notifications.", 500);
+      _provider.Show_Snackbar("Subscribed to notifications.", 500);
     } catch (e) {
-      _provider.Show_Snackbar("❌ Failed to set up notifications: $e", 200);
+      _provider.Show_Snackbar("Failed to set up notifications: $e", 200);
     }
   }
 

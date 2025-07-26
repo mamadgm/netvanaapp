@@ -1,6 +1,4 @@
 // ignore_for_file: non_constant_identifier_names
-
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/const/figma.dart';

@@ -1,76 +1,92 @@
-import 'package:netvana/const/figma.dart';
-import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:netvana/const/figma.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:provider/provider.dart';
 
-class Spelco extends StatefulWidget {
-  Function(int) handlechange;
-  Spelco({super.key, required this.handlechange});
+class Spelco extends StatelessWidget {
+  final Function(int) handlechange;
 
-  @override
-  State<Spelco> createState() => _SpelcoState();
-}
+  const Spelco({
+    super.key,
+    required this.handlechange,
+  });
 
-class _SpelcoState extends State<Spelco> {
   @override
   Widget build(BuildContext context) {
-    double iconSize = 28;
-    return Consumer<ProvData>(
-        builder: (context, value, child) => Padding(
-              padding: const EdgeInsets.only(left: 12, right: 12),
-              child: EasyContainer(
-                color: FIGMA.Gray,
-                borderWidth: 0,
-                elevation: 0,
-                margin: 0,
-                padding: 0,
-                borderRadius: 15,
-                child: GNav(
-                  selectedIndex: value.current_selected_slider,
-                  tabActiveBorder: Border.all(color: FIGMA.Gray, width: 3),
-                  tabMargin: const EdgeInsets.only(right: 2, left: 2),
-                  tabBorderRadius: 20,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  color: Colors.grey,
-                  activeColor: FIGMA.Orn,
-                  tabBackgroundColor: FIGMA.Wrn,
-                  backgroundColor: FIGMA.Gray,
-                  tabs: [
-                    GButton(
-                      iconSize: iconSize,
-                      icon: Icons.speed,
-                      text: "سرعت",
-                      textStyle: const TextStyle(
-                          fontFamily: FIGMA.estbo,
-                          fontSize: 16,
-                          color: FIGMA.Grn),
+    final items = [
+      _NavItem(index: 0, icon: Icons.speed, label: "سرعت"),
+      _NavItem(index: 1, icon: Icons.sunny, label: "روشنایی"),
+      _NavItem(index: 2, icon: Icons.color_lens, label: "رنگ"),
+    ];
+
+    return LayoutBuilder(builder: (context, constsize) {
+      return Consumer<ProvData>(
+        builder: (context, value, child) {
+          return Container(
+            decoration: BoxDecoration(
+              color: FIGMA.Gray,
+              border: Border.all(color: FIGMA.Gray, width: 3),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: items.map((item) {
+                final isActive = value.current_selected_slider == item.index;
+                return Expanded(
+                  child: InkWell(
+                    onTap: () => handlechange(item.index),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      // padding: const EdgeInsets.symmetric(vertical: 20),
+                      decoration: BoxDecoration(
+                        color: isActive ? FIGMA.Wrn : Colors.transparent,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: SizedBox(
+                        height: constsize.maxHeight * 0.8,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            if (isActive)
+                              Text(
+                                item.label,
+                                style: const TextStyle(
+                                  fontFamily: FIGMA.estbo,
+                                  fontSize: 18,
+                                  color: FIGMA.Grn,
+                                ),
+                              ),
+                            const SizedBox(width: 6),
+                            Icon(
+                              item.icon,
+                              size: 32,
+                              color: isActive ? FIGMA.Orn : Colors.grey,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    GButton(
-                      iconSize: iconSize,
-                      icon: Icons.sunny,
-                      text: "روشنایی",
-                      textStyle: const TextStyle(
-                          fontFamily: FIGMA.estbo,
-                          fontSize: 16,
-                          color: FIGMA.Grn),
-                    ),
-                    GButton(
-                      iconSize: iconSize,
-                      icon: Icons.color_lens,
-                      text: "رنگ",
-                      textStyle: const TextStyle(
-                          fontFamily: FIGMA.estbo,
-                          fontSize: 16,
-                          color: FIGMA.Grn),
-                    ),
-                  ],
-                  onTabChange: (index) {
-                    widget.handlechange(index);
-                  },
-                ),
-              ),
-            ));
+                  ),
+                );
+              }).toList(),
+            ),
+          );
+        },
+      );
+    });
   }
+}
+
+class _NavItem {
+  final int index;
+  final IconData icon;
+  final String label;
+
+  _NavItem({
+    required this.index,
+    required this.icon,
+    required this.label,
+  });
 }
