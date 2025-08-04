@@ -25,6 +25,38 @@ class _LoginState extends State<Login> {
     formpass = TextEditingController();
   }
 
+  void setup() {
+    final funcy = context.read<ProvData>();
+    var sdcard = Hive.box(FIGMA.HIVE);
+
+    var token = sdcard.get("access_token", defaultValue: "empty");
+
+    if (token != "empty") {
+      String s1 = sdcard.get("phone", defaultValue: "empty");
+      String s2 = sdcard.get("name", defaultValue: "empty");
+      String s3 = sdcard.get("last", defaultValue: "empty");
+      String s4 = sdcard.get("token", defaultValue: "empty");
+
+      funcy.Set_Userdetails(s1, s2, s3, s4);
+      var products = sdcard.get("products", defaultValue: "empty");
+
+      if (products != "empty") {
+        funcy.setProducts(products);
+      } else {
+        debugPrint("no products");
+      }
+
+      for (var i = 0; i < 5; i++) {
+        funcy.Defalult_colors[i] =
+            sdcard.get("COLOR$i", defaultValue: 0xFFFFFF);
+      }
+      funcy.setIsUserLoggedIn(true);
+      funcy.hand_update();
+    } else {
+      debugPrint("no token");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Check if the keyboard is visinetvana
@@ -105,7 +137,7 @@ class _LoginState extends State<Login> {
                                       fontFamily: FIGMA.abrlb,
                                       fontSize: 12,
                                       color: Colors.grey),
-                                  hintText: "Email",
+                                  hintText: "Mobile",
                                   border: OutlineInputBorder(),
                                 ),
                                 controller: formemail,
@@ -120,6 +152,7 @@ class _LoginState extends State<Login> {
                               padding: 0,
                               borderRadius: 0,
                               child: TextField(
+                                obscureText: true,
                                 textAlign: TextAlign.start,
                                 decoration: const InputDecoration(
                                   hintStyle: TextStyle(
@@ -172,16 +205,24 @@ class _LoginState extends State<Login> {
                                       box.put("name", meResponse["first_name"]);
                                       box.put("last", meResponse["last_name"]);
                                       box.put("phone", meResponse["phone"]);
+                                      box.put("token",
+                                          loginResponse['access_token']);
 
                                       debugPrint("Got Devices");
+
+                                      // TODO: add setup
+                                      setup();
                                     } else {
+                                      value.Show_Snackbar("ورود نا موفق", 1000);
                                       debugPrint("getProducts returned null");
                                     }
                                   } else {
+                                    value.Show_Snackbar("ورود نا موفق", 1000);
                                     debugPrint(
                                         "Login response is null or missing token");
                                   }
                                 } catch (e) {
+                                  value.Show_Snackbar("ورود نا موفق", 1000);
                                   debugPrint('Error: $e');
                                 }
                               },

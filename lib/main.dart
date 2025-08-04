@@ -3,7 +3,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/screens/products/nooran/Nooran.dart';
 import 'package:netvana/Login/Login.dart';
 import 'package:netvana/OtherTwo/Effects.dart';
-import 'package:netvana/OtherTwo/WSTimers.dart';
+import 'package:netvana/OtherTwo/Netvana.dart';
+import 'package:netvana/settingscreen/profile.dart';
 import 'package:provider/provider.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:netvana/navbar/TheAppNav.dart';
@@ -33,29 +34,34 @@ class Myapp extends StatefulWidget {
 
 class _MyappState extends State<Myapp> {
   late List<Widget> mybody;
-  bool isUserLoggedIn = false;
   @override
   void initState() {
     mybody = [
-      const Timersscr(), // Timers
+      const ProfileScr(),
+      const Netvana(), // Timers
       const Effectsscr(), // Effects
       const Nooran(), // Main
     ];
-    // Signing The User
+
+    super.initState();
+    setup();
+  }
+
+  void setup() {
     final funcy = context.read<ProvData>();
     var sdcard = Hive.box(FIGMA.HIVE);
 
     var token = sdcard.get("access_token", defaultValue: "empty");
 
     if (token != "empty") {
-      isUserLoggedIn = true;
+      funcy.setIsUserLoggedIn(true);
 
       String s1 = sdcard.get("phone", defaultValue: "empty");
       String s2 = sdcard.get("name", defaultValue: "empty");
       String s3 = sdcard.get("last", defaultValue: "empty");
+      String s4 = sdcard.get("token", defaultValue: "empty");
 
-      funcy.Set_Userdetails(s1, s2, s3);
-
+      funcy.Set_Userdetails(s1, s2, s3, s4);
       var products = sdcard.get("products", defaultValue: "empty");
 
       if (products != "empty") {
@@ -71,8 +77,6 @@ class _MyappState extends State<Myapp> {
     } else {
       debugPrint("no token");
     }
-
-    super.initState();
   }
 
   @override
@@ -82,7 +86,7 @@ class _MyappState extends State<Myapp> {
       debugShowCheckedModeBanner: false,
       home: Consumer<ProvData>(
         builder: (context, value, child) {
-          return isUserLoggedIn
+          return value.isUserLoggedIn
               ? Scaffold(
                   backgroundColor: FIGMA.Back,
                   body: IndexedStack(
@@ -94,17 +98,7 @@ class _MyappState extends State<Myapp> {
                     child: TheAppNav(),
                   ),
                 )
-              : Scaffold(
-                  backgroundColor: FIGMA.Back,
-                  body: IndexedStack(
-                    index: value.Current_screen,
-                    children: mybody,
-                  ),
-                  bottomNavigationBar: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: TheAppNav(),
-                  ),
-                );
+              : Login();
         },
       ),
     );

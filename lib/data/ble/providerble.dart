@@ -12,7 +12,7 @@ class ProvData extends ChangeNotifier {
   String Device_UUID = "null";
   String Device_NAME = "null";
   bool Isdevicefound = false;
-  int Current_screen = 2;
+  int Current_screen = 3;
 
   List<Duration> SmartTimerTime = [
     const Duration(minutes: 5),
@@ -25,7 +25,7 @@ class ProvData extends ChangeNotifier {
     const Duration(minutes: 60)
   ];
   List<String> SmartTimerColor = ["0xFFFF00FF", "0xFFFFFF00", "0xFFFFFF00"];
-  List<String> SmartTimerTitle = ["تایمر سریع", "پومودورو", "تایمر طولانی"];
+  List<String> SmartTimerTitle = ["تایمر هوشمند", "پومودورو", "تایمر طولانی"];
   List<bool> SmarttimerActive = [false, false, false];
 
   List<int> Favorites = [];
@@ -35,6 +35,7 @@ class ProvData extends ChangeNotifier {
   int current_selected_slider = 0;
   List<BleDevice> mynetvanaDevices = <BleDevice>[];
   bool isConnected = false;
+  bool isConnectedWifi = false;
   int appsync = FIGMA.FLUTTER_ESSENTIALS;
   //Setting Screen
   bool NetvanaFlag = false;
@@ -59,13 +60,20 @@ class ProvData extends ChangeNotifier {
   //Loggin
   String name_last = 'mamad';
   String phone_number = "ss";
-  String Token = "empty";
+  String token = "empty";
+
   List Products = [];
   //Test
   String TEST_DATA = "EMPTY";
   //Smarttimer
 
   ThemeFilter selectedFilter = ThemeFilter.none;
+
+  bool isUserLoggedIn = false;
+
+  void setIsUserLoggedIn(bool p, {bool update = false}) {
+    isUserLoggedIn = p;
+  }
 
   void toggleFilter(ThemeFilter filter) {
     selectedFilter = (selectedFilter == filter) ? ThemeFilter.none : filter;
@@ -153,11 +161,9 @@ class ProvData extends ChangeNotifier {
   // Setters
   void setProducts(List products) {
     Products = products;
-
     for (var i = 0; i < Products.length; i++) {
       debugPrint("product $i = ${Products[i]}");
     }
-    // notifyListeners();
   }
 
   void setIsDeviceOn(bool value) {
@@ -165,9 +171,11 @@ class ProvData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void Set_Userdetails(String phone, String Name, String Last) {
+  void Set_Userdetails(String phone, String Name, String Last, String Token) {
     name_last = "$Name $Last";
     phone_number = phone;
+    token = Token;
+    // notifyListeners();
   }
 
   void setIsNooranNet(bool value) {
@@ -222,6 +230,11 @@ class ProvData extends ChangeNotifier {
 
   void ble_update_connected(bool p) {
     isConnected = p;
+    notifyListeners();
+  }
+
+  void wifi_update_connected(bool p) {
+    isConnectedWifi = p;
     notifyListeners();
   }
 

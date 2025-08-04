@@ -38,6 +38,13 @@ class _TheAppNavState extends State<TheAppNav> {
             tabs: [
               GButton(
                 iconSize: iconSize,
+                icon: Icons.settings_rounded,
+                text: "تنظیمات",
+                textStyle: const TextStyle(
+                    fontFamily: FIGMA.estbo, fontSize: 16, color: FIGMA.Prn),
+              ),
+              GButton(
+                iconSize: iconSize,
                 icon: Icons.wifi_rounded,
                 text: "نت وانا",
                 textStyle: const TextStyle(

@@ -119,8 +119,10 @@ class _EspsettingsState extends State<Espsettings> {
                 onPressed: () {
                   debugPrint(value.r_pass_netvana.text);
 
-                  String jsonPayload =
-                      jsonEncode({"Np": value.r_pass_netvana.text});
+                  String jsonPayload = jsonEncode({
+                    "Np": value.r_pass_netvana.text,
+                    "Ns": value.r_ssid_netvana.text
+                  });
                   SingleBle().sendMain(jsonPayload);
                 },
                 icon: const Icon(

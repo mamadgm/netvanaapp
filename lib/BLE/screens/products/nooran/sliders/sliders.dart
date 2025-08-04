@@ -32,60 +32,72 @@ class _Color_Picker_HSVState extends State<Color_Picker_HSV> {
     int colorInt = int.parse(widget.color, radix: 16); // convert to int
     Color maincolor = Color(colorInt).withOpacity(1.0); //
 
-    return LayoutBuilder(builder: (context, constsize) {
-      return EasyContainer(
-        color: FIGMA.Gray,
-        borderWidth: 0,
-        elevation: 0,
-        padding: 8,
-        margin: 0,
-        borderRadius: 20,
-        child: Container(
-          height: constsize.maxHeight,
-          width: constsize.maxWidth,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: const LinearGradient(
-              end: Alignment.centerRight,
-              begin: Alignment.centerLeft,
-              colors: [
-                Color.fromARGB(255, 255, 0, 0),
-                Color.fromARGB(255, 255, 255, 0),
-                Color.fromARGB(255, 0, 255, 0),
-                Color.fromARGB(255, 0, 255, 255),
-                Color.fromARGB(255, 0, 0, 255),
-                Color.fromARGB(255, 255, 0, 255),
-                Color.fromARGB(255, 255, 0, 0),
-              ],
+    return Consumer<ProvData>(builder: (context, value, _) {
+      return LayoutBuilder(builder: (context, constsize) {
+        return EasyContainer(
+          color: FIGMA.Gray,
+          borderWidth: 0,
+          elevation: 0,
+          padding: 8,
+          margin: 0,
+          borderRadius: 20,
+          child: Container(
+            height: constsize.maxHeight,
+            width: constsize.maxWidth,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                end: Alignment.centerRight,
+                begin: Alignment.centerLeft,
+                colors: (!value.nextmoveisconnect | value.isConnectedWifi)
+                    ? [
+                        const Color.fromARGB(255, 255, 0, 0),
+                        const Color.fromARGB(255, 255, 255, 0),
+                        const Color.fromARGB(255, 0, 255, 0),
+                        const Color.fromARGB(255, 0, 255, 255),
+                        const Color.fromARGB(255, 0, 0, 255),
+                        const Color.fromARGB(255, 255, 0, 255),
+                        const Color.fromARGB(255, 255, 0, 0),
+                      ]
+                    : [
+                        const Color.fromARGB(255, 255, 0, 0),
+                        const Color.fromARGB(255, 255, 255, 0),
+                        const Color.fromARGB(255, 0, 255, 0),
+                        const Color.fromARGB(255, 0, 255, 255),
+                        const Color.fromARGB(255, 0, 0, 255),
+                        const Color.fromARGB(255, 255, 0, 255),
+                        const Color.fromARGB(255, 255, 0, 0),
+                      ],
+              ),
+            ),
+            child: HuePicker(
+              thumbShape: HueSliderThumbShape(
+                  radius: 28, color: maincolor, borderColor: maincolor),
+              trackHeight: 10,
+              initialColor: HSVColor.fromColor(maincolor),
+              onChanged: (color) {
+                setState(() {
+                  maincolor = color.toColor();
+                });
+              },
+              onChangeEnd: (color) async {
+                color = color.withAlpha(1.0);
+                color = color.withSaturation(1.0);
+                int red = color.toColor().red;
+                int grn = color.toColor().green;
+                int blu = color.toColor().blue;
+
+                debugPrint("Color Changed");
+                //
+                String ColorStr =
+                    ((red * 65536) + (grn * 256) + (blu)).toString();
+                debugPrint(ColorStr);
+                widget.senddata(ColorStr);
+              },
             ),
           ),
-          child: HuePicker(
-            thumbShape: HueSliderThumbShape(
-                radius: 28, color: maincolor, borderColor: maincolor),
-            trackHeight: 10,
-            initialColor: HSVColor.fromColor(maincolor),
-            onChanged: (color) {
-              setState(() {
-                maincolor = color.toColor();
-              });
-            },
-            onChangeEnd: (color) async {
-              color = color.withAlpha(1.0);
-              color = color.withSaturation(1.0);
-              int red = color.toColor().red;
-              int grn = color.toColor().green;
-              int blu = color.toColor().blue;
-
-              debugPrint("Color Changed");
-              //
-              String ColorStr =
-                  ((red * 65536) + (grn * 256) + (blu)).toString();
-              debugPrint(ColorStr);
-              widget.senddata(ColorStr);
-            },
-          ),
-        ),
-      );
+        );
+      });
     });
   }
 }
@@ -212,7 +224,9 @@ class Speed_sliderState extends State<Speed_slider> {
             width: constsize.maxWidth,
             height: constsize.maxHeight,
             direction: FillingSliderDirection.horizontal,
-            color: FIGMA.Orn,
+            color: (!value.nextmoveisconnect | value.isConnectedWifi)
+                ? FIGMA.Orn
+                : Colors.grey,
             fillColor: FIGMA.Gray,
             onFinish: (value) async {
               int finalspeed = mapdoubleToInt(value, 1.0, 0.0, 2500, 100);
@@ -263,7 +277,9 @@ class _Bright_sliderState extends State<Bright_slider> {
             width: constsize.maxWidth,
             height: constsize.maxHeight,
             direction: FillingSliderDirection.horizontal,
-            color: FIGMA.Orn,
+            color: (!value.nextmoveisconnect | value.isConnectedWifi)
+                ? FIGMA.Orn
+                : Colors.grey,
             fillColor: FIGMA.Gray,
             onChange: (val1, val2) {},
             onFinish: (value) async {

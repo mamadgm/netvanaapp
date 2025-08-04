@@ -9,6 +9,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/screens/products/nooran/Buttons/mybuttons.dart';
 import 'package:netvana/BLE/screens/products/nooran/Spelco/spelco.dart';
 import 'package:netvana/BLE/screens/products/nooran/sliders/sliders.dart';
+import 'package:netvana/Network/netmain.dart';
 // import 'package:netvana/ble/logic/esp_ble.dart';
 
 import 'package:netvana/const/figma.dart';
@@ -48,6 +49,9 @@ class _NooranState extends State<Nooran> {
     Sliderwidgets = [
       Speed_slider(
         senddata: (speed) {
+          value.nextmoveisconnect
+              ? NetClass().setSpeed(value.token, "4", speed)
+              : null;
           value.setMainCycleSpeed(int.parse(speed));
           String jsonPayload = jsonEncode({"Ls": speed});
           SingleBle().sendMain(jsonPayload);
@@ -55,6 +59,9 @@ class _NooranState extends State<Nooran> {
       ),
       Bright_slider(
         senddata: (bright) {
+          value.nextmoveisconnect
+              ? NetClass().setBright(value.token, "4", bright)
+              : null;
           value.setBrightness(int.parse(bright));
           String jsonPayload = jsonEncode({"Lb": bright});
           SingleBle().sendMain(jsonPayload);
@@ -64,6 +71,9 @@ class _NooranState extends State<Nooran> {
       ),
       Color_Picker_HSV(
         senddata: (p0) {
+          value.nextmoveisconnect
+              ? NetClass().setColor(value.token, "4", p0)
+              : null;
           String jsonPayload = jsonEncode({"Lc": p0});
           SingleBle().sendMain(jsonPayload);
         },
@@ -76,7 +86,6 @@ class _NooranState extends State<Nooran> {
   @override
   void dispose() {
     super.dispose();
-    //TODO: Disconnect when leaving the page
   }
 
   Timer? Connecttimer;
@@ -84,7 +93,6 @@ class _NooranState extends State<Nooran> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ProvData>(builder: (context, value, child) {
-      var sdcard = Hive.box(FIGMA.HIVE);
       return SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(right: 8, left: 8),
@@ -123,21 +131,55 @@ class _NooranState extends State<Nooran> {
                               elevation: 0,
                               margin: 0,
                               padding: 6,
-                              child: const Icon(
-                                Icons.person,
-                                color: FIGMA.Prn,
+                              child: Icon(
+                                value.isConnectedWifi
+                                    ? Icons.wifi_rounded
+                                    : Icons.wifi_off_rounded,
+                                color: value.isConnectedWifi
+                                    ? FIGMA.Prn
+                                    : Colors.red,
                                 size: 48,
                               ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const NewTab(
-                                      appbartext: "پروفایل",
-                                      childrens: [ProfileScr()],
-                                    ),
-                                  ),
-                                );
+                              onTap: () async {
+                                var box = Hive.box(FIGMA.HIVE);
+
+                                var meResponse = await NetClass()
+                                    .getProducts(value.token)
+                                    .timeout(const Duration(seconds: 5));
+
+                                if (meResponse != null) {
+                                  value.setProducts(meResponse["devices"]);
+                                  box.put("products", meResponse["devices"]);
+                                  box.put("name", meResponse["first_name"]);
+                                  box.put("last", meResponse["last_name"]);
+                                  box.put("phone", meResponse["phone"]);
+
+                                  debugPrint("Got Devices");
+
+                                  // TODO: add setup
+                                }
+
+                                if (value.Products[0]["is_online"] == false) {
+                                  value.wifi_update_connected(false);
+                                  value.Show_Snackbar(
+                                      " ...دستگاه متصل نیست . راه اندازی مجدد",
+                                      1000);
+                                } else {
+                                  value.wifi_update_connected(true);
+                                  return;
+                                }
+
+                                if (value.isConnected) {
+                                  // show the WiFi Menu
+
+                                  showWiFiDialog(context);
+                                } else {
+                                  value.Show_Snackbar(
+                                      "برای تنظیم ابتدا به بلوتوث متصل شوید",
+                                      1000);
+                                }
+
+                                value.hand_update();
                               },
                             ),
                             EasyContainer(
@@ -192,7 +234,10 @@ class _NooranState extends State<Nooran> {
                                         selectedDeviceName)) {
                                       value.Show_Snackbar(
                                           "این دستگاه مال شما نیست", 1000);
-                                      // return;
+                                      debugPrint("YOHO GET OUT");
+                                      return;
+                                    } else {
+                                      debugPrint("Wellcome");
                                     }
 
                                     debugPrint(
@@ -287,6 +332,10 @@ class _NooranState extends State<Nooran> {
                         child: Image.asset(
                           "ass/icon.png",
                           fit: BoxFit.cover,
+                          color:
+                              (!value.nextmoveisconnect | value.isConnectedWifi)
+                                  ? FIGMA.Prn
+                                  : Colors.grey,
                         ),
                       ),
                       onTap: () async {},
@@ -369,6 +418,230 @@ class _NooranState extends State<Nooran> {
         ),
       );
     });
+  }
+
+  void showWiFiDialog(BuildContext context) {
+    bool connected = false;
+    final ssidController = TextEditingController();
+    final passController = TextEditingController();
+
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "popup",
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation1, animation2) {
+        return Center(
+          child: AlertDialog(
+            scrollable: true,
+            shape: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: BorderSide.none,
+            ),
+            backgroundColor: FIGMA.Back,
+            content: StatefulBuilder(builder: (context, setState) {
+              return EasyContainer(
+                width: MediaQuery.of(context).size.width / 1.1,
+                height: MediaQuery.of(context).size.height * 0.5,
+                color: FIGMA.Back.withAlpha(128),
+                borderWidth: 0,
+                elevation: 0,
+                margin: 0,
+                padding: 0,
+                borderRadius: 30,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: connected
+                      ? [
+                          const Icon(Icons.check_circle,
+                              size: 80, color: Colors.green),
+                          const Directionality(
+                            textDirection: TextDirection.rtl,
+                            child: Text(
+                              "مراحل اتصال تکمیل شد!",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: FIGMA.abrlb),
+                            ),
+                          ),
+                          EasyContainer(
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            height: 95,
+                            borderRadius: 15,
+                            color: FIGMA.Orn,
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text("خروج",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: FIGMA.abreb,
+                                    color: Colors.white)),
+                          ),
+                        ]
+                      : [
+                          const Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              "اتصال به شبکه نوروانا",
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: FIGMA.abrlb),
+                            ),
+                          ),
+                          const Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              "لطفا کادر های زیر را برای اتصال کامل کنید",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: FIGMA.abrlb,
+                                  color: Colors.grey),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: ssidController,
+                              obscureText: true,
+                              textAlign: TextAlign.right, // For RTL alignment
+                              decoration: InputDecoration(
+                                hintText: " WiFi نام", // Or "Password"
+                                hintStyle:
+                                    TextStyle(color: Colors.grey.shade500),
+
+                                filled: true,
+                                fillColor: Colors.white,
+
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 22,
+                                ), // Big height/width
+
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      12), // Curved border
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade400),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade400),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: Colors
+                                          .grey.shade700), // Darker on focus
+                                ),
+
+                                // Remove all effects (e.g., shadows, glow)
+                                focusColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                              ),
+                              cursorColor: Colors.grey.shade700,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: passController,
+                              obscureText: true,
+                              textAlign: TextAlign.right, // For RTL alignment
+                              decoration: InputDecoration(
+                                hintText: "رمز عبور", // Or "Password"
+                                hintStyle:
+                                    TextStyle(color: Colors.grey.shade500),
+
+                                filled: true,
+                                fillColor: Colors.white,
+
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 22,
+                                ), // Big height/width
+
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      12), // Curved border
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade400),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade400),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: Colors
+                                          .grey.shade700), // Darker on focus
+                                ),
+
+                                // Remove all effects (e.g., shadows, glow)
+                                focusColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                              ),
+                              cursorColor: Colors.grey.shade700,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              EasyContainer(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                height: 95,
+                                borderRadius: 15,
+                                color: FIGMA.Prn,
+                                onTap: () {
+                                  if (ssidController.text.isNotEmpty &&
+                                      passController.text.isNotEmpty) {
+                                    setState(() {
+                                      String jsonPayload = jsonEncode({
+                                        "Np": passController.text,
+                                        "Ns": ssidController.text,
+                                      });
+                                      SingleBle().sendMain(jsonPayload);
+                                      connected = true;
+                                    });
+                                  }
+                                },
+                                child: const Text("ارسال اطلاعات",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: FIGMA.abreb,
+                                        color: Colors.white)),
+                              ),
+                              const SizedBox(height: 1),
+                              EasyContainer(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                height: 95,
+                                borderRadius: 15,
+                                color: FIGMA.Orn,
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("خروج",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: FIGMA.abreb,
+                                        color: Colors.white)),
+                              ),
+                            ],
+                          ),
+                        ],
+                ),
+              );
+            }),
+          ),
+        );
+      },
+    );
   }
 }
 
