@@ -1,17 +1,23 @@
 // ignore_for_file: constant_identifier_names, unused_element, non_constant_identifier_names, prefer_const_constructors, prefer_const_declarations
 
 import 'package:flutter/material.dart';
+import 'package:netvana/customwidgets/cylander.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
 
+final GlobalKey<LampWidgetState> lampKey = GlobalKey<LampWidgetState>();
+
 class FIGMA {
   static const Prn = Color(0xFF00A594);
+  static const Prn2 = Color(0xFF1BC9B7);
   static const Orn = Color(0xFFF3593A);
   static const Grn = Color(0xFF001916);
   static const Wrn = Color(0xFFFFFFFF);
-  static const Back = Color(0xFFF9F9F9);
-  static const Gray = Color(0xFFEEF2F5);
+  static const Wrn2 = Color(0xFFFFFFFF);
+  static const Back = Color(0xFF0D0D0D);
+  static const Gray = Color(0xFF121212);
+  static const Gray2 = Color(0xFF242424);
 
   static const abrlb = 'abrlb';
   static const abreb = 'abreb';

@@ -3,7 +3,6 @@
 import 'dart:async';
 import 'dart:convert';
 // import 'dart:ffi';
-
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/screens/products/nooran/Buttons/mybuttons.dart';
@@ -13,11 +12,10 @@ import 'package:netvana/Network/netmain.dart';
 // import 'package:netvana/ble/logic/esp_ble.dart';
 
 import 'package:netvana/const/figma.dart';
-import 'package:netvana/customwidgets/newtab.dart';
+import 'package:netvana/customwidgets/cylander.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_container/easy_container.dart';
-import 'package:netvana/settingscreen/profile.dart';
 import 'package:provider/provider.dart';
 // import 'package:universal_ble/universal_ble.dart';
 // import 'package:record/record.dart';
@@ -50,7 +48,8 @@ class _NooranState extends State<Nooran> {
       Speed_slider(
         senddata: (speed) {
           value.nextmoveisconnect
-              ? NetClass().setSpeed(value.token, "4", speed)
+              ? NetClass().setSpeed(
+                  value.token, value.Products[0]["id"].toString(), speed)
               : null;
           value.setMainCycleSpeed(int.parse(speed));
           String jsonPayload = jsonEncode({"Ls": speed});
@@ -60,7 +59,8 @@ class _NooranState extends State<Nooran> {
       Bright_slider(
         senddata: (bright) {
           value.nextmoveisconnect
-              ? NetClass().setBright(value.token, "4", bright)
+              ? NetClass().setBright(
+                  value.token, value.Products[0]["id"].toString(), bright)
               : null;
           value.setBrightness(int.parse(bright));
           String jsonPayload = jsonEncode({"Lb": bright});
@@ -71,13 +71,15 @@ class _NooranState extends State<Nooran> {
       ),
       Color_Picker_HSV(
         senddata: (p0) {
+          value.setMainCycleColor(p0);
           value.nextmoveisconnect
-              ? NetClass().setColor(value.token, "4", p0)
+              ? NetClass()
+                  .setColor(value.token, value.Products[0]["id"].toString(), p0)
               : null;
           String jsonPayload = jsonEncode({"Lc": p0});
           SingleBle().sendMain(jsonPayload);
         },
-        color: "0xFFFFFFFF",
+        color: "0xFFFF5000",
         netvana: 1,
       ),
     ];
@@ -118,160 +120,183 @@ class _NooranState extends State<Nooran> {
                           child: Text(
                             "نوروانا",
                             style: TextStyle(
-                                fontFamily: FIGMA.abrlb, fontSize: 28),
+                                fontFamily: FIGMA.abrlb,
+                                fontSize: 28,
+                                color: FIGMA.Wrn),
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            EasyContainer(
-                              color: FIGMA.Gray,
-                              borderWidth: 2,
-                              borderRadius: 15,
-                              elevation: 0,
-                              margin: 0,
-                              padding: 6,
-                              child: Icon(
-                                value.isConnectedWifi
-                                    ? Icons.wifi_rounded
-                                    : Icons.wifi_off_rounded,
-                                color: value.isConnectedWifi
-                                    ? FIGMA.Prn
-                                    : Colors.red,
-                                size: 48,
-                              ),
-                              onTap: () async {
-                                var box = Hive.box(FIGMA.HIVE);
+                        Padding(
+                          padding: EdgeInsets.only(left: 4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: EasyContainer(
+                                  height: GetGoodW(context, 73, 73).height,
+                                  width: GetGoodW(context, 73, 73).width,
+                                  color: FIGMA.Back,
+                                  showBorder: true,
+                                  borderWidth: 3,
+                                  borderColor: FIGMA.Gray2,
+                                  borderRadius: 17,
+                                  elevation: 0,
+                                  margin: 0,
+                                  padding: 4,
+                                  child: Icon(
+                                    value.isConnectedWifi
+                                        ? Icons.wifi_rounded
+                                        : Icons.wifi_off_rounded,
+                                    color: value.isConnectedWifi
+                                        ? FIGMA.Prn
+                                        : FIGMA.Gray2,
+                                    size: 42,
+                                  ),
+                                  onTap: () async {
+                                    var box = Hive.box(FIGMA.HIVE);
 
-                                var meResponse = await NetClass()
-                                    .getProducts(value.token)
-                                    .timeout(const Duration(seconds: 5));
+                                    var meResponse = await NetClass()
+                                        .getProducts(value.token)
+                                        .timeout(const Duration(seconds: 5));
 
-                                if (meResponse != null) {
-                                  value.setProducts(meResponse["devices"]);
-                                  box.put("products", meResponse["devices"]);
-                                  box.put("name", meResponse["first_name"]);
-                                  box.put("last", meResponse["last_name"]);
-                                  box.put("phone", meResponse["phone"]);
+                                    if (meResponse != null) {
+                                      value.setProducts(meResponse["devices"]);
+                                      box.put(
+                                          "products", meResponse["devices"]);
+                                      box.put("name", meResponse["first_name"]);
+                                      box.put("last", meResponse["last_name"]);
+                                      box.put("phone", meResponse["phone"]);
 
-                                  debugPrint("Got Devices");
+                                      debugPrint("Got Devices");
 
-                                  // TODO: add setup
-                                }
-
-                                if (value.Products[0]["is_online"] == false) {
-                                  value.wifi_update_connected(false);
-                                  value.Show_Snackbar(
-                                      " ...دستگاه متصل نیست . راه اندازی مجدد",
-                                      1000);
-                                } else {
-                                  value.wifi_update_connected(true);
-                                  return;
-                                }
-
-                                if (value.isConnected) {
-                                  // show the WiFi Menu
-
-                                  showWiFiDialog(context);
-                                } else {
-                                  value.Show_Snackbar(
-                                      "برای تنظیم ابتدا به بلوتوث متصل شوید",
-                                      1000);
-                                }
-
-                                value.hand_update();
-                              },
-                            ),
-                            EasyContainer(
-                                color: FIGMA.Gray,
-                                borderWidth: 2,
-                                borderRadius: 15,
-                                elevation: 0,
-                                customMargin:
-                                    const EdgeInsets.only(right: 4, left: 4),
-                                padding: 6,
-                                child: Icon(
-                                  value.isConnected
-                                      ? Icons.bluetooth_connected
-                                      : Icons.bluetooth_disabled,
-                                  color: value.isConnected
-                                      ? Colors.greenAccent
-                                      : Colors.red,
-                                  size: 48,
-                                ),
-                                onTap: () async {
-                                  debugPrint(value.nextmoveisconnect
-                                      ? "Connect"
-                                      : "Disconnect");
-
-                                  if (value.nextmoveisconnect == false) {
-                                    // Device is connected → Disconnect
-                                    await SingleBle().disconnect();
-                                    value.ble_update_connected(false);
-                                    value.change_nextmoveisconnect(true);
-                                    debugPrint("Device Disconnected");
-                                    return;
-                                  }
-
-                                  // Device is NOT connected → Start Scan
-                                  try {
-                                    debugPrint("Starting BLE Scan...");
-
-                                    var result = await SingleBle()
-                                        .startScanAndGetDevice();
-                                    String? selectedDeviceId;
-                                    String? selectedDeviceName;
-                                    if (result != null) {
-                                      selectedDeviceId = result['deviceId'];
-                                      selectedDeviceName = result['name'];
+                                      // TODO: add setup
                                     }
 
-                                    if (selectedDeviceId == null) {
-                                      debugPrint("No device selected.");
-                                      return;
-                                    } else if (!value.Products.any((product) =>
-                                        "${product["category_name"]}-${product["part_number"]}" ==
-                                        selectedDeviceName)) {
+                                    if (value.Products[0]["is_online"] ==
+                                        false) {
+                                      value.wifi_update_connected(false);
                                       value.Show_Snackbar(
-                                          "این دستگاه مال شما نیست", 1000);
-                                      debugPrint("YOHO GET OUT");
+                                          " ...دستگاه متصل نیست . راه اندازی مجدد",
+                                          1000);
+                                    } else {
+                                      value.wifi_update_connected(true);
                                       return;
-                                    } else {
-                                      debugPrint("Wellcome");
                                     }
 
-                                    debugPrint(
-                                        "Attempting to connect to $selectedDeviceId...");
-                                    bool connected = await SingleBle()
-                                        .connectToDevice(selectedDeviceId, 200);
+                                    if (value.isConnected) {
+                                      // show the WiFi Menu
 
-                                    if (connected) {
-                                      value.change_nextmoveisconnect(false);
-                                      value.ble_update_connected(true);
-                                      debugPrint(
-                                          "Successfully Connected to $selectedDeviceId");
+                                      showWiFiDialog(context);
+                                    } else {
+                                      value.Show_Snackbar(
+                                          "برای تنظیم ابتدا به بلوتوث متصل شوید",
+                                          1000);
+                                    }
 
-                                      Future.delayed(
-                                          const Duration(milliseconds: 1200),
-                                          () async {
-                                        switch (value.current_selected_slider) {
-                                          case 0:
-                                            value.change_slider(1);
-                                            break;
-                                          default:
-                                            value.change_slider(0);
+                                    value.hand_update();
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: EasyContainer(
+                                    height: GetGoodW(context, 73, 73).height,
+                                    width: GetGoodW(context, 73, 73).width,
+                                    color: FIGMA.Back,
+                                    showBorder: true,
+                                    borderWidth: 3,
+                                    borderColor: FIGMA.Gray2,
+                                    borderRadius: 17,
+                                    elevation: 0,
+                                    margin: 0,
+                                    padding: 4,
+                                    child: Icon(
+                                      value.isConnected
+                                          ? Icons.bluetooth_connected
+                                          : Icons.bluetooth_disabled,
+                                      color: value.isConnected
+                                          ? FIGMA.Prn
+                                          : FIGMA.Gray2,
+                                      size: 42,
+                                    ),
+                                    onTap: () async {
+                                      debugPrint(value.nextmoveisconnect
+                                          ? "Connect"
+                                          : "Disconnect");
+
+                                      if (value.nextmoveisconnect == false) {
+                                        // Device is connected → Disconnect
+                                        await SingleBle().disconnect();
+                                        value.ble_update_connected(false);
+                                        value.change_nextmoveisconnect(true);
+                                        debugPrint("Device Disconnected");
+                                        return;
+                                      }
+
+                                      // Device is NOT connected → Start Scan
+                                      try {
+                                        debugPrint("Starting BLE Scan...");
+
+                                        var result = await SingleBle()
+                                            .startScanAndGetDevice();
+                                        String? selectedDeviceId;
+                                        String? selectedDeviceName;
+                                        if (result != null) {
+                                          selectedDeviceId = result['deviceId'];
+                                          selectedDeviceName = result['name'];
                                         }
-                                      });
-                                    } else {
-                                      value.ble_update_connected(false);
-                                      debugPrint("Failed to Connect.");
-                                    }
-                                  } catch (e) {
-                                    value.ble_update_connected(false);
-                                    debugPrint('Connection Error: $e');
-                                  }
-                                }),
-                          ],
+
+                                        if (selectedDeviceId == null) {
+                                          debugPrint("No device selected.");
+                                          return;
+                                        } else if (!value.Products.any((product) =>
+                                            "${product["category_name"]}-${product["part_number"]}" ==
+                                            selectedDeviceName)) {
+                                          value.Show_Snackbar(
+                                              "این دستگاه مال شما نیست", 1000);
+                                          debugPrint("YOHO GET OUT");
+                                          return;
+                                        } else {
+                                          debugPrint("Wellcome");
+                                        }
+
+                                        debugPrint(
+                                            "Attempting to connect to $selectedDeviceId...");
+                                        bool connected = await SingleBle()
+                                            .connectToDevice(
+                                                selectedDeviceId, 200);
+
+                                        if (connected) {
+                                          value.change_nextmoveisconnect(false);
+                                          value.ble_update_connected(true);
+                                          debugPrint(
+                                              "Successfully Connected to $selectedDeviceId");
+
+                                          Future.delayed(
+                                              const Duration(
+                                                  milliseconds: 1200),
+                                              () async {
+                                            switch (
+                                                value.current_selected_slider) {
+                                              case 0:
+                                                value.change_slider(1);
+                                                break;
+                                              default:
+                                                value.change_slider(0);
+                                            }
+                                          });
+                                        } else {
+                                          value.ble_update_connected(false);
+                                          debugPrint("Failed to Connect.");
+                                        }
+                                      } catch (e) {
+                                        value.ble_update_connected(false);
+                                        debugPrint('Connection Error: $e');
+                                      }
+                                    }),
+                              ),
+                            ],
+                          ),
                         )
                       ],
                     ),
@@ -294,6 +319,13 @@ class _NooranState extends State<Nooran> {
                                   child: Sleep_Button(
                                     state: value.Brightness == 5,
                                     onDataChange: (s) {
+                                      value.nextmoveisconnect
+                                          ? NetClass().setBright(
+                                              value.token,
+                                              value.Products[0]["id"]
+                                                  .toString(),
+                                              "5")
+                                          : null;
                                       String jsonPayload =
                                           jsonEncode({"Lb": 5});
                                       SingleBle().sendMain(jsonPayload);
@@ -309,10 +341,18 @@ class _NooranState extends State<Nooran> {
                             height: GetGoodW(context, 156, 73).height,
                             width: GetGoodW(context, 156, 73).width,
                             child: Power_Button(
+                                // setPower
                                 onof: value.isdeviceon,
                                 onDataChange: () {
                                   String jsonPayload =
                                       jsonEncode({"Cp": !value.isdeviceon});
+                                  value.nextmoveisconnect
+                                      ? NetClass().setPower(
+                                          value.token,
+                                          value.Products[0]["id"].toString(),
+                                          !value.isdeviceon == true ? 1 : 0)
+                                      : null;
+
                                   SingleBle().sendMain(jsonPayload);
                                 },
                                 netvana: 1),
@@ -321,27 +361,32 @@ class _NooranState extends State<Nooran> {
                       ],
                     ),
                     EasyContainer(
-                      color: FIGMA.Gray,
+                      color: (!value.nextmoveisconnect | value.isConnectedWifi)
+                          ? FIGMA.Grn
+                          : FIGMA.Gray2,
                       height: GetGoodW(context, 165, 192).height,
                       width: GetGoodW(context, 165, 192).width,
                       margin: 4,
                       padding: 0,
+                      showBorder:
+                          (!value.nextmoveisconnect | value.isConnectedWifi),
+                      borderWidth: 3,
+                      borderColor: FIGMA.Prn,
                       borderRadius: 17,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset(
-                          "ass/icon.png",
-                          fit: BoxFit.cover,
-                          color:
-                              (!value.nextmoveisconnect | value.isConnectedWifi)
-                                  ? FIGMA.Prn
-                                  : Colors.grey,
-                        ),
+                      child: LampWidget(
+                        glowIntensity: value.Brightness.toDouble() / 50,
+                        key: lampKey,
+                        //        0xFF5000
+
+                        lampColor: colorFromString(value.maincycle_color),
+                        height: GetGoodW(context, 80, 150).height,
+                        width: GetGoodW(context, 80, 150).width,
                       ),
                       onTap: () async {},
                     ),
                   ],
                 ),
+
                 const SizedBox(height: 20),
                 Directionality(
                   textDirection: TextDirection.rtl,
@@ -351,7 +396,10 @@ class _NooranState extends State<Nooran> {
                       padding: EdgeInsets.only(right: 8),
                       child: Text(
                         "تنظیمات اختصاصی",
-                        style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 18),
+                        style: TextStyle(
+                            fontFamily: FIGMA.abrlb,
+                            fontSize: 18,
+                            color: FIGMA.Wrn),
                       ),
                     ),
                   ),
@@ -420,6 +468,31 @@ class _NooranState extends State<Nooran> {
     });
   }
 
+  Color colorFromString(String colorStr) {
+    colorStr = colorStr.trim();
+
+    // Case 1: hex string starting with 0x / 0X / #
+    if (colorStr.startsWith("0x") ||
+        colorStr.startsWith("0X") ||
+        colorStr.startsWith("#")) {
+      String cleaned = colorStr.toUpperCase().replaceAll("#", "");
+      if (cleaned.startsWith("0X")) cleaned = cleaned.substring(2);
+      if (cleaned.length == 6) cleaned = "FF$cleaned"; // add alpha
+      return Color(int.parse(cleaned, radix: 16));
+    }
+
+    // Case 2: decimal number string
+    int? value = int.tryParse(colorStr);
+    if (value != null) {
+      // Ensure alpha channel exists
+      if (value <= 0xFFFFFF) value |= 0xFF000000;
+      return Color(value);
+    }
+
+    // Fallback to white
+    return const Color(0xFFFFFFFF);
+  }
+
   void showWiFiDialog(BuildContext context) {
     bool connected = false;
     final ssidController = TextEditingController();
@@ -443,7 +516,7 @@ class _NooranState extends State<Nooran> {
               return EasyContainer(
                 width: MediaQuery.of(context).size.width / 1.1,
                 height: MediaQuery.of(context).size.height * 0.5,
-                color: FIGMA.Back.withAlpha(128),
+                color: FIGMA.Back,
                 borderWidth: 0,
                 elevation: 0,
                 margin: 0,
@@ -462,7 +535,8 @@ class _NooranState extends State<Nooran> {
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: FIGMA.abrlb),
+                                  fontFamily: FIGMA.abrlb,
+                                  color: FIGMA.Wrn),
                             ),
                           ),
                           EasyContainer(
@@ -477,7 +551,7 @@ class _NooranState extends State<Nooran> {
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontFamily: FIGMA.abreb,
-                                    color: Colors.white)),
+                                    color: FIGMA.Wrn)),
                           ),
                         ]
                       : [
@@ -488,7 +562,8 @@ class _NooranState extends State<Nooran> {
                               style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: FIGMA.abrlb),
+                                  fontFamily: FIGMA.abrlb,
+                                  color: FIGMA.Wrn),
                             ),
                           ),
                           const Align(
@@ -498,7 +573,7 @@ class _NooranState extends State<Nooran> {
                               style: TextStyle(
                                   fontSize: 14,
                                   fontFamily: FIGMA.abrlb,
-                                  color: Colors.grey),
+                                  color: FIGMA.Wrn),
                             ),
                           ),
                           Padding(
@@ -509,8 +584,7 @@ class _NooranState extends State<Nooran> {
                               textAlign: TextAlign.right, // For RTL alignment
                               decoration: InputDecoration(
                                 hintText: " WiFi نام", // Or "Password"
-                                hintStyle:
-                                    TextStyle(color: Colors.grey.shade500),
+                                hintStyle: const TextStyle(color: FIGMA.Wrn2),
 
                                 filled: true,
                                 fillColor: Colors.white,
@@ -543,7 +617,8 @@ class _NooranState extends State<Nooran> {
                                 hoverColor: Colors.transparent,
                               ),
                               cursorColor: Colors.grey.shade700,
-                              style: const TextStyle(fontSize: 16),
+                              style: const TextStyle(
+                                  fontSize: 16, color: FIGMA.Wrn),
                             ),
                           ),
                           Padding(
@@ -554,8 +629,7 @@ class _NooranState extends State<Nooran> {
                               textAlign: TextAlign.right, // For RTL alignment
                               decoration: InputDecoration(
                                 hintText: "رمز عبور", // Or "Password"
-                                hintStyle:
-                                    TextStyle(color: Colors.grey.shade500),
+                                hintStyle: const TextStyle(color: FIGMA.Wrn2),
 
                                 filled: true,
                                 fillColor: Colors.white,
@@ -588,7 +662,8 @@ class _NooranState extends State<Nooran> {
                                 hoverColor: Colors.transparent,
                               ),
                               cursorColor: Colors.grey.shade700,
-                              style: const TextStyle(fontSize: 16),
+                              style: const TextStyle(
+                                  fontSize: 16, color: FIGMA.Wrn),
                             ),
                           ),
                           Column(
@@ -615,7 +690,7 @@ class _NooranState extends State<Nooran> {
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontFamily: FIGMA.abreb,
-                                        color: Colors.white)),
+                                        color: FIGMA.Wrn)),
                               ),
                               const SizedBox(height: 1),
                               EasyContainer(
@@ -630,7 +705,7 @@ class _NooranState extends State<Nooran> {
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontFamily: FIGMA.abreb,
-                                        color: Colors.white)),
+                                        color: FIGMA.Wrn)),
                               ),
                             ],
                           ),
@@ -650,10 +725,16 @@ class ShortTimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void TimerSend(int s) {
+    void TimerSend(int s, ProvData value) {
       calculateTimeStore(s);
       debugPrint("Minute $s");
-      String jsonPayload = jsonEncode({"Td": s.toString()});
+
+      value.nextmoveisconnect
+          ? NetClass()
+              .setTimer(value.token, value.Products[0]["id"].toString(), s)
+          : null;
+
+      String jsonPayload = jsonEncode({"Tf": s.toString()});
       SingleBle().sendMain(jsonPayload);
       FocusScope.of(context).unfocus();
       Navigator.of(context).pop();
@@ -667,31 +748,27 @@ class ShortTimer extends StatelessWidget {
           child: SizedBox(
             height: GetGoodW(context, 74, 111).height,
             width: GetGoodW(context, 74, 111).width,
-            child: NewPopup(
-              TempleteColor:
-                  !(value.timeroffvalue > 0) ? FIGMA.Gray : FIGMA.Grn,
+            child: TimerButton(
+              state: value.timeroffvalue > 0,
               Templete: [
                 SvgPicture.asset(
-                  'ass/timer.svg',
+                  'assets/timer.svg',
                   width: 32,
-                  color: !(value.timeroffvalue > 0) ? FIGMA.Grn : FIGMA.Wrn,
+                  color: FIGMA.Wrn,
                 ),
-                Text(
+                const Text(
                   'تایمر',
                   style: TextStyle(
-                      fontFamily: FIGMA.estsb,
-                      fontSize: 16,
-                      color:
-                          !(value.timeroffvalue > 0) ? FIGMA.Grn : FIGMA.Wrn),
+                      fontFamily: FIGMA.estsb, fontSize: 16, color: FIGMA.Wrn),
                 ),
                 Text(
                   value.timeroffvalue == 0
                       ? "غیرفعال"
                       : "${sdcard.get("Timeofdie", defaultValue: "00:00")}",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: FIGMA.estre,
                     fontSize: 14,
-                    color: !(value.timeroffvalue > 0) ? FIGMA.Grn : FIGMA.Wrn,
+                    color: FIGMA.Wrn,
                   ),
                 ),
               ],
@@ -700,42 +777,45 @@ class ShortTimer extends StatelessWidget {
                   flex: 5,
                   child: Text(
                     "تایمر خاموش کننده",
-                    style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 19),
+                    style: TextStyle(
+                        fontFamily: FIGMA.abrlb,
+                        fontSize: 19,
+                        color: FIGMA.Wrn),
                   ),
                 ),
                 FASELE(value: 2),
                 TimerMinutes(
                   Time: "15",
                   onDataChange: (s) {
-                    TimerSend(s);
+                    TimerSend(s, value);
                   },
                   Time_int: 15,
                 ),
                 TimerMinutes(
                   Time: "30",
                   onDataChange: (s) {
-                    TimerSend(s);
+                    TimerSend(s, value);
                   },
                   Time_int: 30,
                 ),
                 TimerMinutes(
                   Time: "60",
                   onDataChange: (s) {
-                    TimerSend(s);
+                    TimerSend(s, value);
                   },
                   Time_int: 90,
                 ),
                 TimerMinutes(
                   Time: "90",
                   onDataChange: (s) {
-                    TimerSend(s);
+                    TimerSend(s, value);
                   },
                   Time_int: 90,
                 ),
                 TimerMinutes(
                   Time: "999",
                   onDataChange: (s) {
-                    TimerSend(0);
+                    TimerSend(0, value);
                   },
                   Time_int: 999,
                 ),

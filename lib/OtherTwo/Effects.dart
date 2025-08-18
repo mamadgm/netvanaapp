@@ -7,28 +7,39 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/const/figma.dart';
 
-class Effectsscr extends StatelessWidget {
+class Effectsscr extends StatefulWidget {
   const Effectsscr({super.key});
+
+  @override
+  State<Effectsscr> createState() => _EffectsscrState();
+}
+
+class _EffectsscrState extends State<Effectsscr> {
+  @override
+  void initState() {
+    super.initState();
+    // وقتی صفحه ساخته شد، تم‌ها رو بگیر
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final prov = context.read<ProvData>();
+      prov.fetchThemes();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ProvData>(
       builder: (context, value, child) {
-        final themes = getFilteredAndSortedThemes(value, Allthemes);
+        final themes = value.themes.isNotEmpty
+            ? getFilteredAndSortedThemes(value, value.themes)
+            : null;
         return SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(right: 8, left: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 25,
-                  ),
+                  const SizedBox(height: 25),
                   Row(
-                    mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       EasyContainer(
@@ -42,33 +53,37 @@ class Effectsscr extends StatelessWidget {
                           child: const Text(
                             "افکت های اختصاصی",
                             style: TextStyle(
-                                fontFamily: FIGMA.abrlb, fontSize: 28),
+                              fontFamily: FIGMA.abrlb,
+                              fontSize: 28,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 4,
-                  ),
+                  const SizedBox(height: 4),
                   buildFilters(context),
                   GridView.count(
                     crossAxisCount: 2,
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     mainAxisSpacing: 16,
                     crossAxisSpacing: 8,
-                    childAspectRatio: 3 / 4, // Adjust based on your card size
-                    children: themes.map((theme) {
-                      return ThemeCard(
-                        id: theme.value,
-                        picUrl: theme.path,
-                        bigText: theme.name,
-                        smallText: theme.property,
-                        scale: theme.speedScale,
-                      );
-                    }).toList(),
-                  )
+                    childAspectRatio: 3 / 4,
+                    children: themes?.map((theme) {
+                          return ThemeCard(
+                            id: theme.id,
+                            picUrl: getPicUrlByThemeName(theme.name),
+                            bigText: theme.name,
+                            smallText: theme.category.name,
+                            scale: theme.content.isNotEmpty
+                                ? theme.content.first.sp
+                                : 0,
+                            content: theme.content,
+                          );
+                        }).toList() ??
+                        [],
+                  ),
                 ],
               ),
             ),
@@ -79,42 +94,40 @@ class Effectsscr extends StatelessWidget {
   }
 }
 
-List<Widget> buildRows(List<EspTheme> themes) {
-  List<Widget> rows = [];
+List<EspTheme> getFilteredAndSortedThemes(
+    ProvData prov, List<EspTheme> allThemes) {
+  List<EspTheme> filtered = [];
 
-  for (int i = 0; i < themes.length; i += 2) {
-    rows.add(
-      Padding(
-        padding: const EdgeInsets.only(bottom: 16.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: ThemeCard(
-                id: themes[i].value,
-                picUrl: themes[i].path,
-                bigText: themes[i].name,
-                smallText: themes[i].property,
-                scale: themes[i].speedScale,
-              ),
-            ),
-            const SizedBox(width: 32),
-            if (i + 1 < themes.length)
-              Expanded(
-                child: ThemeCard(
-                  id: themes[i + 1].value,
-                  picUrl: themes[i + 1].path,
-                  bigText: themes[i + 1].name,
-                  smallText: themes[i + 1].property,
-                  scale: themes[i].speedScale,
-                ),
-              )
-            else
-              const Expanded(child: SizedBox()), // Empty space for odd count
-          ],
-        ),
-      ),
-    );
+  switch (prov.selectedFilter) {
+    case ThemeFilter.liked:
+      filtered = allThemes.where((t) => prov.Favorites.contains(t.id)).toList();
+      break;
+
+    case ThemeFilter.single:
+      // تم‌هایی که تمام contentهایشان c == null است
+      filtered = allThemes
+          .where((t) => t.content.every((item) => item.c == null))
+          .toList();
+      break;
+
+    case ThemeFilter.multiple:
+      // تم‌هایی که حداقل یکی از contentها c != null است
+      filtered = allThemes
+          .where((t) => t.content.any((item) => item.c != null))
+          .toList();
+      break;
+
+    case ThemeFilter.none:
+      filtered = [...allThemes];
+      break;
   }
 
-  return rows;
+  filtered.sort((a, b) {
+    final aFav = prov.Favorites.contains(a.id);
+    final bFav = prov.Favorites.contains(b.id);
+    if (aFav == bFav) return 0;
+    return aFav ? -1 : 1;
+  });
+
+  return filtered;
 }

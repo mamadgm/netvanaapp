@@ -1,8 +1,10 @@
 // ignore_for_file: non_constant_identifier_names
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
+import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:flutter/material.dart';
+import 'package:netvana/const/themes.dart';
 import 'package:universal_ble/universal_ble.dart';
 
 enum ThemeFilter { liked, single, multiple, none }
@@ -12,7 +14,7 @@ class ProvData extends ChangeNotifier {
   String Device_UUID = "null";
   String Device_NAME = "null";
   bool Isdevicefound = false;
-  int Current_screen = 3;
+  int Current_screen = 0;
 
   List<Duration> SmartTimerTime = [
     const Duration(minutes: 5),
@@ -30,6 +32,9 @@ class ProvData extends ChangeNotifier {
 
   List<int> Favorites = [];
   //netvana
+
+  List<EspTheme> themes = [];
+
   bool nextmoveisconnect = true;
   int current_sync_pos = 0;
   int current_selected_slider = 0;
@@ -48,7 +53,7 @@ class ProvData extends ChangeNotifier {
   int whereami = 0;
   int timeroffvalue = 0;
   int Brightness = 0;
-  int maincycle_color = 0;
+  String maincycle_color = "0XFFFFFF00";
   int maincycle_mode = 0;
   int maincycle_speed = 0;
   int smartdelaysec = 0;
@@ -76,8 +81,12 @@ class ProvData extends ChangeNotifier {
   }
 
   void toggleFilter(ThemeFilter filter) {
-    selectedFilter = (selectedFilter == filter) ? ThemeFilter.none : filter;
-    notifyListeners();
+    if (selectedFilter == filter) {
+      selectedFilter = ThemeFilter.none; // اگر دوباره زدن، فیلتر رو غیرفعال کن
+    } else {
+      selectedFilter = filter;
+    }
+    notifyListeners(); // حتماً این رو بذار تا ویجت‌ها رفرش بشن
   }
 
   void loadFavoritesFromHive() {
@@ -194,16 +203,19 @@ class ProvData extends ChangeNotifier {
   }
 
   void setBrightness(int value) {
+    lampKey.currentState?.shake();
     Brightness = value;
     notifyListeners();
   }
 
-  void setMainCycleColor(int value) {
+  void setMainCycleColor(String value) {
+    lampKey.currentState?.shake();
     maincycle_color = value;
     notifyListeners();
   }
 
   void setMainCycleMode(int value) {
+    lampKey.currentState?.shake();
     maincycle_mode = value;
     notifyListeners();
   }
@@ -305,6 +317,18 @@ class ProvData extends ChangeNotifier {
     );
   }
 
+  Future<void> fetchThemes() async {
+    try {
+      final res = await NetClass().getThemes(token);
+      // res یک List<dynamic> هست
+
+      themes = res.map((e) => EspTheme.fromJson(e)).toList();
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Error fetching themes: $e");
+    }
+  }
+
   final SingleBle singleble = SingleBle.instance; // Use the singleton instance
 
   void Set_Screen_Values(String input) {
@@ -327,7 +351,8 @@ class ProvData extends ChangeNotifier {
     whereami = result[2];
     timeroffvalue = result[3];
     Brightness = result[4];
-    maincycle_color = result[5];
+    // TODO:
+    // maincycle_color = result[5].toString();
     maincycle_mode = result[6];
     maincycle_speed = result[7];
     smartdelaysec = result[8];

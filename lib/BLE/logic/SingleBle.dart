@@ -57,7 +57,10 @@ class SingleBle {
       connectedDeviceId = deviceId;
       debugPrint("Connected to $deviceId");
       await listenToNotifications();
-      return true; // Connection was successful
+
+      await Future.delayed(const Duration(milliseconds: 1000));
+      await loginTheClient();
+      return true;
     } catch (e) {
       debugPrint("Failed to connect to $deviceId");
       debugPrint("Connection failed: $e");
@@ -65,10 +68,10 @@ class SingleBle {
     }
   }
 
-  // void loginTheClient(int loginCounter) {
-  //   sendAval("12345678");
-  //   sendMain("Cl-");
-  // }
+  Future<void> loginTheClient() async {
+    String jsonPayload = jsonEncode({"Scrt": "7382641987836gsjhd"});
+    await SingleBle().sendMain(jsonPayload);
+  }
 
   // Disconnect from the device
   Future<void> disconnect() async {

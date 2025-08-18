@@ -37,10 +37,10 @@ class _MyappState extends State<Myapp> {
   @override
   void initState() {
     mybody = [
-      const ProfileScr(),
-      const Netvana(), // Timers
-      const Effectsscr(), // Effects
       const Nooran(), // Main
+      const Effectsscr(), // Effects
+      const Netvana(), // Timers
+      const ProfileScr(),
     ];
 
     super.initState();

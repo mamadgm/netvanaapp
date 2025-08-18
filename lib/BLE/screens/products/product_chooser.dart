@@ -47,7 +47,7 @@ class Choose_Product extends StatelessWidget {
                   child: Container(
                       child: selectedWdiget == 3
                           ? Image.asset(
-                              "ass/icon.png",
+                              "assets/icon.png",
                               fit: BoxFit.cover,
                             )
                           : Icon(

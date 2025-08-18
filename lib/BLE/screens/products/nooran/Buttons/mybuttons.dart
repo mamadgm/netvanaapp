@@ -32,27 +32,29 @@ class _Sleep_ButtonState extends State<Sleep_Button> {
       },
       margin: 0,
       padding: 4,
+      showBorder: widget.state,
+      borderColor: FIGMA.Prn,
+      borderWidth: 3,
       borderRadius: 17,
-      color: widget.state == true ? FIGMA.Grn : FIGMA.Gray,
+      color: widget.state == true ? FIGMA.Grn : FIGMA.Gray2,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SvgPicture.asset('ass/sleep.svg',
-              width: 32, color: widget.state == true ? FIGMA.Wrn : FIGMA.Grn),
-          Text(
+          SvgPicture.asset('assets/sleep.svg', width: 32, color: FIGMA.Wrn),
+          const Text(
             'خواب',
             style: TextStyle(
               fontFamily: FIGMA.estsb,
               fontSize: 16,
-              color: widget.state == true ? FIGMA.Wrn : FIGMA.Grn,
+              color: FIGMA.Wrn,
             ),
           ),
-          Text(
+          const Text(
             '10%',
             style: TextStyle(
               fontFamily: FIGMA.estre,
               fontSize: 12,
-              color: widget.state == true ? FIGMA.Wrn : FIGMA.Grn,
+              color: FIGMA.Wrn,
             ),
           ),
         ],
@@ -80,7 +82,7 @@ class Power_ButtonState extends State<Power_Button> {
   @override
   Widget build(BuildContext context) {
     return EasyContainer(
-      color: widget.onof == true ? FIGMA.Prn : FIGMA.Gray,
+      color: widget.onof ? FIGMA.Prn : FIGMA.Gray2,
       onTap: () {
         debugPrint("PowerButton Clicked");
         widget.onDataChange();
@@ -89,7 +91,7 @@ class Power_ButtonState extends State<Power_Button> {
       padding: 4,
       borderRadius: 17,
       child: SvgPicture.asset(
-        'ass/power.svg',
+        'assets/power.svg',
         width: 40,
         color: Colors.white,
       ),
@@ -311,5 +313,67 @@ class _CirclecolorState extends State<Circlecolor> {
         );
       },
     );
+  }
+}
+
+class TimerButton extends StatefulWidget {
+  final List<Widget> innerwidgets;
+  final List<Widget> Templete;
+  final bool state;
+  const TimerButton(
+      {Key? key,
+      required this.state,
+      required this.innerwidgets,
+      required this.Templete})
+      : super(key: key);
+
+  @override
+  State<TimerButton> createState() => _NewPopupState2();
+}
+
+class _NewPopupState2 extends State<TimerButton> {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ProvData>(builder: (context, value, child) {
+      return EasyContainer(
+        onTap: () {
+          // debugPrint('Timer Button Clicked');
+          showGeneralDialog(
+            context: context,
+            pageBuilder: (context, animation1, animation) {
+              return AlertDialog(
+                scrollable: true,
+                shape:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+                backgroundColor: FIGMA.Back,
+                content: EasyContainer(
+                  width: MediaQuery.of(context).size.width / 1.1,
+                  height: MediaQuery.of(context).size.height / 1.5,
+                  color: FIGMA.Back.withAlpha(128),
+                  borderWidth: 0,
+                  elevation: 0,
+                  margin: 0,
+                  padding: 0,
+                  borderRadius: 30,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: widget.innerwidgets),
+                ),
+              );
+            },
+          );
+        },
+        margin: 0,
+        padding: 0,
+        borderWidth: 3,
+        showBorder: widget.state,
+        borderColor: FIGMA.Prn,
+        borderRadius: 17,
+        color: widget.state ? FIGMA.Grn : FIGMA.Gray2,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: widget.Templete),
+      );
+    });
   }
 }

@@ -68,7 +68,7 @@ class _ProfileScrState extends State<ProfileScr> {
                         radius: maxScreenWidth * 0.10,
                         backgroundColor: Colors.grey[300],
                         child: Image.asset(
-                          "ass/icon.png",
+                          "assets/icon.png",
                           fit: BoxFit.cover,
                         ),
                       ),

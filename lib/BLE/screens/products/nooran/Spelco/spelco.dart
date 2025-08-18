@@ -40,7 +40,7 @@ class Spelco extends StatelessWidget {
                     child: Container(
                       // padding: const EdgeInsets.symmetric(vertical: 20),
                       decoration: BoxDecoration(
-                        color: isActive ? FIGMA.Wrn : Colors.transparent,
+                        color: isActive ? FIGMA.Gray2 : Colors.transparent,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: SizedBox(
@@ -55,7 +55,7 @@ class Spelco extends StatelessWidget {
                                 style: const TextStyle(
                                   fontFamily: FIGMA.estbo,
                                   fontSize: 18,
-                                  color: FIGMA.Grn,
+                                  color: FIGMA.Wrn,
                                 ),
                               ),
                             const SizedBox(width: 6),

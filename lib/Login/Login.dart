@@ -70,169 +70,165 @@ class _LoginState extends State<Login> {
 
     return Consumer<ProvData>(
         builder: (context, value, child) => Scaffold(
+              backgroundColor: FIGMA.Back,
               resizeToAvoidBottomInset:
                   false, // Prevent resizing when keyboard appears
-              body: Stack(
-                children: [
-                  // Background image
-                  Positioned.fill(
-                    child: Image.asset(
-                      'ass/signin.jpg',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  // Login form
-                  SingleChildScrollView(
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
+              body: SingleChildScrollView(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: _topPadding,
+                        ),
+                        // RTL text
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            SizedBox(
-                              height: _topPadding,
-                            ),
-                            // RTL text
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "خوش آمدید",
-                                      style: TextStyle(
-                                          fontFamily: FIGMA.abrlb,
-                                          fontSize: 24),
-                                      textAlign: TextAlign.end,
-                                      textDirection: TextDirection.rtl,
-                                    ),
-                                    Text(
-                                      "برای ورود به اپلیکیشن رمز عبور\n و ایمیل خود را وارد کنید",
-                                      style: TextStyle(
-                                          fontFamily: FIGMA.estre,
-                                          fontSize: 14,
-                                          color: Colors.grey),
-                                      textAlign: TextAlign.end,
-                                    ),
-                                  ],
+                                Text(
+                                  "خوش آمدید",
+                                  style: TextStyle(
+                                      fontFamily: FIGMA.abrlb,
+                                      fontSize: 24,
+                                      color: FIGMA.Wrn),
+                                  textAlign: TextAlign.end,
+                                  textDirection: TextDirection.rtl,
                                 ),
-                                SizedBox(
-                                  width: 20,
+                                Text(
+                                  "برای ورود به اپلیکیشن رمز عبور\n و شماره خود را وارد کنید",
+                                  style: TextStyle(
+                                      fontFamily: FIGMA.estre,
+                                      fontSize: 14,
+                                      color: FIGMA.Wrn2),
+                                  textAlign: TextAlign.end,
                                 ),
                               ],
                             ),
-                            EasyContainer(
-                              height: GetGoodW(context, 320, 68).height,
-                              width: GetGoodW(context, 320, 68).width,
-                              color: Colors.black12.withOpacity(0),
-                              borderWidth: 0,
-                              elevation: 0,
-                              padding: 0,
-                              borderRadius: 0,
-                              child: TextField(
-                                textAlign: TextAlign.start,
-                                decoration: const InputDecoration(
-                                  hintStyle: TextStyle(
-                                      fontFamily: FIGMA.abrlb,
-                                      fontSize: 12,
-                                      color: Colors.grey),
-                                  hintText: "Mobile",
-                                  border: OutlineInputBorder(),
-                                ),
-                                controller: formemail,
-                              ),
-                            ),
-                            EasyContainer(
-                              height: GetGoodW(context, 320, 68).height,
-                              width: GetGoodW(context, 320, 68).width,
-                              color: Colors.black12.withOpacity(0),
-                              borderWidth: 0,
-                              elevation: 0,
-                              padding: 0,
-                              borderRadius: 0,
-                              child: TextField(
-                                obscureText: true,
-                                textAlign: TextAlign.start,
-                                decoration: const InputDecoration(
-                                  hintStyle: TextStyle(
-                                      fontFamily: FIGMA.abrlb,
-                                      fontSize: 12,
-                                      color: Colors.grey),
-                                  hintText: "Password",
-                                  border: OutlineInputBorder(),
-                                ),
-                                controller: formpass,
-                              ),
-                            ),
-                            EasyContainer(
-                              height: GetGoodW(context, 320, 68).height,
-                              width: GetGoodW(context, 320, 68).width,
-                              color: FIGMA.Prn,
-                              borderWidth: 0,
-                              elevation: 0,
-                              padding: 0,
-                              borderRadius: 17,
-                              child: const Text(
-                                'ورود به نت وانا',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontFamily: FIGMA.abreb),
-                              ),
-                              onTap: () async {
-                                var box = Hive.box(FIGMA.HIVE);
-                                try {
-                                  var loginResponse = await NetClass()
-                                      .login(formemail.text, formpass.text)
-                                      .timeout(const Duration(seconds: 5));
-
-                                  if (loginResponse != null) {
-                                    debugPrint(loginResponse.toString());
-
-                                    box.put("access_token",
-                                        loginResponse["access_token"]);
-
-                                    var meResponse = await NetClass()
-                                        .getProducts(
-                                            loginResponse['access_token'])
-                                        .timeout(const Duration(seconds: 5));
-
-                                    if (meResponse != null) {
-                                      value.setProducts(meResponse["devices"]);
-                                      box.put(
-                                          "products", meResponse["devices"]);
-                                      box.put("name", meResponse["first_name"]);
-                                      box.put("last", meResponse["last_name"]);
-                                      box.put("phone", meResponse["phone"]);
-                                      box.put("token",
-                                          loginResponse['access_token']);
-
-                                      debugPrint("Got Devices");
-
-                                      // TODO: add setup
-                                      setup();
-                                    } else {
-                                      value.Show_Snackbar("ورود نا موفق", 1000);
-                                      debugPrint("getProducts returned null");
-                                    }
-                                  } else {
-                                    value.Show_Snackbar("ورود نا موفق", 1000);
-                                    debugPrint(
-                                        "Login response is null or missing token");
-                                  }
-                                } catch (e) {
-                                  value.Show_Snackbar("ورود نا موفق", 1000);
-                                  debugPrint('Error: $e');
-                                }
-                              },
+                            SizedBox(
+                              width: 20,
                             ),
                           ],
                         ),
-                      ),
+                        EasyContainer(
+                          height: GetGoodW(context, 320, 68).height,
+                          width: GetGoodW(context, 320, 68).width,
+                          color: Colors.black12.withOpacity(0),
+                          borderWidth: 0,
+                          elevation: 0,
+                          padding: 0,
+                          borderRadius: 0,
+                          child: TextField(
+                            style: const TextStyle(
+                                fontFamily: FIGMA.estre,
+                                fontSize: 16,
+                                color: FIGMA.Wrn),
+                            textAlign: TextAlign.start,
+                            decoration: const InputDecoration(
+                              hintStyle: TextStyle(
+                                  fontFamily: FIGMA.abrlb,
+                                  fontSize: 12,
+                                  color: FIGMA.Wrn2),
+                              hintText: "Mobile",
+                              border: OutlineInputBorder(),
+                            ),
+                            controller: formemail,
+                          ),
+                        ),
+                        EasyContainer(
+                          height: GetGoodW(context, 320, 68).height,
+                          width: GetGoodW(context, 320, 68).width,
+                          color: Colors.black12.withOpacity(0),
+                          borderWidth: 0,
+                          elevation: 0,
+                          padding: 0,
+                          borderRadius: 0,
+                          child: TextField(
+                            style: const TextStyle(
+                                fontFamily: FIGMA.estre,
+                                fontSize: 16,
+                                color: FIGMA.Wrn),
+                            obscureText: true,
+                            textAlign: TextAlign.start,
+                            decoration: const InputDecoration(
+                              hintStyle: TextStyle(
+                                  fontFamily: FIGMA.abrlb,
+                                  fontSize: 12,
+                                  color: FIGMA.Wrn2),
+                              hintText: "Password",
+                              border: OutlineInputBorder(),
+                            ),
+                            controller: formpass,
+                          ),
+                        ),
+                        EasyContainer(
+                          height: GetGoodW(context, 320, 68).height,
+                          width: GetGoodW(context, 320, 68).width,
+                          color: FIGMA.Prn,
+                          borderWidth: 0,
+                          elevation: 0,
+                          padding: 0,
+                          borderRadius: 17,
+                          child: const Text(
+                            'ورود به نت وانا',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontFamily: FIGMA.abreb),
+                          ),
+                          onTap: () async {
+                            var box = Hive.box(FIGMA.HIVE);
+                            try {
+                              var loginResponse = await NetClass()
+                                  .login(formemail.text, formpass.text)
+                                  .timeout(const Duration(seconds: 5));
+
+                              if (loginResponse != null) {
+                                debugPrint(loginResponse.toString());
+
+                                box.put("access_token",
+                                    loginResponse["access_token"]);
+
+                                var meResponse = await NetClass()
+                                    .getProducts(loginResponse['access_token'])
+                                    .timeout(const Duration(seconds: 5));
+
+                                if (meResponse != null) {
+                                  value.setProducts(meResponse["devices"]);
+                                  box.put("products", meResponse["devices"]);
+                                  box.put("name", meResponse["first_name"]);
+                                  box.put("last", meResponse["last_name"]);
+                                  box.put("phone", meResponse["phone"]);
+                                  box.put(
+                                      "token", loginResponse['access_token']);
+
+                                  debugPrint("Got Devices");
+
+                                  // TODO: add setup
+                                  setup();
+                                } else {
+                                  value.Show_Snackbar("ورود نا موفق", 1000);
+                                  debugPrint("getProducts returned null");
+                                }
+                              } else {
+                                value.Show_Snackbar("ورود نا موفق", 1000);
+                                debugPrint(
+                                    "Login response is null or missing token");
+                              }
+                            } catch (e) {
+                              value.Show_Snackbar("ورود نا موفق", 1000);
+                              debugPrint('Error: $e');
+                            }
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ));
   }

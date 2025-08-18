@@ -121,4 +121,80 @@ class NetClass {
       throw Exception('Failed to send color: ${response.body}');
     }
   }
+
+  Future<List<dynamic>> getThemes(String token) async {
+    final response = await http.get(
+      Uri.parse('${FIGMA.urlnetwana}/admin/theme/'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body); // اینجا لیست برمیگرده
+    } else {
+      throw Exception('Failed to load themes: ${response.body}');
+    }
+  }
+
+  Future<void> setMode(String token, String id, String mode) async {
+    final url = Uri.parse("${FIGMA.urlnetwana}/admin/theme/set/");
+    final headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token", // If your API requires auth
+    };
+
+    final body = jsonEncode({
+      "theme_id": mode,
+      "device_id": id,
+    });
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        debugPrint("Theme set successfully: ${response.body}");
+      } else {
+        debugPrint(
+            "Failed to set theme: ${response.statusCode} - ${response.body}");
+      }
+    } catch (e) {
+      debugPrint("Error setting theme: $e");
+    }
+  }
+
+  Future<Map<String, dynamic>?> setPower(
+      String token, String id, int power) async {
+    var response = await http.get(
+      Uri.parse('${FIGMA.urlnetwana}/user/theme/$id/power/$power'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to send color: ${response.body}');
+    }
+  }
+
+  Future<Map<String, dynamic>?> setTimer(
+      String token, String id, int timer) async {
+    var response = await http.get(
+      Uri.parse('${FIGMA.urlnetwana}/user/theme/$id/power-timer/$timer'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to send color: ${response.body}');
+    }
+  }
 }

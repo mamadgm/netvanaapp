@@ -1,9 +1,8 @@
 // ignore_for_file: file_names
-
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/themes.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_container/easy_container.dart';
@@ -17,30 +16,59 @@ class ThemeCard extends StatelessWidget {
   final String bigText;
   final String smallText;
   final int scale;
-  const ThemeCard(
-      {Key? key,
-      required this.id,
-      required this.picUrl,
-      required this.bigText,
-      required this.smallText,
-      required this.scale})
-      : super(key: key);
+  final List<ContentItem> content;
+
+  const ThemeCard({
+    Key? key,
+    required this.id,
+    required this.picUrl,
+    required this.bigText,
+    required this.smallText,
+    required this.scale,
+    required this.content,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    //Here?
     return Consumer<ProvData>(
       builder: (context, value, child) {
         final bool isSelected = value.maincycle_mode == id;
         final bool isFavorite = value.Favorites.contains(id);
 
         return EasyContainer(
-          onTap: () {
+          onTap: () async {
+            debugPrint("Tapped Theme id: $id");
+
+            if (value.nextmoveisconnect) {
+              try {
+                await NetClass().setMode(
+                  value.token,
+                  value.Products[0]["id"].toString(),
+                  id.toString(),
+                );
+                debugPrint("✅ Theme set successfully");
+              } catch (e) {
+                debugPrint("⚠️ Failed to set theme: $e");
+              }
+            }
+
+            // Extract m value for BLE
+            int modeValue = 0;
+
+            modeValue = content[0].m;
+
+            // Prepare BLE payload
             String jsonPayload = jsonEncode({
               "Mode": [
-                {"s": 0, "e": 15, "m": id, "sc": scale},
+                {
+                  "s": 0,
+                  "e": 15,
+                  "m": modeValue,
+                  "sc": scale,
+                }
               ]
             });
+
             SingleBle().sendMain(jsonPayload);
           },
           padding: 8,
@@ -49,7 +77,6 @@ class ThemeCard extends StatelessWidget {
           color: isSelected ? FIGMA.Prn : FIGMA.Back,
           child: Column(
             children: [
-              // 1:1 Aspect Ratio Image
               AspectRatio(
                 aspectRatio: 1,
                 child: ClipRRect(
@@ -60,14 +87,10 @@ class ThemeCard extends StatelessWidget {
                   ),
                 ),
               ),
-
               const SizedBox(height: 12),
-
-              // Bottom Row: Text + Icon
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Icon (left)
                   IconButton(
                     icon: Icon(
                       isFavorite
@@ -82,16 +105,11 @@ class ThemeCard extends StatelessWidget {
                       } else {
                         value.Favorites.add(id);
                       }
-
-                      // Save updated favorites list to Hive
                       final sdcard = Hive.box(FIGMA.HIVE);
                       sdcard.put('Favorites', value.Favorites.toList());
-
                       value.hand_update();
                     },
                   ),
-
-                  // Texts (right)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -159,7 +177,7 @@ Widget buildFilters(BuildContext context) {
           disabledColor: FIGMA.Back,
           selectedColor: Colors.white,
           label: Text(
-            "پاسیو",
+            "اکتیو",
             style:
                 prov.selectedFilter == ThemeFilter.single ? enabled : disabled,
           ),
@@ -175,7 +193,7 @@ Widget buildFilters(BuildContext context) {
           disabledColor: FIGMA.Back,
           selectedColor: Colors.white,
           label: Text(
-            "اکتیو",
+            "پاسیو",
             style: prov.selectedFilter == ThemeFilter.multiple
                 ? enabled
                 : disabled,
@@ -186,34 +204,4 @@ Widget buildFilters(BuildContext context) {
       ],
     ),
   );
-}
-
-List<EspTheme> getFilteredAndSortedThemes(
-    ProvData prov, List<EspTheme> allThemes) {
-  List<EspTheme> filtered = [];
-
-  switch (prov.selectedFilter) {
-    case ThemeFilter.liked:
-      filtered =
-          allThemes.where((t) => prov.Favorites.contains(t.value)).toList();
-      break;
-    case ThemeFilter.single:
-      filtered = allThemes.where((t) => t.isColorSingle).toList();
-      break;
-    case ThemeFilter.multiple:
-      filtered = allThemes.where((t) => !t.isColorSingle).toList();
-      break;
-    case ThemeFilter.none:
-      filtered = [...allThemes];
-  }
-
-  // Move favorites to top
-  filtered.sort((a, b) {
-    final aFav = prov.Favorites.contains(a.value);
-    final bFav = prov.Favorites.contains(b.value);
-    if (aFav == bFav) return 0;
-    return aFav ? -1 : 1;
-  });
-
-  return filtered;
 }

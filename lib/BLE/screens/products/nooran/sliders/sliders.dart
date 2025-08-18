@@ -71,8 +71,8 @@ class _Color_Picker_HSVState extends State<Color_Picker_HSV> {
               ),
             ),
             child: HuePicker(
-              thumbShape: HueSliderThumbShape(
-                  radius: 28, color: maincolor, borderColor: maincolor),
+              thumbShape: const HueSliderThumbShape(
+                  radius: 28, color: FIGMA.Wrn, borderColor: FIGMA.Wrn),
               trackHeight: 10,
               initialColor: HSVColor.fromColor(maincolor),
               onChanged: (color) {
