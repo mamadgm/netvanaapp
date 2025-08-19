@@ -124,7 +124,7 @@ class NetClass {
 
   Future<List<dynamic>> getThemes(String token) async {
     final response = await http.get(
-      Uri.parse('${FIGMA.urlnetwana}/admin/theme/'),
+      Uri.parse('${FIGMA.urlnetwana}/user/theme/'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -195,6 +195,30 @@ class NetClass {
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to send color: ${response.body}');
+    }
+  }
+
+  Future<Map<String, dynamic>?> getDeviceVariables(
+      String token, String deviceId) async {
+    try {
+      var response = await http.get(
+        Uri.parse('${FIGMA.urlnetwana}/devices/$deviceId/variables/'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        debugPrint('API Response: $responseData');
+        return responseData;
+      } else {
+        throw Exception('Failed to get device variables: ${response.body}');
+      }
+    } catch (e) {
+      debugPrint('Error fetching device variables: $e');
+      return null;
     }
   }
 }

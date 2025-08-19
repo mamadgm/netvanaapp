@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/screens/products/nooran/Nooran.dart';
 import 'package:netvana/Login/Login.dart';
+import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/OtherTwo/Effects.dart';
 import 'package:netvana/OtherTwo/Netvana.dart';
 import 'package:netvana/settingscreen/profile.dart';
@@ -47,7 +48,7 @@ class _MyappState extends State<Myapp> {
     setup();
   }
 
-  void setup() {
+  Future<void> setup() async {
     final funcy = context.read<ProvData>();
     var sdcard = Hive.box(FIGMA.HIVE);
 
@@ -74,6 +75,7 @@ class _MyappState extends State<Myapp> {
         funcy.Defalult_colors[i] =
             sdcard.get("COLOR$i", defaultValue: 0xFFFFFF);
       }
+      await funcy.getDetailsFromNet();
     } else {
       debugPrint("no token");
     }

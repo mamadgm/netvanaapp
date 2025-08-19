@@ -58,6 +58,7 @@ class _ProfileScrState extends State<ProfileScr> {
             height: MediaQuery.of(context).size.height * 0.90,
             child: Column(
               children: [
+                const SizedBox(height: 8),
                 // Picture
                 SizedBox(
                   height: 250,
@@ -66,7 +67,7 @@ class _ProfileScrState extends State<ProfileScr> {
                       const SizedBox(height: 8.0),
                       CircleAvatar(
                         radius: maxScreenWidth * 0.10,
-                        backgroundColor: Colors.grey[300],
+                        backgroundColor: FIGMA.Wrn,
                         child: Image.asset(
                           "assets/icon.png",
                           fit: BoxFit.cover,
@@ -78,18 +79,18 @@ class _ProfileScrState extends State<ProfileScr> {
                         value.name_last,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                          fontSize: 28.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            fontSize: 28.0,
+                            fontWeight: FontWeight.bold,
+                            color: FIGMA.Wrn2),
                       ),
                       const SizedBox(height: 8.0),
                       // Email
                       Text(
                         value.phone_number,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 18.0,
-                          color: Colors.grey[700],
+                          color: FIGMA.Wrn2,
                         ),
                       ),
                       const SizedBox(height: 8.0),

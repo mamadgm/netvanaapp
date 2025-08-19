@@ -32,7 +32,7 @@ class NewTab extends StatelessWidget {
           ),
           leadingWidth: 50,
           centerTitle: true,
-          backgroundColor: FIGMA.Back,
+          backgroundColor: FIGMA.Gray,
           title: Directionality(
             textDirection: TextDirection.rtl,
             child: Text(

@@ -1,4 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
+import 'dart:convert';
+
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/Network/netmain.dart';
@@ -13,6 +15,7 @@ class ProvData extends ChangeNotifier {
   //App
   String Device_UUID = "null";
   String Device_NAME = "null";
+  String Device_SSID = "null";
   bool Isdevicefound = false;
   int Current_screen = 0;
 
@@ -53,7 +56,7 @@ class ProvData extends ChangeNotifier {
   int whereami = 0;
   int timeroffvalue = 0;
   int Brightness = 0;
-  String maincycle_color = "0XFFFFFF00";
+  String maincycle_color = "0xFFFFFF00";
   int maincycle_mode = 0;
   int maincycle_speed = 0;
   int smartdelaysec = 0;
@@ -66,7 +69,7 @@ class ProvData extends ChangeNotifier {
   String name_last = 'mamad';
   String phone_number = "ss";
   String token = "empty";
-
+  String DeviceBleName = "";
   List Products = [];
   //Test
   String TEST_DATA = "EMPTY";
@@ -305,13 +308,13 @@ class ProvData extends ChangeNotifier {
   void Show_Snackbar(String value, int dur) {
     scaffoldMessengerKey.currentState?.showSnackBar(
       SnackBar(
-        backgroundColor: FIGMA.Gray,
+        backgroundColor: FIGMA.Gray2,
         duration: Duration(milliseconds: dur),
         content: Text(
           value,
           textAlign: TextAlign.end,
           style: const TextStyle(
-              fontFamily: FIGMA.abrlb, fontSize: 12, color: FIGMA.Grn),
+              fontFamily: FIGMA.abrlb, fontSize: 14, color: FIGMA.Wrn),
         ),
       ),
     );
@@ -332,7 +335,9 @@ class ProvData extends ChangeNotifier {
   final SingleBle singleble = SingleBle.instance; // Use the singleton instance
 
   void Set_Screen_Values(String input) {
-    debugPrint(input);
+    debugPrint("Received encoded string: $input");
+
+    // Parse numeric fields (A to L)
     List<int> result = [];
     RegExp regExp = RegExp(r'([A-L])(\d+)');
     Iterable<RegExpMatch> matches = regExp.allMatches(input);
@@ -341,25 +346,94 @@ class ProvData extends ChangeNotifier {
       String number = match.group(2)!;
       result.add(int.parse(number));
     }
+
+    // Parse device name (M field)
+    String deviceName = "Unknown";
+    RegExp nameRegExp = RegExp(r'M([A-Za-z0-9_-]+)');
+    var nameMatch = nameRegExp.firstMatch(input);
+    if (nameMatch != null) {
+      deviceName = nameMatch.group(1)!;
+      debugPrint("Parsed device name: $deviceName");
+    } else {
+      debugPrint("No device name found in input string");
+    }
+
+    // Assign values
     TEST_DATA = "";
-    for (var i = 0; i < 12; i++) {
-      // debugPrint("letter : $i is ${result[i]}");
+    for (var i = 0; i < result.length; i++) {
       TEST_DATA = "$TEST_DATA $i -> ${result[i]} \n";
     }
-    isdeviceon = result[0].toInt() == 1;
-    isnooranNet = result[1].toInt() == 1;
-    whereami = result[2];
-    timeroffvalue = result[3];
-    Brightness = result[4];
-    // TODO:
-    // maincycle_color = result[5].toString();
-    maincycle_mode = result[6];
-    maincycle_speed = result[7];
-    smartdelaysec = result[8];
-    smarttimerpos = result[9];
-    smarttimercolor = result[10];
-    ESPVersion = result[11];
+
+    // Ensure result has enough values to avoid index errors
+    isdeviceon = result.length > 0 ? result[0] == 1 : false;
+    isnooranNet = result.length > 1 ? result[1] == 1 : false;
+    whereami = result.length > 2 ? result[2] : 0;
+    timeroffvalue = result.length > 3 ? result[3] : 0;
+    Brightness = result.length > 4 ? result[4] : 0;
+    maincycle_color = result.length > 5 ? result[5].toString() : "";
+    maincycle_mode = result.length > 6 ? result[6] : 0;
+    maincycle_speed = result.length > 7 ? result[7] : 0;
+    smartdelaysec = result.length > 8 ? result[8] : 0;
+    smarttimerpos = result.length > 9 ? result[9] : 0;
+    smarttimercolor = result.length > 10 ? result[10] : 0;
+    ESPVersion = result.length > 11 ? result[11] : 0;
+    DeviceBleName = deviceName; // Store the parsed device name
+
+    debugPrint("Device mode: $maincycle_mode");
+    debugPrint("Device color: $maincycle_color");
+    debugPrint("Device BLE Name: $DeviceBleName");
+    Show_Snackbar(DeviceBleName, 300);
+
     notifyListeners();
+
+    if (deviceName !=
+        "${Products[0]["category_name"] + "-" + Products[0]["part_number"].toString()}") {
+      SingleBle.instance.disconnect();
+      return;
+    }
+  }
+
+  void Set_Screen_Values_From_JSON(Map<String, dynamic>? jsonResponse) {
+    if (jsonResponse == null || jsonResponse['data'] == null) {
+      debugPrint("Invalid or null JSON response");
+      return;
+    }
+
+    final data = jsonResponse['data'];
+
+    // Assign values from JSON, providing defaults if fields are missing
+    isdeviceon = data['power'] as bool? ?? false;
+    isnooranNet = false; // Not present in JSON, set to default
+    whereami = 0; // Not present in JSON, set to default
+    timeroffvalue = data['timeroff'] as int? ?? 0;
+    Brightness = data['bright'] as int? ?? 0;
+    maincycle_color = (data['color'] as int? ?? 0).toString();
+    maincycle_mode = data['theme'] != null
+        ? (jsonDecode(data['theme']) as List<dynamic>).isNotEmpty
+            ? jsonDecode(data['theme'])[0]['m'] as int? ?? 0
+            : 0
+        : 0; // Parse theme string and extract 'm'
+    maincycle_speed = data['speed'] as int? ?? 0;
+    smartdelaysec = 0; // Not present in JSON, set to default
+    smarttimerpos = 0; // Not present in JSON, set to default
+    smarttimercolor = 0; // Not present in JSON, set to default
+    Device_SSID = data['ssid'] as String;
+    ESPVersion = int.tryParse(data['version'] as String? ?? '0') ?? 0;
+
+    debugPrint("device mode $maincycle_mode");
+    debugPrint("device color $maincycle_color");
+
+    notifyListeners();
+  }
+
+  Future<void> getDetailsFromNet() async {
+    try {
+      var result = await NetClass()
+          .getDeviceVariables(token, Products[0]["id"].toString());
+      Set_Screen_Values_From_JSON(result);
+    } catch (e) {
+      debugPrint("Error in vars $e");
+    }
   }
 
   void hand_update() {

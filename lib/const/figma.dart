@@ -14,7 +14,7 @@ class FIGMA {
   static const Orn = Color(0xFFF3593A);
   static const Grn = Color(0xFF001916);
   static const Wrn = Color(0xFFFFFFFF);
-  static const Wrn2 = Color(0xFFFFFFFF);
+  static const Wrn2 = Color(0xFFFAFAFA);
   static const Back = Color(0xFF0D0D0D);
   static const Gray = Color(0xFF121212);
   static const Gray2 = Color(0xFF242424);
@@ -53,4 +53,29 @@ Widget FASELE({required int value}) {
     flex: value,
     child: SizedBox(),
   );
+}
+
+Color colorFromString(String colorStr) {
+  colorStr = colorStr.trim();
+
+  // Case 1: hex string starting with 0x / 0X / #
+  if (colorStr.startsWith("0x") ||
+      colorStr.startsWith("0X") ||
+      colorStr.startsWith("#")) {
+    String cleaned = colorStr.toUpperCase().replaceAll("#", "");
+    if (cleaned.startsWith("0X")) cleaned = cleaned.substring(2);
+    if (cleaned.length == 6) cleaned = "FF$cleaned"; // add alpha
+    return Color(int.parse(cleaned, radix: 16));
+  }
+
+  // Case 2: decimal number string
+  int? value = int.tryParse(colorStr);
+  if (value != null) {
+    // Ensure alpha channel exists
+    if (value <= 0xFFFFFF) value |= 0xFF000000;
+    return Color(value);
+  }
+
+  // Fallback to white
+  return const Color(0xFFFFFFFF);
 }

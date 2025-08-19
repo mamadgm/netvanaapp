@@ -46,16 +46,16 @@ class _EffectsscrState extends State<Effectsscr> {
                         color: FIGMA.Back,
                         borderWidth: 0,
                         elevation: 0,
-                        customMargin: const EdgeInsets.only(right: 36),
+                        customMargin: const EdgeInsets.only(right: 24),
                         padding: 0,
                         child: Container(
                           color: FIGMA.Back,
                           child: const Text(
                             "افکت های اختصاصی",
                             style: TextStyle(
-                              fontFamily: FIGMA.abrlb,
-                              fontSize: 28,
-                            ),
+                                fontFamily: FIGMA.abrlb,
+                                fontSize: 28,
+                                color: FIGMA.Wrn),
                           ),
                         ),
                       ),

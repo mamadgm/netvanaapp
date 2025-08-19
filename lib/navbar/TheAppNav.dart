@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,9 @@ class _TheAppNavState extends State<TheAppNav> {
                 GButton(
                   iconSize: iconSize,
                   icon: Icons.home_rounded,
+                  leading: SvgPicture.asset("assets/Home.svg",
+                      color:
+                          value.Current_screen == 0 ? FIGMA.Prn2 : FIGMA.Gray2),
                   text: "خانه",
                   textStyle: const TextStyle(
                       fontFamily: FIGMA.estbo, fontSize: 16, color: FIGMA.Prn2),
@@ -50,6 +54,9 @@ class _TheAppNavState extends State<TheAppNav> {
                 GButton(
                   iconSize: iconSize,
                   icon: LucideIcons.box,
+                  leading: SvgPicture.asset("assets/Effects.svg",
+                      color:
+                          value.Current_screen == 1 ? FIGMA.Prn2 : FIGMA.Gray2),
                   text: "افکت ها",
                   textStyle: const TextStyle(
                       fontFamily: FIGMA.estbo, fontSize: 16, color: FIGMA.Prn2),
@@ -57,6 +64,9 @@ class _TheAppNavState extends State<TheAppNav> {
                 GButton(
                   iconSize: iconSize,
                   icon: Icons.wifi_rounded,
+                  leading: SvgPicture.asset("assets/Netvana.svg",
+                      color:
+                          value.Current_screen == 2 ? FIGMA.Prn2 : FIGMA.Gray2),
                   text: "نت وانا",
                   textStyle: const TextStyle(
                       fontFamily: FIGMA.estbo, fontSize: 16, color: FIGMA.Prn2),
@@ -64,6 +74,9 @@ class _TheAppNavState extends State<TheAppNav> {
                 GButton(
                   iconSize: iconSize,
                   icon: Icons.settings_rounded,
+                  leading: SvgPicture.asset("assets/Setting.svg",
+                      color:
+                          value.Current_screen == 3 ? FIGMA.Prn2 : FIGMA.Gray2),
                   text: "تنظیمات",
                   textStyle: const TextStyle(
                       fontFamily: FIGMA.estbo, fontSize: 16, color: FIGMA.Prn2),

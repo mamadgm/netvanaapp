@@ -13,6 +13,7 @@ import 'package:netvana/Network/netmain.dart';
 
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/cylander.dart';
+import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_container/easy_container.dart';
@@ -79,7 +80,6 @@ class _NooranState extends State<Nooran> {
           String jsonPayload = jsonEncode({"Lc": p0});
           SingleBle().sendMain(jsonPayload);
         },
-        color: "0xFFFF5000",
         netvana: 1,
       ),
     ];
@@ -94,6 +94,8 @@ class _NooranState extends State<Nooran> {
 
   @override
   Widget build(BuildContext context) {
+    var sdcard = Hive.box(FIGMA.HIVE);
+
     return Consumer<ProvData>(builder: (context, value, child) {
       return SafeArea(
         child: Padding(
@@ -137,9 +139,9 @@ class _NooranState extends State<Nooran> {
                                   width: GetGoodW(context, 73, 73).width,
                                   color: FIGMA.Back,
                                   showBorder: true,
-                                  borderWidth: 3,
+                                  borderWidth: 2,
                                   borderColor: FIGMA.Gray2,
-                                  borderRadius: 17,
+                                  borderRadius: 20,
                                   elevation: 0,
                                   margin: 0,
                                   padding: 4,
@@ -204,9 +206,9 @@ class _NooranState extends State<Nooran> {
                                     width: GetGoodW(context, 73, 73).width,
                                     color: FIGMA.Back,
                                     showBorder: true,
-                                    borderWidth: 3,
+                                    borderWidth: 2,
                                     borderColor: FIGMA.Gray2,
-                                    borderRadius: 17,
+                                    borderRadius: 20,
                                     elevation: 0,
                                     margin: 0,
                                     padding: 4,
@@ -240,21 +242,12 @@ class _NooranState extends State<Nooran> {
                                         var result = await SingleBle()
                                             .startScanAndGetDevice();
                                         String? selectedDeviceId;
-                                        String? selectedDeviceName;
                                         if (result != null) {
                                           selectedDeviceId = result['deviceId'];
-                                          selectedDeviceName = result['name'];
                                         }
 
                                         if (selectedDeviceId == null) {
                                           debugPrint("No device selected.");
-                                          return;
-                                        } else if (!value.Products.any((product) =>
-                                            "${product["category_name"]}-${product["part_number"]}" ==
-                                            selectedDeviceName)) {
-                                          value.Show_Snackbar(
-                                              "این دستگاه مال شما نیست", 1000);
-                                          debugPrint("YOHO GET OUT");
                                           return;
                                         } else {
                                           debugPrint("Wellcome");
@@ -361,32 +354,46 @@ class _NooranState extends State<Nooran> {
                       ],
                     ),
                     EasyContainer(
-                      color: (!value.nextmoveisconnect | value.isConnectedWifi)
-                          ? FIGMA.Grn
-                          : FIGMA.Gray2,
+                      color: FIGMA.Gray2,
                       height: GetGoodW(context, 165, 192).height,
                       width: GetGoodW(context, 165, 192).width,
                       margin: 4,
                       padding: 0,
-                      showBorder:
-                          (!value.nextmoveisconnect | value.isConnectedWifi),
+                      showBorder: false,
                       borderWidth: 3,
                       borderColor: FIGMA.Prn,
                       borderRadius: 17,
-                      child: LampWidget(
-                        glowIntensity: value.Brightness.toDouble() / 50,
-                        key: lampKey,
-                        //        0xFF5000
-
-                        lampColor: colorFromString(value.maincycle_color),
-                        height: GetGoodW(context, 80, 150).height,
-                        width: GetGoodW(context, 80, 150).width,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          LampWidget(
+                            glowIntensity: (!value.nextmoveisconnect |
+                                    value.isConnectedWifi)
+                                ? value.Brightness.toDouble() / 50
+                                : 2,
+                            key: lampKey,
+                            lampColor: (!value.nextmoveisconnect |
+                                    value.isConnectedWifi)
+                                ? colorFromString(value.maincycle_color)
+                                : colorFromString("0xFF555555"),
+                            height: GetGoodW(context, 80, 150).height,
+                            width: GetGoodW(context, 80, 150).width,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Text(
+                              "${value.Products[0]['category_name']}-${value.Products[0]['part_number']}",
+                              style: TextStyle(color: FIGMA.Wrn2),
+                            ),
+                          )
+                        ],
                       ),
-                      onTap: () async {},
+                      onTap: () async {
+                        await value.getDetailsFromNet();
+                      },
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 20),
                 Directionality(
                   textDirection: TextDirection.rtl,
@@ -421,302 +428,61 @@ class _NooranState extends State<Nooran> {
                   child: Sliderwidgets[value.current_selected_slider],
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 4,
                 ),
-                // EasyContainer(
-                //   height: 80,
-                //   color: FIGMA.Gray,
-                //   borderWidth: 0,
-                //   elevation: 0,
-                //   customMargin: const EdgeInsets.only(
-                //       right: 16, left: 16, top: 6, bottom: 6),
-                //   padding: 6,
-                //   borderRadius: 17,
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: [
-                //       Row(
-                //         children: List.generate(
-                //           5,
-                //           (index) {
-                //             return Padding(
-                //               padding: const EdgeInsets.only(right: 8, left: 8),
-                //               child: Circlecolor(
-                //                 color: value.Defalult_colors[index],
-                //                 onDataChange: (String f) {
-                //                   value.set_Defalult_colors(
-                //                       int.parse(f), index);
-                //                   sdcard.put("COLOR$index", int.parse(f));
-                //                   String jsonPayload = jsonEncode({"Lc": f});
-                //                   SingleBle().sendMain(jsonPayload);
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: EasyContainer(
+                    // height: 80,
+                    color: FIGMA.Gray,
+                    borderWidth: 0,
+                    elevation: 0,
+                    customMargin: const EdgeInsets.only(
+                        right: 16, left: 16, top: 6, bottom: 6),
+                    padding: 6,
+                    borderRadius: 17,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: List.generate(
+                            5,
+                            (index) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 8, left: 8),
+                                child: Circlecolor(
+                                  color: value.Defalult_colors[index],
+                                  onDataChange: (String f) {
+                                    value.set_Defalult_colors(
+                                        int.parse(f), index);
+                                    sdcard.put("COLOR$index", int.parse(f));
 
-                //                   debugPrint(f);
-                //                 },
-                //               ),
-                //             );
-                //           },
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
+                                    value.setMainCycleColor(f);
+                                    value.nextmoveisconnect
+                                        ? NetClass().setColor(
+                                            value.token,
+                                            value.Products[0]["id"].toString(),
+                                            f)
+                                        : null;
+                                    String jsonPayload = jsonEncode({"Lc": f});
+                                    SingleBle().sendMain(jsonPayload);
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ),
       );
     });
-  }
-
-  Color colorFromString(String colorStr) {
-    colorStr = colorStr.trim();
-
-    // Case 1: hex string starting with 0x / 0X / #
-    if (colorStr.startsWith("0x") ||
-        colorStr.startsWith("0X") ||
-        colorStr.startsWith("#")) {
-      String cleaned = colorStr.toUpperCase().replaceAll("#", "");
-      if (cleaned.startsWith("0X")) cleaned = cleaned.substring(2);
-      if (cleaned.length == 6) cleaned = "FF$cleaned"; // add alpha
-      return Color(int.parse(cleaned, radix: 16));
-    }
-
-    // Case 2: decimal number string
-    int? value = int.tryParse(colorStr);
-    if (value != null) {
-      // Ensure alpha channel exists
-      if (value <= 0xFFFFFF) value |= 0xFF000000;
-      return Color(value);
-    }
-
-    // Fallback to white
-    return const Color(0xFFFFFFFF);
-  }
-
-  void showWiFiDialog(BuildContext context) {
-    bool connected = false;
-    final ssidController = TextEditingController();
-    final passController = TextEditingController();
-
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: "popup",
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (context, animation1, animation2) {
-        return Center(
-          child: AlertDialog(
-            scrollable: true,
-            shape: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide.none,
-            ),
-            backgroundColor: FIGMA.Back,
-            content: StatefulBuilder(builder: (context, setState) {
-              return EasyContainer(
-                width: MediaQuery.of(context).size.width / 1.1,
-                height: MediaQuery.of(context).size.height * 0.5,
-                color: FIGMA.Back,
-                borderWidth: 0,
-                elevation: 0,
-                margin: 0,
-                padding: 0,
-                borderRadius: 30,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: connected
-                      ? [
-                          const Icon(Icons.check_circle,
-                              size: 80, color: Colors.green),
-                          const Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: Text(
-                              "مراحل اتصال تکمیل شد!",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: FIGMA.abrlb,
-                                  color: FIGMA.Wrn),
-                            ),
-                          ),
-                          EasyContainer(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            height: 95,
-                            borderRadius: 15,
-                            color: FIGMA.Orn,
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text("خروج",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontFamily: FIGMA.abreb,
-                                    color: FIGMA.Wrn)),
-                          ),
-                        ]
-                      : [
-                          const Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              "اتصال به شبکه نوروانا",
-                              style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: FIGMA.abrlb,
-                                  color: FIGMA.Wrn),
-                            ),
-                          ),
-                          const Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              "لطفا کادر های زیر را برای اتصال کامل کنید",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: FIGMA.abrlb,
-                                  color: FIGMA.Wrn),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextField(
-                              controller: ssidController,
-                              obscureText: true,
-                              textAlign: TextAlign.right, // For RTL alignment
-                              decoration: InputDecoration(
-                                hintText: " WiFi نام", // Or "Password"
-                                hintStyle: const TextStyle(color: FIGMA.Wrn2),
-
-                                filled: true,
-                                fillColor: Colors.white,
-
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 22,
-                                ), // Big height/width
-
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      12), // Curved border
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade400),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade400),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                      color: Colors
-                                          .grey.shade700), // Darker on focus
-                                ),
-
-                                // Remove all effects (e.g., shadows, glow)
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                              ),
-                              cursorColor: Colors.grey.shade700,
-                              style: const TextStyle(
-                                  fontSize: 16, color: FIGMA.Wrn),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextField(
-                              controller: passController,
-                              obscureText: true,
-                              textAlign: TextAlign.right, // For RTL alignment
-                              decoration: InputDecoration(
-                                hintText: "رمز عبور", // Or "Password"
-                                hintStyle: const TextStyle(color: FIGMA.Wrn2),
-
-                                filled: true,
-                                fillColor: Colors.white,
-
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 22,
-                                ), // Big height/width
-
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      12), // Curved border
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade400),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade400),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                      color: Colors
-                                          .grey.shade700), // Darker on focus
-                                ),
-
-                                // Remove all effects (e.g., shadows, glow)
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                              ),
-                              cursorColor: Colors.grey.shade700,
-                              style: const TextStyle(
-                                  fontSize: 16, color: FIGMA.Wrn),
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              EasyContainer(
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                height: 95,
-                                borderRadius: 15,
-                                color: FIGMA.Prn,
-                                onTap: () {
-                                  if (ssidController.text.isNotEmpty &&
-                                      passController.text.isNotEmpty) {
-                                    setState(() {
-                                      String jsonPayload = jsonEncode({
-                                        "Np": passController.text,
-                                        "Ns": ssidController.text,
-                                      });
-                                      SingleBle().sendMain(jsonPayload);
-                                      connected = true;
-                                    });
-                                  }
-                                },
-                                child: const Text("ارسال اطلاعات",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: FIGMA.abreb,
-                                        color: FIGMA.Wrn)),
-                              ),
-                              const SizedBox(height: 1),
-                              EasyContainer(
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                height: 95,
-                                borderRadius: 15,
-                                color: FIGMA.Orn,
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text("خروج",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: FIGMA.abreb,
-                                        color: FIGMA.Wrn)),
-                              ),
-                            ],
-                          ),
-                        ],
-                ),
-              );
-            }),
-          ),
-        );
-      },
-    );
   }
 }
 

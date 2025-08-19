@@ -488,7 +488,7 @@ class _SettingsDialogState extends State<_SettingsDialog> {
                     }
                   });
                 },
-                color: selectedColor,
+                // color: selectedColor,
                 netvana: 1,
               ),
             ),

@@ -1,6 +1,10 @@
 // ignore_for_file: non_constant_identifier_names, file_names
 
 import 'package:easy_container/easy_container.dart';
+import 'package:lucide_icons/lucide_icons.dart';
+import 'package:netvana/const/figma.dart';
+import 'package:netvana/customwidgets/cylander.dart';
+import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:provider/provider.dart';
 
@@ -13,25 +17,153 @@ class Netvana extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(child: Consumer<ProvData>(
       builder: (context, value, child) {
-        return const Padding(
-          padding: EdgeInsets.all(16),
-          child: SingleChildScrollView(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              SizedBox(height: 2),
-              EasyContainer(
+        return Stack(children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: SizedBox(
+                      height: GetGoodW(context, 160, 300).height,
+                      width: GetGoodW(context, 160, 300).width,
+                      child: LampWidget(
+                        glowIntensity: 3,
+                        lampColor:
+                            (!value.nextmoveisconnect | value.isConnectedWifi)
+                                ? colorFromString(value.maincycle_color)
+                                : colorFromString("0xFF555555"),
+                        height: GetGoodW(context, 80, 150).height,
+                        width: GetGoodW(context, 80, 150).width,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: EasyContainer(
+                  borderRadius: 40,
                   elevation: 0,
-                  color: Colors.white,
-                  padding: 10,
-                  margin: 12,
-                  borderRadius: 15,
-                  child: WifiTile(
-                    isConnected: true,
-                    ssid: "UTEL_GM",
-                  )),
-            ]),
+                  margin: 0,
+                  padding: 15,
+                  color: FIGMA.Back,
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      EasyContainer(
+                        elevation: 0,
+                        height: 80,
+                        borderRadius: 15,
+                        padding: 20,
+                        showBorder: true,
+                        borderColor: FIGMA.Gray2,
+                        color: FIGMA.Back,
+                        onTap: () {
+                          showWiFiDialog(context);
+                        },
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Icon(
+                              Icons.arrow_back,
+                              color: FIGMA.Gray2,
+                              size: 32,
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "وای فای جدید",
+                                  style: TextStyle(
+                                      color: FIGMA.Wrn,
+                                      fontFamily: FIGMA.estre,
+                                      fontSize: 18),
+                                ),
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                Icon(
+                                  LucideIcons.plus,
+                                  color: FIGMA.Wrn,
+                                  size: 32,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
+                ),
+              )
+            ],
           ),
-        );
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                EasyContainer(
+                  height: 100,
+                  showBorder: true,
+                  borderColor: FIGMA.Gray2,
+                  color: FIGMA.Gray,
+                  padding: 16,
+                  elevation: 5,
+                  shadowColor: FIGMA.Gray2,
+                  borderWidth: 3,
+                  borderRadius: 30,
+                  child: Row(
+                    children: [
+                      const Text(
+                        "wifi :  ",
+                        style: TextStyle(
+                            color: FIGMA.Wrn2, fontFamily: FIGMA.estsb),
+                      ),
+                      Text(
+                        value.Device_SSID,
+                        style: const TextStyle(
+                            color: FIGMA.Wrn,
+                            fontFamily: FIGMA.estsb,
+                            fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+                const EasyContainer(
+                  height: 100,
+                  showBorder: true,
+                  borderColor: FIGMA.Gray2,
+                  color: FIGMA.Gray,
+                  padding: 16,
+                  elevation: 5,
+                  shadowColor: FIGMA.Gray2,
+                  borderWidth: 3,
+                  borderRadius: 30,
+                  child: Row(
+                    children: [
+                      Text(
+                        "عالی",
+                        style: TextStyle(
+                            color: FIGMA.Prn2, fontFamily: FIGMA.estsb),
+                      ),
+                      SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        "وضعیت اتصال",
+                        style: TextStyle(
+                            color: FIGMA.Wrn, fontFamily: FIGMA.estsb),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        ]);
       },
     ));
   }

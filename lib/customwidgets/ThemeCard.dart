@@ -32,7 +32,7 @@ class ThemeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ProvData>(
       builder: (context, value, child) {
-        final bool isSelected = value.maincycle_mode == id;
+        final bool isSelected = value.maincycle_mode == content[0].m;
         final bool isFavorite = value.Favorites.contains(id);
 
         return EasyContainer(
@@ -74,7 +74,7 @@ class ThemeCard extends StatelessWidget {
           padding: 8,
           borderRadius: 15,
           elevation: isSelected ? 5 : 0,
-          color: isSelected ? FIGMA.Prn : FIGMA.Back,
+          color: isSelected ? FIGMA.Prn : FIGMA.Gray2,
           child: Column(
             children: [
               AspectRatio(
@@ -96,7 +96,7 @@ class ThemeCard extends StatelessWidget {
                       isFavorite
                           ? Icons.favorite_rounded
                           : Icons.favorite_outline_rounded,
-                      color: isSelected ? Colors.white : FIGMA.Orn,
+                      color: FIGMA.Wrn,
                       size: 32,
                     ),
                     onPressed: () {
@@ -115,19 +115,19 @@ class ThemeCard extends StatelessWidget {
                     children: [
                       Text(
                         bigText,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           fontFamily: FIGMA.estsb,
-                          color: isSelected ? Colors.white : Colors.black,
+                          color: FIGMA.Wrn,
                         ),
                       ),
                       Text(
                         smallText,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 12,
                           fontFamily: FIGMA.estre,
-                          color: isSelected ? Colors.white70 : Colors.grey[700],
+                          color: FIGMA.Wrn2,
                         ),
                       ),
                     ],

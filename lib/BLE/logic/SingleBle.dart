@@ -1,11 +1,9 @@
 // ignore_for_file: file_names
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/data/ble/providerble.dart';
-import 'package:provider/provider.dart';
 import 'package:universal_ble/universal_ble.dart';
 
 class SingleBle {
@@ -13,7 +11,6 @@ class SingleBle {
   factory SingleBle() => _instance;
   SingleBle._internal();
 
-  // Add explicit instance getter
   static SingleBle get instance => _instance;
 
   List<BleDevice> discoveredDevices = [];
@@ -27,11 +24,8 @@ class SingleBle {
     _provider = providerInstance;
   }
 
-  // Start scanning for devices
   Future<void> startScan() async {
-    discoveredDevices.clear(); // Clear any previously discovered devices
-
-    // Start scanning and listen to scan results
+    discoveredDevices.clear();
     UniversalBle.onScanResult = (result) {
       int index =
           discoveredDevices.indexWhere((e) => e.deviceId == result.deviceId);
@@ -40,48 +34,48 @@ class SingleBle {
       } else {
         discoveredDevices[index] = result;
       }
-    };
 
+      debugPrint("Discovered device: ${result.deviceId}, Name: ${result.name}");
+    };
     await UniversalBle.startScan(scanFilter: scanFilter);
+    debugPrint("Started BLE scan");
   }
 
-  // Stop scanning
   Future<void> stopScan() async {
     await UniversalBle.stopScan();
+    debugPrint("Stopped BLE scan");
   }
 
   Future<bool> connectToDevice(String deviceId, int loginCounter) async {
     try {
       await UniversalBle.connect(deviceId);
-
       connectedDeviceId = deviceId;
-      debugPrint("Connected to $deviceId");
-      await listenToNotifications();
+      debugPrint("Connected to device: $deviceId");
 
+      await listenToNotifications();
       await Future.delayed(const Duration(milliseconds: 1000));
       await loginTheClient();
       return true;
     } catch (e) {
-      debugPrint("Failed to connect to $deviceId");
-      debugPrint("Connection failed: $e");
-      return false; // Connection failed
+      debugPrint("Failed to connect to $deviceId: $e");
+      return false;
     }
   }
 
   Future<void> loginTheClient() async {
     String jsonPayload = jsonEncode({"Scrt": "7382641987836gsjhd"});
-    await SingleBle().sendMain(jsonPayload);
+    await sendMain(jsonPayload);
+    debugPrint("Sent login payload: $jsonPayload");
   }
 
-  // Disconnect from the device
   Future<void> disconnect() async {
     if (connectedDeviceId != null) {
       await UniversalBle.disconnect(connectedDeviceId!);
+      debugPrint("Disconnected from $connectedDeviceId");
       connectedDeviceId = null;
     }
   }
 
-  // Generic function to send data to ESP32
   Future<void> sendToEsp32(String value, String characteristicId,
       {bool showwhathappened = false}) async {
     if (connectedDeviceId == null) {
@@ -91,9 +85,9 @@ class SingleBle {
 
     Uint8List output;
     try {
-      output = Uint8List.fromList(hex.decode(easyconvertunit8(value)));
+      output = Uint8List.fromList(utf8.encode(value));
     } catch (e) {
-      debugPrint('WriteError: Invalid value format');
+      debugPrint('WriteError: Invalid value format: $e');
       return;
     }
 
@@ -104,14 +98,11 @@ class SingleBle {
         characteristicId,
         output,
       );
-
       if (showwhathappened) {
-        debugPrint('Write: $value');
-        // Call snackbar or UI update function if needed
+        debugPrint('Wrote to $characteristicId: $value');
       }
     } catch (e) {
       debugPrint('WriteError: $e');
-      // Call error UI update function if needed
     }
   }
 
@@ -123,10 +114,7 @@ class SingleBle {
 
     final device = discoveredDevices.firstWhere(
       (d) => d.deviceId == connectedDeviceId,
-      orElse: () {
-        debugPrint("Connected device not found in discoveredDevices.");
-        return BleDevice(deviceId: connectedDeviceId!, name: "Unknown");
-      },
+      orElse: () => BleDevice(deviceId: connectedDeviceId!, name: "Unknown"),
     );
 
     try {
@@ -134,35 +122,34 @@ class SingleBle {
         FIGMA.ESP32_SERVICE_Micro,
         service: FIGMA.ESP32_SERVICE_ID,
       );
-
-      debugPrint("characteristic micro${characteristic.uuid}");
-
+      debugPrint("Subscribed to characteristic: ${characteristic.uuid}");
       await characteristic.notifications.subscribe();
 
       characteristic.onValueReceived.listen((value) async {
         String str = String.fromCharCodes(value);
-        _provider.Set_Screen_Values(str); // <— use directly
-        // _provider.Show_Snackbar("Notification received", 500);
+        debugPrint("Received notification: $str");
+        _provider.Set_Screen_Values(str);
       });
-      _provider.Show_Snackbar("Subscribed to notifications.", 500);
+      debugPrint(
+          "Subscribed to notifications for ${FIGMA.ESP32_SERVICE_Micro}");
     } catch (e) {
-      _provider.Show_Snackbar("Failed to set up notifications: $e", 200);
+      debugPrint("Failed to set up notifications: $e");
     }
   }
 
   Future<Map<String, String>?> startScanAndGetDevice() async {
     try {
-      await startScan(); // Start scanning
-
-      await Future.delayed(const Duration(seconds: 1)); // Wait
-
+      await startScan();
+      await Future.delayed(const Duration(seconds: 3));
       if (discoveredDevices.isNotEmpty) {
         var device = discoveredDevices.last;
+        debugPrint("Found device: ${device.deviceId}, Name: ${device.name}");
         return {
           'deviceId': device.deviceId,
           'name': device.name ?? 'Unknown',
         };
       } else {
+        debugPrint("No devices found during scan");
         return null;
       }
     } catch (e) {
@@ -171,7 +158,6 @@ class SingleBle {
     }
   }
 
-  //Read Data
   Future<String> triggerFunction() async {
     try {
       if (connectedDeviceId == null) {
@@ -179,51 +165,17 @@ class SingleBle {
       }
       Uint8List input1 = await UniversalBle.read(connectedDeviceId!,
           FIGMA.ESP32_SERVICE_ID, FIGMA.ESP32_SERVICE_Micro);
-      return String.fromCharCodes(input1);
+      String result = String.fromCharCodes(input1);
+      debugPrint("Read from ESP32: $result");
+      return result;
     } catch (e) {
-      debugPrint("Error in Reading From ESP32 ${e.toString()}");
+      debugPrint("Error in Reading From ESP32: $e");
+      return "Error";
     }
-    return "Error";
   }
-
-  // Specific functions for sending values to different characteristics
-  // Future<void> sendAval(String value) async {
-  //   await sendToEsp32(value, FIGMA.ESP32_SERVICE_AVAL);
-  // }
 
   Future<void> sendMain(String value) async {
     await sendToEsp32(value, FIGMA.ESP32_SERVICE_WHICH);
-  }
-
-  // Future<void> sendBval(String value) async {
-  //   await sendToEsp32(value, FIGMA.ESP32_SERVICE_BVAL);
-  // }
-
-  // Future<void> sendCval(String value) async {
-  //   await sendToEsp32(value, FIGMA.ESP32_SERVICE_CVAL);
-  // }
-
-  // void sendBigString(String input) {
-  //   input = "$input[|]"; // Append the delimiter
-  //   List<String> chunks = [];
-
-  //   // Split input into chunks of 20 characters
-  //   for (int i = 0; i < input.length; i += 20) {
-  //     chunks.add(
-  //         input.substring(i, i + 20 > input.length ? input.length : i + 20));
-  //   }
-
-  //   // Send chunks to corresponding characteristics
-  //   if (chunks.isNotEmpty) sendAval(chunks[0]);
-  //   if (chunks.length > 1) sendBval(chunks[1]);
-  //   if (chunks.length > 2) sendCval(chunks[2]);
-  // }
-
-  String easyconvertunit8(String input) {
-    List<int> bytes = utf8.encode(input);
-    String hex =
-        bytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join();
-    return hex;
   }
 
   String extractNumbersUI(String input) {
@@ -237,10 +189,8 @@ class SingleBle {
     }
     String test = "";
     for (int i = 0; i < results.length; i++) {
-      // debugPrint("letter : $i is ${result[i]}");
       test = "$test $i -> ${results[i]}\n";
     }
-
     return test;
   }
 }

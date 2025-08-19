@@ -128,11 +128,11 @@ class _NewPopupState extends State<NewPopup> {
                 scrollable: true,
                 shape:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
-                backgroundColor: FIGMA.Back,
+                backgroundColor: FIGMA.Gray,
                 content: EasyContainer(
                   width: MediaQuery.of(context).size.width / 1.1,
                   height: MediaQuery.of(context).size.height / 1.5,
-                  color: FIGMA.Back.withAlpha(128),
+                  color: FIGMA.Gray.withAlpha(128),
                   borderWidth: 0,
                   elevation: 0,
                   margin: 0,
@@ -185,14 +185,15 @@ class _TimerMinutesState extends State<TimerMinutes> {
         margin: 8,
         padding: 0,
         borderRadius: 17,
-        color: FIGMA.Gray,
+        color: FIGMA.Gray2,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text(
               widget.Time == "999" ? "" : "دقیقه",
               textAlign: TextAlign.end,
-              style: const TextStyle(fontFamily: FIGMA.estsb, fontSize: 16),
+              style: const TextStyle(
+                  fontFamily: FIGMA.estsb, fontSize: 16, color: FIGMA.Wrn),
             ),
             const Text(
               " ",
@@ -202,7 +203,8 @@ class _TimerMinutesState extends State<TimerMinutes> {
             Text(
               widget.Time == "999" ? "غیر فعال سازی" : widget.Time,
               textAlign: TextAlign.end,
-              style: const TextStyle(fontFamily: FIGMA.estbo, fontSize: 16),
+              style: const TextStyle(
+                  fontFamily: FIGMA.abrlb, fontSize: 16, color: FIGMA.Wrn),
             ),
             const Text(
               "    ",
@@ -250,7 +252,8 @@ class _CirclecolorState extends State<Circlecolor> {
     Color maincolor = Color(widget.color).withOpacity(1.0);
 
     return EasyContainer(
-      height: 80,
+      height: GetGoodW(context, 50, 50).height,
+      width: GetGoodW(context, 50, 50).width,
       color: maincolor,
       borderWidth: 0,
       elevation: 0,

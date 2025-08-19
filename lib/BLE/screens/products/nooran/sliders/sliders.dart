@@ -9,14 +9,9 @@ import 'package:netvana/data/ble/providerble.dart';
 import 'package:provider/provider.dart';
 
 class Color_Picker_HSV extends StatefulWidget {
-  String color;
   int netvana;
   Function(String) senddata;
-  Color_Picker_HSV(
-      {Key? key,
-      required this.color,
-      required this.netvana,
-      required this.senddata})
+  Color_Picker_HSV({Key? key, required this.netvana, required this.senddata})
       : super(key: key);
 
   @override
@@ -26,13 +21,21 @@ class Color_Picker_HSV extends StatefulWidget {
 class _Color_Picker_HSVState extends State<Color_Picker_HSV> {
   @override
   Widget build(BuildContext context) {
-    widget.color = widget.color.replaceFirst('Color(', '');
-    widget.color = widget.color.replaceFirst(')', '');
-    widget.color = widget.color.replaceFirst('0x', '');
-    int colorInt = int.parse(widget.color, radix: 16); // convert to int
-    Color maincolor = Color(colorInt).withOpacity(1.0); //
-
     return Consumer<ProvData>(builder: (context, value, _) {
+      String colorStr = value.maincycle_color;
+      int colorInt;
+
+      colorStr = colorStr.replaceFirst('Color(', '').replaceFirst(')', '');
+
+      if (colorStr.startsWith('0x')) {
+        colorStr = colorStr.replaceFirst('0x', '');
+        colorInt = int.parse(colorStr, radix: 16);
+      } else {
+        colorInt = int.parse(colorStr);
+      }
+
+      // Ensure the color has full opacity
+      Color maincolor = Color(colorInt).withOpacity(1.0);
       return LayoutBuilder(builder: (context, constsize) {
         return EasyContainer(
           color: FIGMA.Gray,
@@ -88,11 +91,11 @@ class _Color_Picker_HSVState extends State<Color_Picker_HSV> {
                 int blu = color.toColor().blue;
 
                 debugPrint("Color Changed");
-                //
-                String ColorStr =
-                    ((red * 65536) + (grn * 256) + (blu)).toString();
-                debugPrint(ColorStr);
-                widget.senddata(ColorStr);
+                // Convert RGB to decimal string
+                String colorStr =
+                    ((red * 65536) + (grn * 256) + blu).toString();
+                debugPrint(colorStr);
+                widget.senddata(colorStr);
               },
             ),
           ),
