@@ -1,5 +1,6 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, deprecated_member_use
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/data/ble/providerble.dart';
@@ -17,77 +18,110 @@ class TheAppNav extends StatefulWidget {
 class _TheAppNavState extends State<TheAppNav> {
   @override
   Widget build(BuildContext context) {
-    double iconSize = 28;
+    double iconSize = 24.sp;
     return Consumer<ProvData>(
       builder: (context, value, child) {
-        return SizedBox(
-          height: 120,
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: GNav(
-              backgroundColor: Colors.transparent,
-              selectedIndex:
-                  value.Isdevicefound == true && value.Current_screen == 3
-                      ? 2
-                      : value.Current_screen,
-              tabActiveBorder: Border.all(color: FIGMA.Gray2, width: 2),
-              tabMargin: const EdgeInsets.only(right: 2, left: 2),
-              tabBorderRadius: 20,
-              mainAxisAlignment: MainAxisAlignment.center,
-              color: Colors.grey,
-              activeColor: FIGMA.Prn2,
-              tabBackgroundColor: FIGMA.Gray,
-              gap: 8,
-              // tabBorder: Border.all(color: FIGMA.Prn),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-              tabs: [
-                GButton(
-                  iconSize: iconSize,
-                  icon: Icons.home_rounded,
-                  leading: SvgPicture.asset("assets/Home.svg",
-                      color:
-                          value.Current_screen == 0 ? FIGMA.Prn2 : FIGMA.Gray2),
-                  text: "خانه",
-                  textStyle: const TextStyle(
-                      fontFamily: FIGMA.estbo, fontSize: 16, color: FIGMA.Prn2),
+        if (value.Current_screen != 3) {
+          return SizedBox(
+            height: 95.h,
+            child: Directionality(
+              textDirection: TextDirection.rtl,
+              child: GNav(
+                backgroundColor: FIGMA.Back,
+                tabBackgroundColor: FIGMA.Gray,
+                selectedIndex:
+                    value.Isdevicefound == true && value.Current_screen == 3
+                        ? 2
+                        : value.Current_screen,
+                tabActiveBorder: Border.all(
+                  color: FIGMA.Gray2,
+                  width: 1.5.sp,
                 ),
-                GButton(
-                  iconSize: iconSize,
-                  icon: LucideIcons.box,
-                  leading: SvgPicture.asset("assets/Effects.svg",
-                      color:
-                          value.Current_screen == 1 ? FIGMA.Prn2 : FIGMA.Gray2),
-                  text: "افکت ها",
-                  textStyle: const TextStyle(
-                      fontFamily: FIGMA.estbo, fontSize: 16, color: FIGMA.Prn2),
+                tabBorder: Border.all(
+                  color: FIGMA.Gray2,
+                  width: 1.5.sp,
                 ),
-                GButton(
-                  iconSize: iconSize,
-                  icon: Icons.wifi_rounded,
-                  leading: SvgPicture.asset("assets/Netvana.svg",
+                tabMargin: const EdgeInsets.only(right: 2, left: 2),
+                tabBorderRadius: 20,
+                // tabBorder: ,
+                mainAxisAlignment: MainAxisAlignment.center,
+                color: Colors.blue,
+                activeColor: FIGMA.Prn2,
+                // Remove tabBackgroundColor to avoid conflicts
+                gap: 8,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                tabs: [
+                  GButton(
+                    iconSize: iconSize,
+                    icon: Icons.home_rounded,
+                    leading: SvgPicture.asset(
+                      "assets/Home.svg",
                       color:
-                          value.Current_screen == 2 ? FIGMA.Prn2 : FIGMA.Gray2),
-                  text: "نت وانا",
-                  textStyle: const TextStyle(
-                      fontFamily: FIGMA.estbo, fontSize: 16, color: FIGMA.Prn2),
-                ),
-                GButton(
-                  iconSize: iconSize,
-                  icon: Icons.settings_rounded,
-                  leading: SvgPicture.asset("assets/Setting.svg",
+                          value.Current_screen == 0 ? FIGMA.Prn2 : FIGMA.Gray3,
+                    ),
+                    text: "خانه",
+                    textStyle: TextStyle(
+                      fontFamily: FIGMA.estbo,
+                      fontSize: 14.sp,
+                      color: FIGMA.Prn2,
+                    ),
+                  ),
+                  GButton(
+                    iconSize: iconSize,
+                    icon: LucideIcons.box,
+                    leading: SvgPicture.asset(
+                      "assets/Effects.svg",
                       color:
-                          value.Current_screen == 3 ? FIGMA.Prn2 : FIGMA.Gray2),
-                  text: "تنظیمات",
-                  textStyle: const TextStyle(
-                      fontFamily: FIGMA.estbo, fontSize: 16, color: FIGMA.Prn2),
-                ),
-              ],
-              onTabChange: (index) {
-                value.Change_current_screen(index);
-              },
+                          value.Current_screen == 1 ? FIGMA.Prn2 : FIGMA.Gray3,
+                    ),
+                    text: "افکت ها",
+                    textStyle: TextStyle(
+                      fontFamily: FIGMA.estbo,
+                      fontSize: 14.sp,
+                      color: FIGMA.Prn2,
+                    ),
+                  ),
+                  GButton(
+                    iconSize: iconSize,
+                    icon: Icons.wifi_rounded,
+                    leading: SvgPicture.asset(
+                      "assets/Netvana.svg",
+                      color:
+                          value.Current_screen == 2 ? FIGMA.Prn2 : FIGMA.Gray3,
+                    ),
+                    text: "نت وانا",
+                    textStyle: TextStyle(
+                      fontFamily: FIGMA.estbo,
+                      fontSize: 14.sp,
+                      color: FIGMA.Prn2,
+                    ),
+                  ),
+                  GButton(
+                    iconSize: iconSize,
+                    icon: Icons.settings_rounded,
+                    leading: SvgPicture.asset(
+                      "assets/Setting.svg",
+                      color:
+                          value.Current_screen == 3 ? FIGMA.Prn2 : FIGMA.Gray3,
+                    ),
+                    text: "تنظیمات",
+                    textStyle: TextStyle(
+                      fontFamily: FIGMA.estbo,
+                      fontSize: 14.sp,
+                      color: FIGMA.Prn2,
+                    ),
+                  ),
+                ],
+                onTabChange: (index) {
+                  value.Change_current_screen(index);
+                },
+              ),
             ),
-          ),
-        );
+          );
+        } else {
+          return SizedBox(height: 0.h);
+        }
       },
     );
   }

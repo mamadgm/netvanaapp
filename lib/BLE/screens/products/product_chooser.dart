@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
@@ -60,9 +61,10 @@ class Choose_Product extends StatelessWidget {
                     EasyContainer(
                       width: (mywidth / 2.2),
                       height: myheight * 0.30,
-                      child: const Text(
+                      child: Text(
                         "اتصال به دستگاه",
-                        style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 12),
+                        style:
+                            TextStyle(fontFamily: FIGMA.abrlb, fontSize: 12.sp),
                       ),
                       onTap: () {
                         onTrytoconnect();
@@ -71,9 +73,10 @@ class Choose_Product extends StatelessWidget {
                     EasyContainer(
                       width: (mywidth / 2.2),
                       height: myheight * 0.30,
-                      child: const Text(
+                      child: Text(
                         "حذف دستگاه",
-                        style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 12),
+                        style:
+                            TextStyle(fontFamily: FIGMA.abrlb, fontSize: 12.sp),
                       ),
                       onTap: () {
                         ondelete();

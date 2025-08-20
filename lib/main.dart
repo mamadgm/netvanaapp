@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/screens/products/nooran/Nooran.dart';
 import 'package:netvana/Login/Login.dart';
-import 'package:netvana/Network/netmain.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/OtherTwo/Effects.dart';
 import 'package:netvana/OtherTwo/Netvana.dart';
 import 'package:netvana/settingscreen/profile.dart';
@@ -83,26 +83,33 @@ class _MyappState extends State<Myapp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      scaffoldMessengerKey: scaffoldMessengerKey,
-      debugShowCheckedModeBanner: false,
-      home: Consumer<ProvData>(
-        builder: (context, value, child) {
-          return value.isUserLoggedIn
-              ? Scaffold(
-                  backgroundColor: FIGMA.Back,
-                  body: IndexedStack(
-                    index: value.Current_screen,
-                    children: mybody,
-                  ),
-                  bottomNavigationBar: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: TheAppNav(),
-                  ),
-                )
-              : Login();
-        },
-      ),
+    return ScreenUtilInit(
+      designSize: const Size(360, 667), // Your Figma design size
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          scaffoldMessengerKey: scaffoldMessengerKey,
+          debugShowCheckedModeBanner: false,
+          home: Consumer<ProvData>(
+            builder: (context, value, child) {
+              return value.isUserLoggedIn
+                  ? Scaffold(
+                      backgroundColor: FIGMA.Back,
+                      body: IndexedStack(
+                        index: value.Current_screen,
+                        children: mybody,
+                      ),
+                      bottomNavigationBar: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: TheAppNav(),
+                      ),
+                    )
+                  : const Login();
+            },
+          ),
+        );
+      },
     );
   }
 }

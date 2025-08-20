@@ -139,7 +139,7 @@ class NetClass {
   }
 
   Future<void> setMode(String token, String id, String mode) async {
-    final url = Uri.parse("${FIGMA.urlnetwana}/admin/theme/set/");
+    final url = Uri.parse("${FIGMA.urlnetwana}/user/theme/set/");
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token", // If your API requires auth

@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, unused_local_varianetvana, camel_case_types, avoid_print, must_be_immutanetvana, deprecated_member_use
 
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:flutter/material.dart';
@@ -34,26 +35,27 @@ class _Sleep_ButtonState extends State<Sleep_Button> {
       padding: 4,
       showBorder: widget.state,
       borderColor: FIGMA.Prn,
-      borderWidth: 3,
+      borderWidth: 1.5.sp,
       borderRadius: 17,
       color: widget.state == true ? FIGMA.Grn : FIGMA.Gray2,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SvgPicture.asset('assets/sleep.svg', width: 32, color: FIGMA.Wrn),
-          const Text(
+          SvgPicture.asset('assets/sleep.svg', width: 24.w, color: FIGMA.Wrn),
+          SizedBox(height: 8.h),
+          Text(
             'خواب',
             style: TextStyle(
               fontFamily: FIGMA.estsb,
-              fontSize: 16,
+              fontSize: 13.sp,
               color: FIGMA.Wrn,
             ),
           ),
-          const Text(
+          Text(
             '10%',
             style: TextStyle(
               fontFamily: FIGMA.estre,
-              fontSize: 12,
+              fontSize: 11.sp,
               color: FIGMA.Wrn,
             ),
           ),
@@ -192,24 +194,24 @@ class _TimerMinutesState extends State<TimerMinutes> {
             Text(
               widget.Time == "999" ? "" : "دقیقه",
               textAlign: TextAlign.end,
-              style: const TextStyle(
-                  fontFamily: FIGMA.estsb, fontSize: 16, color: FIGMA.Wrn),
+              style: TextStyle(
+                  fontFamily: FIGMA.estsb, fontSize: 13.sp, color: FIGMA.Wrn),
             ),
-            const Text(
+            Text(
               " ",
               textAlign: TextAlign.end,
-              style: TextStyle(fontFamily: FIGMA.estsb, fontSize: 16),
+              style: TextStyle(fontFamily: FIGMA.estsb, fontSize: 13.sp),
             ),
             Text(
               widget.Time == "999" ? "غیر فعال سازی" : widget.Time,
               textAlign: TextAlign.end,
-              style: const TextStyle(
-                  fontFamily: FIGMA.abrlb, fontSize: 16, color: FIGMA.Wrn),
+              style: TextStyle(
+                  fontFamily: FIGMA.abrlb, fontSize: 13.sp, color: FIGMA.Wrn),
             ),
-            const Text(
+            Text(
               "    ",
               textAlign: TextAlign.end,
-              style: TextStyle(fontFamily: FIGMA.estsb, fontSize: 16),
+              style: TextStyle(fontFamily: FIGMA.estsb, fontSize: 13.sp),
             ),
           ],
         ),
@@ -252,12 +254,15 @@ class _CirclecolorState extends State<Circlecolor> {
     Color maincolor = Color(widget.color).withOpacity(1.0);
 
     return EasyContainer(
-      height: GetGoodW(context, 50, 50).height,
-      width: GetGoodW(context, 50, 50).width,
+      // TODO:
+      height: 52.h,
+      width: 52.w,
+      margin: 0,
+      padding: 0,
       color: maincolor,
       borderWidth: 0,
       elevation: 0,
-      borderRadius: 13,
+      borderRadius: 16,
       onTap: () async {
         widget.onDataChange(widget.color.toRadixString(10));
       },
@@ -275,34 +280,38 @@ class _CirclecolorState extends State<Circlecolor> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Center(
+          backgroundColor: FIGMA.Gray,
+          title: Center(
             child: Text(
               "رنگ دلخواه",
               style: TextStyle(
-                  fontFamily: FIGMA.abreb, fontSize: 19, color: FIGMA.Orn),
+                  fontFamily: FIGMA.abreb, fontSize: 19.sp, color: FIGMA.Wrn),
             ),
           ),
           content: SingleChildScrollView(
-            child: ColorPicker(
-              enableAlpha: false,
-              hexInputBar: false,
-              showLabel: false,
-              pickerColor: pickerColor,
-              onColorChanged: (Color color) {
-                setState(() {
-                  pickerColor = color.withAlpha(0xFF);
-                });
-              },
+            child: SizedBox(
+              child: ColorPicker(
+                pickerAreaBorderRadius: BorderRadius.all(Radius.circular(4)),
+                enableAlpha: false,
+                hexInputBar: false,
+                showLabel: false,
+                pickerColor: pickerColor,
+                onColorChanged: (Color color) {
+                  setState(() {
+                    pickerColor = color.withAlpha(0xFF);
+                  });
+                },
+              ),
             ),
           ),
           actions: <Widget>[
             EasyContainer(
               borderRadius: 15,
               color: FIGMA.Prn,
-              child: const Text(
+              child: Text(
                 "ذخیره رنگ",
                 style: TextStyle(
-                    fontFamily: FIGMA.estbo, fontSize: 19, color: FIGMA.Wrn),
+                    fontFamily: FIGMA.estbo, fontSize: 19.sp, color: FIGMA.Wrn),
               ),
               onTap: () {
                 widget.onDataChange(((pickerColor.red * 65536) +
@@ -368,7 +377,7 @@ class _NewPopupState2 extends State<TimerButton> {
         },
         margin: 0,
         padding: 0,
-        borderWidth: 3,
+        borderWidth: 1.5.sp,
         showBorder: widget.state,
         borderColor: FIGMA.Prn,
         borderRadius: 17,

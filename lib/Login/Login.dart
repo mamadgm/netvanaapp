@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
@@ -84,7 +85,7 @@ class _LoginState extends State<Login> {
                           height: _topPadding,
                         ),
                         // RTL text
-                        const Row(
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Column(
@@ -94,7 +95,7 @@ class _LoginState extends State<Login> {
                                   "خوش آمدید",
                                   style: TextStyle(
                                       fontFamily: FIGMA.abrlb,
-                                      fontSize: 24,
+                                      fontSize: 24.sp,
                                       color: FIGMA.Wrn),
                                   textAlign: TextAlign.end,
                                   textDirection: TextDirection.rtl,
@@ -103,7 +104,7 @@ class _LoginState extends State<Login> {
                                   "برای ورود به اپلیکیشن رمز عبور\n و شماره خود را وارد کنید",
                                   style: TextStyle(
                                       fontFamily: FIGMA.estre,
-                                      fontSize: 14,
+                                      fontSize: 14.sp,
                                       color: FIGMA.Wrn2),
                                   textAlign: TextAlign.end,
                                 ),
@@ -115,23 +116,23 @@ class _LoginState extends State<Login> {
                           ],
                         ),
                         EasyContainer(
-                          height: GetGoodW(context, 320, 68).height,
-                          width: GetGoodW(context, 320, 68).width,
+                          height: 68.h,
+                          width: 320.w,
                           color: Colors.black12.withOpacity(0),
                           borderWidth: 0,
                           elevation: 0,
                           padding: 0,
                           borderRadius: 0,
                           child: TextField(
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontFamily: FIGMA.estre,
-                                fontSize: 16,
+                                fontSize: 16.sp,
                                 color: FIGMA.Wrn),
                             textAlign: TextAlign.start,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               hintStyle: TextStyle(
                                   fontFamily: FIGMA.abrlb,
-                                  fontSize: 12,
+                                  fontSize: 12.sp,
                                   color: FIGMA.Wrn2),
                               hintText: "Mobile",
                               border: OutlineInputBorder(),
@@ -140,24 +141,24 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                         EasyContainer(
-                          height: GetGoodW(context, 320, 68).height,
-                          width: GetGoodW(context, 320, 68).width,
+                          height: 68.h,
+                          width: 320.w,
                           color: Colors.black12.withOpacity(0),
                           borderWidth: 0,
                           elevation: 0,
                           padding: 0,
                           borderRadius: 0,
                           child: TextField(
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontFamily: FIGMA.estre,
-                                fontSize: 16,
+                                fontSize: 16.sp,
                                 color: FIGMA.Wrn),
                             obscureText: true,
                             textAlign: TextAlign.start,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               hintStyle: TextStyle(
                                   fontFamily: FIGMA.abrlb,
-                                  fontSize: 12,
+                                  fontSize: 12.sp,
                                   color: FIGMA.Wrn2),
                               hintText: "Password",
                               border: OutlineInputBorder(),
@@ -166,18 +167,18 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                         EasyContainer(
-                          height: GetGoodW(context, 320, 68).height,
-                          width: GetGoodW(context, 320, 68).width,
+                          height: 68.h,
+                          width: 320.w,
                           color: FIGMA.Prn,
                           borderWidth: 0,
                           elevation: 0,
                           padding: 0,
                           borderRadius: 17,
-                          child: const Text(
+                          child: Text(
                             'ورود به نت وانا',
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 18,
+                                fontSize: 18.sp,
                                 fontFamily: FIGMA.abreb),
                           ),
                           onTap: () async {

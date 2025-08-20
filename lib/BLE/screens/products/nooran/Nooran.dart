@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 // import 'dart:ffi';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/screens/products/nooran/Buttons/mybuttons.dart';
@@ -99,60 +100,61 @@ class _NooranState extends State<Nooran> {
     return Consumer<ProvData>(builder: (context, value, child) {
       return SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(right: 8, left: 8),
+          padding: const EdgeInsets.only(right: 0, left: 0),
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(
-                  height: 25,
+                SizedBox(
+                  height: 6.h,
                 ),
                 Directionality(
                   textDirection: TextDirection.rtl,
                   child: SizedBox(
-                    width: GetGoodW(context, 329, 80).width,
+                    width: 329.w,
+                    height: 70.h,
                     child: Row(
-                      mainAxisSize: MainAxisSize.max,
+                      // mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.only(right: 8),
+                        Padding(
+                          padding: EdgeInsets.only(right: 0),
                           child: Text(
                             "نوروانا",
                             style: TextStyle(
                                 fontFamily: FIGMA.abrlb,
-                                fontSize: 28,
+                                fontSize: 24.sp,
                                 color: FIGMA.Wrn),
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(left: 4),
+                          padding: EdgeInsets.only(left: 0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(4.0),
+                                padding: const EdgeInsets.all(2.0),
                                 child: EasyContainer(
-                                  height: GetGoodW(context, 73, 73).height,
-                                  width: GetGoodW(context, 73, 73).width,
+                                  height: 70.h,
+                                  width: 70.w,
                                   color: FIGMA.Back,
                                   showBorder: true,
-                                  borderWidth: 2,
+                                  borderWidth: 1.sp,
                                   borderColor: FIGMA.Gray2,
                                   borderRadius: 20,
                                   elevation: 0,
                                   margin: 0,
-                                  padding: 4,
+                                  padding: 0,
                                   child: Icon(
                                     value.isConnectedWifi
                                         ? Icons.wifi_rounded
                                         : Icons.wifi_off_rounded,
                                     color: value.isConnectedWifi
                                         ? FIGMA.Prn
-                                        : FIGMA.Gray2,
-                                    size: 42,
+                                        : FIGMA.Gray3,
+                                    size: 24.sp,
                                   ),
                                   onTap: () async {
                                     var box = Hive.box(FIGMA.HIVE);
@@ -200,26 +202,26 @@ class _NooranState extends State<Nooran> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(4.0),
+                                padding: const EdgeInsets.all(2.0),
                                 child: EasyContainer(
-                                    height: GetGoodW(context, 73, 73).height,
-                                    width: GetGoodW(context, 73, 73).width,
+                                    height: 70.h,
+                                    width: 70.w,
                                     color: FIGMA.Back,
                                     showBorder: true,
-                                    borderWidth: 2,
+                                    borderWidth: 1.sp,
                                     borderColor: FIGMA.Gray2,
                                     borderRadius: 20,
                                     elevation: 0,
                                     margin: 0,
-                                    padding: 4,
+                                    padding: 0,
                                     child: Icon(
                                       value.isConnected
                                           ? Icons.bluetooth_connected
                                           : Icons.bluetooth_disabled,
                                       color: value.isConnected
                                           ? FIGMA.Prn
-                                          : FIGMA.Gray2,
-                                      size: 42,
+                                          : FIGMA.Gray3,
+                                      size: 24.sp,
                                     ),
                                     onTap: () async {
                                       debugPrint(value.nextmoveisconnect
@@ -295,7 +297,7 @@ class _NooranState extends State<Nooran> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                SizedBox(height: 8.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -307,8 +309,8 @@ class _NooranState extends State<Nooran> {
                             Padding(
                               padding: const EdgeInsets.all(4),
                               child: SizedBox(
-                                  height: GetGoodW(context, 74, 111).height,
-                                  width: GetGoodW(context, 74, 111).width,
+                                  height: 111.h,
+                                  width: 74.w,
                                   child: Sleep_Button(
                                     state: value.Brightness == 5,
                                     onDataChange: (s) {
@@ -331,8 +333,8 @@ class _NooranState extends State<Nooran> {
                         Padding(
                           padding: const EdgeInsets.all(4),
                           child: SizedBox(
-                            height: GetGoodW(context, 156, 73).height,
-                            width: GetGoodW(context, 156, 73).width,
+                            height: 73.h,
+                            width: 156.w,
                             child: Power_Button(
                                 // setPower
                                 onof: value.isdeviceon,
@@ -355,35 +357,35 @@ class _NooranState extends State<Nooran> {
                     ),
                     EasyContainer(
                       color: FIGMA.Gray2,
-                      height: GetGoodW(context, 165, 192).height,
-                      width: GetGoodW(context, 165, 192).width,
+                      height: 192.h,
+                      width: 165.w,
                       margin: 4,
                       padding: 0,
                       showBorder: false,
-                      borderWidth: 3,
+                      borderWidth: 1.5.sp,
                       borderColor: FIGMA.Prn,
                       borderRadius: 17,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           LampWidget(
                             glowIntensity: (!value.nextmoveisconnect |
                                     value.isConnectedWifi)
-                                ? value.Brightness.toDouble() / 50
+                                ? value.Brightness.toDouble() / 90
                                 : 2,
                             key: lampKey,
                             lampColor: (!value.nextmoveisconnect |
                                     value.isConnectedWifi)
                                 ? colorFromString(value.maincycle_color)
                                 : colorFromString("0xFF555555"),
-                            height: GetGoodW(context, 80, 150).height,
-                            width: GetGoodW(context, 80, 150).width,
+                            height: 125.h,
+                            width: 54.w,
                           ),
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: Text(
                               "${value.Products[0]['category_name']}-${value.Products[0]['part_number']}",
-                              style: TextStyle(color: FIGMA.Wrn2),
+                              style: const TextStyle(color: FIGMA.Wrn2),
                             ),
                           )
                         ],
@@ -394,86 +396,103 @@ class _NooranState extends State<Nooran> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: SizedBox(
-                    width: GetGoodW(context, 329, 80).width,
-                    child: const Padding(
-                      padding: EdgeInsets.only(right: 8),
-                      child: Text(
-                        "تنظیمات اختصاصی",
-                        style: TextStyle(
-                            fontFamily: FIGMA.abrlb,
-                            fontSize: 18,
-                            color: FIGMA.Wrn),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
+                SizedBox(height: 24.h),
                 SizedBox(
-                  height: GetGoodW(context, 329, 80).height,
-                  width: GetGoodW(context, 329, 80).width,
+                  height: 80.h,
+                  width: 329.w,
                   child: Spelco(handlechange: (index) {
                     value.change_slider(index);
                   }),
                 ),
-                const SizedBox(
-                  height: 9,
-                ),
+                SizedBox(height: 8.h),
                 SizedBox(
-                  height: GetGoodW(context, 329, 70).height,
-                  width: GetGoodW(context, 329, 70).width,
+                  height: 70.h,
+                  width: 329.w,
                   child: Sliderwidgets[value.current_selected_slider],
                 ),
-                const SizedBox(
-                  height: 4,
+                SizedBox(height: 24.h),
+                EasyContainer(
+                  height: 102.h,
+                  width: 329.w,
+                  color: Colors.deepOrange,
+                  borderWidth: 0,
+                  elevation: 0,
+                  margin: 0,
+                  padding: 0,
+                  borderRadius: 17,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      EasyContainer(
+                          color: FIGMA.Back,
+                          width: 90.w,
+                          height: 44.h,
+                          elevation: 0,
+                          borderRadius: 15,
+                          child: Text(
+                            "ویرایش",
+                            style: TextStyle(
+                                color: FIGMA.Wrn,
+                                fontSize: 13.sp,
+                                fontFamily: FIGMA.estsb),
+                          )),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("آتش بازی",
+                              style: TextStyle(
+                                  color: FIGMA.Wrn,
+                                  fontSize: 18.sp,
+                                  fontFamily: FIGMA.abrlb)),
+                          Text("هنگام جشن استفاده شود",
+                              style: TextStyle(
+                                  color: FIGMA.Wrn,
+                                  fontSize: 11.sp,
+                                  fontFamily: FIGMA.estre))
+                        ],
+                      )
+                    ],
+                  ),
                 ),
+                SizedBox(height: 8.h),
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(0.0),
                   child: EasyContainer(
-                    // height: 80,
-                    color: FIGMA.Gray,
+                    height: 72.h,
+                    width: 329.w,
+                    color: FIGMA.Gray2,
                     borderWidth: 0,
                     elevation: 0,
-                    customMargin: const EdgeInsets.only(
-                        right: 16, left: 16, top: 6, bottom: 6),
-                    padding: 6,
+                    margin: 0,
+                    padding: 0,
                     borderRadius: 17,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: List.generate(
-                            5,
-                            (index) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 8, left: 8),
-                                child: Circlecolor(
-                                  color: value.Defalult_colors[index],
-                                  onDataChange: (String f) {
-                                    value.set_Defalult_colors(
-                                        int.parse(f), index);
-                                    sdcard.put("COLOR$index", int.parse(f));
+                      children: List.generate(
+                        5,
+                        (index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 6.sp),
+                            child: Circlecolor(
+                              color: value.Defalult_colors[index],
+                              onDataChange: (String f) {
+                                value.set_Defalult_colors(int.parse(f), index);
+                                sdcard.put("COLOR$index", int.parse(f));
 
-                                    value.setMainCycleColor(f);
-                                    value.nextmoveisconnect
-                                        ? NetClass().setColor(
-                                            value.token,
-                                            value.Products[0]["id"].toString(),
-                                            f)
-                                        : null;
-                                    String jsonPayload = jsonEncode({"Lc": f});
-                                    SingleBle().sendMain(jsonPayload);
-                                  },
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
+                                value.setMainCycleColor(f);
+                                value.nextmoveisconnect
+                                    ? NetClass().setColor(value.token,
+                                        value.Products[0]["id"].toString(), f)
+                                    : null;
+                                String jsonPayload = jsonEncode({"Lc": f});
+                                SingleBle().sendMain(jsonPayload);
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -512,40 +531,43 @@ class ShortTimer extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(4.0),
           child: SizedBox(
-            height: GetGoodW(context, 74, 111).height,
-            width: GetGoodW(context, 74, 111).width,
+            width: 74.w,
+            height: 111.h,
             child: TimerButton(
               state: value.timeroffvalue > 0,
               Templete: [
                 SvgPicture.asset(
                   'assets/timer.svg',
-                  width: 32,
+                  width: 24.w,
                   color: FIGMA.Wrn,
                 ),
-                const Text(
+                SizedBox(height: 8.h),
+                Text(
                   'تایمر',
                   style: TextStyle(
-                      fontFamily: FIGMA.estsb, fontSize: 16, color: FIGMA.Wrn),
+                      fontFamily: FIGMA.estsb,
+                      fontSize: 13.sp,
+                      color: FIGMA.Wrn),
                 ),
                 Text(
                   value.timeroffvalue == 0
                       ? "غیرفعال"
                       : "${sdcard.get("Timeofdie", defaultValue: "00:00")}",
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: FIGMA.estre,
-                    fontSize: 14,
+                    fontSize: 11.sp,
                     color: FIGMA.Wrn,
                   ),
                 ),
               ],
               innerwidgets: [
-                const Expanded(
+                Expanded(
                   flex: 5,
                   child: Text(
                     "تایمر خاموش کننده",
                     style: TextStyle(
                         fontFamily: FIGMA.abrlb,
-                        fontSize: 19,
+                        fontSize: 19.sp,
                         color: FIGMA.Wrn),
                   ),
                 ),
@@ -596,11 +618,11 @@ class ShortTimer extends StatelessWidget {
                             padding: 0,
                             borderRadius: 17,
                             color: FIGMA.Orn,
-                            child: const Text(
+                            child: Text(
                               "خروج",
                               style: TextStyle(
                                   fontFamily: FIGMA.estsb,
-                                  fontSize: 16,
+                                  fontSize: 16.sp,
                                   color: FIGMA.Wrn),
                             ),
                             onTap: () {

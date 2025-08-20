@@ -1,8 +1,10 @@
 // ignore_for_file: non_constant_identifier_names, file_names
 
 import 'package:easy_container/easy_container.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:netvana/const/figma.dart';
+import 'package:netvana/customwidgets/ButtonIcon.dart';
 import 'package:netvana/customwidgets/cylander.dart';
 import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/providerble.dart';
@@ -26,16 +28,16 @@ class Netvana extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 16),
                     child: SizedBox(
-                      height: GetGoodW(context, 160, 300).height,
-                      width: GetGoodW(context, 160, 300).width,
+                      height: 300.h,
+                      width: 140.w,
                       child: LampWidget(
-                        glowIntensity: 3,
+                        glowIntensity: 1,
                         lampColor:
                             (!value.nextmoveisconnect | value.isConnectedWifi)
                                 ? colorFromString(value.maincycle_color)
                                 : colorFromString("0xFF555555"),
-                        height: GetGoodW(context, 80, 150).height,
-                        width: GetGoodW(context, 80, 150).width,
+                        height: 150.h,
+                        width: 80.w,
                       ),
                     ),
                   ),
@@ -53,46 +55,13 @@ class Netvana extends StatelessWidget {
                       const SizedBox(
                         height: 40,
                       ),
-                      EasyContainer(
-                        elevation: 0,
-                        height: 80,
-                        borderRadius: 15,
-                        padding: 20,
-                        showBorder: true,
-                        borderColor: FIGMA.Gray2,
-                        color: FIGMA.Back,
+                      WiFiItem(
+                        leadingIcon: Icons.arrow_back_ios_new_rounded,
+                        title: "وای فای جدید",
+                        trailingIcon: LucideIcons.plus,
                         onTap: () {
                           showWiFiDialog(context);
                         },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(
-                              Icons.arrow_back,
-                              color: FIGMA.Gray2,
-                              size: 32,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "وای فای جدید",
-                                  style: TextStyle(
-                                      color: FIGMA.Wrn,
-                                      fontFamily: FIGMA.estre,
-                                      fontSize: 18),
-                                ),
-                                SizedBox(
-                                  width: 12,
-                                ),
-                                Icon(
-                                  LucideIcons.plus,
-                                  color: FIGMA.Wrn,
-                                  size: 32,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
                       ),
                       const Spacer(),
                     ],
@@ -106,34 +75,37 @@ class Netvana extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 EasyContainer(
-                  height: 100,
+                  height: 60.h,
                   showBorder: true,
                   borderColor: FIGMA.Gray2,
                   color: FIGMA.Gray,
-                  padding: 16,
-                  elevation: 5,
+                  customPadding: const EdgeInsets.symmetric(horizontal: 8),
+                  elevation: 0,
                   shadowColor: FIGMA.Gray2,
                   borderWidth: 3,
                   borderRadius: 30,
                   child: Row(
                     children: [
-                      const Text(
-                        "wifi :  ",
+                      Text(
+                        "Wifi:",
                         style: TextStyle(
-                            color: FIGMA.Wrn2, fontFamily: FIGMA.estsb),
+                            color: FIGMA.Gray4,
+                            fontFamily: FIGMA.estre,
+                            fontSize: 13.sp),
                       ),
                       Text(
                         value.Device_SSID,
-                        style: const TextStyle(
+                        style: TextStyle(
                             color: FIGMA.Wrn,
                             fontFamily: FIGMA.estsb,
-                            fontSize: 14),
+                            fontSize: 13.sp),
                       ),
                     ],
                   ),
                 ),
-                const EasyContainer(
-                  height: 100,
+                EasyContainer(
+                  height: 60.h,
+                  width: 148.w,
                   showBorder: true,
                   borderColor: FIGMA.Gray2,
                   color: FIGMA.Gray,
@@ -147,15 +119,17 @@ class Netvana extends StatelessWidget {
                       Text(
                         "عالی",
                         style: TextStyle(
-                            color: FIGMA.Prn2, fontFamily: FIGMA.estsb),
+                            color: FIGMA.Prn2,
+                            fontFamily: FIGMA.estsb,
+                            fontSize: 13.sp),
                       ),
-                      SizedBox(
-                        width: 4,
-                      ),
+                      const SizedBox(width: 4),
                       Text(
-                        "وضعیت اتصال",
+                        ":وضعیت اتصال",
                         style: TextStyle(
-                            color: FIGMA.Wrn, fontFamily: FIGMA.estsb),
+                            color: FIGMA.Gray4,
+                            fontFamily: FIGMA.estre,
+                            fontSize: 13.sp),
                       ),
                     ],
                   ),
@@ -257,8 +231,8 @@ class _WifiTileState extends State<WifiTile>
                 children: [
                   Text(
                     widget.ssid,
-                    style: const TextStyle(
-                      fontSize: 18,
+                    style: TextStyle(
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -269,7 +243,7 @@ class _WifiTileState extends State<WifiTile>
                         ? "متصل شده به این شبکه"
                         : "دستگاه متصل نیست",
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       color: Colors.grey.shade600,
                     ),
                   ),

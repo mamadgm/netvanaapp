@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:easy_container/easy_container.dart';
@@ -37,8 +38,8 @@ class NewTab extends StatelessWidget {
             textDirection: TextDirection.rtl,
             child: Text(
               appbartext,
-              style: const TextStyle(
-                  fontFamily: FIGMA.abrlb, fontSize: 16, color: FIGMA.Orn),
+              style: TextStyle(
+                  fontFamily: FIGMA.abrlb, fontSize: 16.sp, color: FIGMA.Orn),
             ),
           ),
         ),

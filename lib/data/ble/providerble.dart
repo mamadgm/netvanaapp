@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:convert';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/Network/netmain.dart';
@@ -313,8 +314,8 @@ class ProvData extends ChangeNotifier {
         content: Text(
           value,
           textAlign: TextAlign.end,
-          style: const TextStyle(
-              fontFamily: FIGMA.abrlb, fontSize: 14, color: FIGMA.Wrn),
+          style: TextStyle(
+              fontFamily: FIGMA.abrlb, fontSize: 14.sp, color: FIGMA.Wrn),
         ),
       ),
     );
@@ -378,17 +379,10 @@ class ProvData extends ChangeNotifier {
     smarttimercolor = result.length > 10 ? result[10] : 0;
     ESPVersion = result.length > 11 ? result[11] : 0;
     DeviceBleName = deviceName; // Store the parsed device name
-
-    debugPrint("Device mode: $maincycle_mode");
-    debugPrint("Device color: $maincycle_color");
-    debugPrint("Device BLE Name: $DeviceBleName");
-    Show_Snackbar(DeviceBleName, 300);
-
     notifyListeners();
-
     if (deviceName !=
         "${Products[0]["category_name"] + "-" + Products[0]["part_number"].toString()}") {
-      SingleBle.instance.disconnect();
+      SingleBle().disconnect();
       return;
     }
   }

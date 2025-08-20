@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, file_names
 import 'package:easy_container/easy_container.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/const/themes.dart';
 import 'package:netvana/customwidgets/ThemeCard.dart';
 import 'package:netvana/data/ble/providerble.dart';
@@ -50,11 +51,11 @@ class _EffectsscrState extends State<Effectsscr> {
                         padding: 0,
                         child: Container(
                           color: FIGMA.Back,
-                          child: const Text(
+                          child: Text(
                             "افکت های اختصاصی",
                             style: TextStyle(
                                 fontFamily: FIGMA.abrlb,
-                                fontSize: 28,
+                                fontSize: 28.sp,
                                 color: FIGMA.Wrn),
                           ),
                         ),
@@ -104,14 +105,12 @@ List<EspTheme> getFilteredAndSortedThemes(
       break;
 
     case ThemeFilter.single:
-      // تم‌هایی که تمام contentهایشان c == null است
       filtered = allThemes
           .where((t) => t.content.every((item) => item.c == null))
           .toList();
       break;
 
     case ThemeFilter.multiple:
-      // تم‌هایی که حداقل یکی از contentها c != null است
       filtered = allThemes
           .where((t) => t.content.any((item) => item.c != null))
           .toList();

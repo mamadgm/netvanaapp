@@ -18,6 +18,8 @@ class FIGMA {
   static const Back = Color(0xFF0D0D0D);
   static const Gray = Color(0xFF121212);
   static const Gray2 = Color(0xFF242424);
+  static const Gray3 = Color(0xFF404040);
+  static const Gray4 = Color(0xFF747474);
 
   static const abrlb = 'abrlb';
   static const abreb = 'abreb';
@@ -43,10 +45,10 @@ class FIGMA {
   // static const ESP32_SERVICE_FCVAL = "66905ac6-9820-4942-bd40-79bac9c3501c";
 }
 
-Size GetGoodW(BuildContext context, double inwidth, double inheight) {
-  double refrence = MediaQuery.of(context).size.width / 375;
-  return Size(inwidth * refrence, inheight * refrence);
-}
+// Size GetGoodW(BuildContext context, double inwidth, double inheight) {
+//   double refrence = MediaQuery.of(context).size.width / 375;
+//   return Size(inwidth * refrence, inheight * refrence);
+// }
 
 Widget FASELE({required int value}) {
   return Expanded(

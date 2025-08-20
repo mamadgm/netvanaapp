@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/themes.dart';
@@ -34,11 +35,9 @@ class ThemeCard extends StatelessWidget {
       builder: (context, value, child) {
         final bool isSelected = value.maincycle_mode == content[0].m;
         final bool isFavorite = value.Favorites.contains(id);
-
         return EasyContainer(
           onTap: () async {
             debugPrint("Tapped Theme id: $id");
-
             if (value.nextmoveisconnect) {
               try {
                 await NetClass().setMode(
@@ -46,18 +45,13 @@ class ThemeCard extends StatelessWidget {
                   value.Products[0]["id"].toString(),
                   id.toString(),
                 );
-                debugPrint("✅ Theme set successfully");
+                debugPrint("Theme set successfully");
               } catch (e) {
-                debugPrint("⚠️ Failed to set theme: $e");
+                debugPrint("Failed to set theme: $e");
               }
             }
-
-            // Extract m value for BLE
             int modeValue = 0;
-
             modeValue = content[0].m;
-
-            // Prepare BLE payload
             String jsonPayload = jsonEncode({
               "Mode": [
                 {
@@ -68,7 +62,6 @@ class ThemeCard extends StatelessWidget {
                 }
               ]
             });
-
             SingleBle().sendMain(jsonPayload);
           },
           padding: 8,
@@ -115,8 +108,8 @@ class ThemeCard extends StatelessWidget {
                     children: [
                       Text(
                         bigText,
-                        style: const TextStyle(
-                          fontSize: 16,
+                        style: TextStyle(
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                           fontFamily: FIGMA.estsb,
                           color: FIGMA.Wrn,
@@ -124,8 +117,8 @@ class ThemeCard extends StatelessWidget {
                       ),
                       Text(
                         smallText,
-                        style: const TextStyle(
-                          fontSize: 12,
+                        style: TextStyle(
+                          fontSize: 12.sp,
                           fontFamily: FIGMA.estre,
                           color: FIGMA.Wrn2,
                         ),
@@ -144,22 +137,28 @@ class ThemeCard extends StatelessWidget {
 
 Widget buildFilters(BuildContext context) {
   final prov = Provider.of<ProvData>(context);
-  TextStyle enabled = const TextStyle(
-      color: Colors.black, fontFamily: FIGMA.estsb, fontSize: 20);
-  TextStyle disabled = const TextStyle(
-      color: Colors.grey, fontFamily: FIGMA.estsb, fontSize: 20);
+  TextStyle enabled =
+      TextStyle(color: FIGMA.Wrn, fontFamily: FIGMA.estsb, fontSize: 12.sp);
+  TextStyle disabled = enabled;
   return Padding(
     padding: const EdgeInsets.all(16.0),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         FilterChip(
-          backgroundColor: FIGMA.Back,
+          backgroundColor: FIGMA.Gray2,
+          showCheckmark: false,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          disabledColor: FIGMA.Back,
-          selectedColor: Colors.white,
+          side: BorderSide(
+            color: prov.selectedFilter == ThemeFilter.liked
+                ? FIGMA.Prn
+                : FIGMA.Gray2,
+            width: prov.selectedFilter == ThemeFilter.liked ? 1.5.sp : 0,
+          ),
+          disabledColor: FIGMA.Gray2,
+          selectedColor: FIGMA.Grn,
           label: Text(
             "مورد علاقه",
             style:
@@ -170,12 +169,18 @@ Widget buildFilters(BuildContext context) {
         ),
         const SizedBox(width: 8),
         FilterChip(
-          backgroundColor: FIGMA.Back,
+          backgroundColor: FIGMA.Gray2,
+          showCheckmark: false,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          disabledColor: FIGMA.Back,
-          selectedColor: Colors.white,
+          side: BorderSide(
+              color: prov.selectedFilter == ThemeFilter.single
+                  ? FIGMA.Prn
+                  : FIGMA.Gray2,
+              width: prov.selectedFilter == ThemeFilter.single ? 1.5.sp : 0),
+          disabledColor: FIGMA.Gray2,
+          selectedColor: FIGMA.Grn,
           label: Text(
             "اکتیو",
             style:
@@ -186,12 +191,19 @@ Widget buildFilters(BuildContext context) {
         ),
         const SizedBox(width: 8),
         FilterChip(
-          backgroundColor: FIGMA.Back,
+          backgroundColor: FIGMA.Gray2,
+          showCheckmark: false,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          disabledColor: FIGMA.Back,
-          selectedColor: Colors.white,
+          side: BorderSide(
+            color: prov.selectedFilter == ThemeFilter.multiple
+                ? FIGMA.Prn
+                : FIGMA.Gray2,
+            width: prov.selectedFilter == ThemeFilter.multiple ? 1.5.sp : 0,
+          ),
+          disabledColor: FIGMA.Gray2,
+          selectedColor: FIGMA.Grn,
           label: Text(
             "پاسیو",
             style: prov.selectedFilter == ThemeFilter.multiple

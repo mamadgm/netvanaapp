@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/customwidgets/newtab.dart';
 import 'package:netvana/data/ble/providerble.dart';
@@ -23,14 +24,14 @@ class _EspsettingsState extends State<Espsettings> {
       builder: (context, value, child) => NewTab(
         appbartext: "تنظیمات دستگاه",
         childrens: [
-          const Directionality(
+          Directionality(
             textDirection: TextDirection.rtl,
             child: Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
                 "تنظیمات بلوتوثی",
                 style: TextStyle(
-                    fontFamily: FIGMA.abrlb, fontSize: 18, color: FIGMA.Prn),
+                    fontFamily: FIGMA.abrlb, fontSize: 18.sp, color: FIGMA.Prn),
               ),
             ),
           ),
@@ -46,9 +47,10 @@ class _EspsettingsState extends State<Espsettings> {
                   Expanded(
                     flex: 15,
                     child: CheckboxListTile(
-                      title: const Text(
+                      title: Text(
                         "فعال سازی نتوانا در\n ریستارت بعدی",
-                        style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 13),
+                        style:
+                            TextStyle(fontFamily: FIGMA.abrlb, fontSize: 13.sp),
                       ),
                       value: value.isnooranNet,
                       onChanged: (p0) {
@@ -78,7 +80,7 @@ class _EspsettingsState extends State<Espsettings> {
               hintText: "نام روتر",
               hintStyling: TextStyle(
                 fontFamily: FIGMA.abrlb,
-                fontSize: 13,
+                fontSize: 13.sp,
                 color: FIGMA.Orn.withOpacity(0.3),
               ),
               trailingWidget: IconButton(
@@ -112,7 +114,7 @@ class _EspsettingsState extends State<Espsettings> {
               hintText: "پسورد",
               hintStyling: TextStyle(
                 fontFamily: FIGMA.abrlb,
-                fontSize: 13,
+                fontSize: 13.sp,
                 color: FIGMA.Orn.withOpacity(0.3),
               ),
               trailingWidget: IconButton(
@@ -147,9 +149,10 @@ class _EspsettingsState extends State<Espsettings> {
                   Expanded(
                     flex: 15,
                     child: CheckboxListTile(
-                      title: const Text(
+                      title: Text(
                         "فعال سازی آپدیت سیستم",
-                        style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 13),
+                        style:
+                            TextStyle(fontFamily: FIGMA.abrlb, fontSize: 13.sp),
                       ),
                       value: value.NetvanaUpdateFlag,
                       onChanged: (p0) {
@@ -183,20 +186,20 @@ class _EspsettingsState extends State<Espsettings> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const Text(
+                  Text(
                     "ورژن",
                     textAlign: TextAlign.start,
                     textDirection: TextDirection.rtl,
-                    style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 14),
+                    style: TextStyle(fontFamily: FIGMA.abrlb, fontSize: 14.sp),
                   ),
                   TextField(
                     readOnly: true,
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(
                       fillColor: FIGMA.Orn,
-                      hintStyle: const TextStyle(
+                      hintStyle: TextStyle(
                           fontFamily: FIGMA.abrlb,
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           color: Colors.grey),
                       hintText: "V.${value.ESPVersion}",
                       border: InputBorder.none,

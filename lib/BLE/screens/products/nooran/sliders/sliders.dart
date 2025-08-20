@@ -38,7 +38,7 @@ class _Color_Picker_HSVState extends State<Color_Picker_HSV> {
       Color maincolor = Color(colorInt).withOpacity(1.0);
       return LayoutBuilder(builder: (context, constsize) {
         return EasyContainer(
-          color: FIGMA.Gray,
+          color: FIGMA.Gray2,
           borderWidth: 0,
           elevation: 0,
           padding: 8,
@@ -168,7 +168,6 @@ class HueSliderThumbShape extends RoundSliderThumbShape {
       circlePaint,
     );
 
-    // 🟢 Optional border
     if (showBorder) {
       double borderRadius = currentRadius - borderWidth;
       if (!filled) borderRadius += strokeWidth / 2;
@@ -215,7 +214,7 @@ class Speed_sliderState extends State<Speed_slider> {
     return LayoutBuilder(builder: (context, constsize) {
       return Consumer<ProvData>(builder: (context, value, child) {
         return EasyContainer(
-          color: FIGMA.Gray,
+          color: FIGMA.Gray2,
           borderWidth: 0,
           elevation: 0,
           margin: 0,
@@ -230,7 +229,7 @@ class Speed_sliderState extends State<Speed_slider> {
             color: (!value.nextmoveisconnect | value.isConnectedWifi)
                 ? FIGMA.Orn
                 : Colors.grey,
-            fillColor: FIGMA.Gray,
+            fillColor: FIGMA.Gray2,
             onFinish: (value) async {
               int finalspeed = mapdoubleToInt(value, 1.0, 0.0, 2500, 100);
               widget.senddata(finalspeed.toString());
@@ -269,7 +268,7 @@ class _Bright_sliderState extends State<Bright_slider> {
       return Consumer<ProvData>(builder: (context, value, child) {
         brightd = mapIntTodouble(value.Brightness, 1, 255, 1.0, 0.0);
         return EasyContainer(
-          color: FIGMA.Gray,
+          color: FIGMA.Gray2,
           borderWidth: 0,
           elevation: 0,
           margin: 0,
@@ -283,7 +282,7 @@ class _Bright_sliderState extends State<Bright_slider> {
             color: (!value.nextmoveisconnect | value.isConnectedWifi)
                 ? FIGMA.Orn
                 : Colors.grey,
-            fillColor: FIGMA.Gray,
+            fillColor: FIGMA.Gray2,
             onChange: (val1, val2) {},
             onFinish: (value) async {
               int finallight = mapdoubleToInt(value, 1.0, 0.0, 1, 255);

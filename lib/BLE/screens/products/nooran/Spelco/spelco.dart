@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +16,8 @@ class Spelco extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      _NavItem(index: 0, icon: Icons.speed, label: "سرعت"),
-      _NavItem(index: 1, icon: Icons.sunny, label: "روشنایی"),
+      _NavItem(index: 0, icon: Icons.electric_bolt_rounded, label: "سرعت"),
+      _NavItem(index: 1, icon: HugeIcons.strokeRoundedSun01, label: "روشنایی"),
       _NavItem(index: 2, icon: Icons.color_lens, label: "رنگ"),
     ];
 
@@ -52,16 +54,16 @@ class Spelco extends StatelessWidget {
                             if (isActive)
                               Text(
                                 item.label,
-                                style: const TextStyle(
-                                  fontFamily: FIGMA.estbo,
-                                  fontSize: 18,
+                                style: TextStyle(
+                                  fontFamily: FIGMA.estsb,
+                                  fontSize: 13.sp,
                                   color: FIGMA.Wrn,
                                 ),
                               ),
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             Icon(
                               item.icon,
-                              size: 32,
+                              size: 24.w,
                               color: isActive ? FIGMA.Orn : Colors.grey,
                             ),
                           ],
