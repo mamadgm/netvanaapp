@@ -32,10 +32,9 @@ class Netvana extends StatelessWidget {
                       width: 140.w,
                       child: LampWidget(
                         glowIntensity: 1,
-                        lampColor:
-                            (!value.nextmoveisconnect | value.isConnectedWifi)
-                                ? colorFromString(value.maincycle_color)
-                                : colorFromString("0xFF555555"),
+                        lampColor: (value.netvanaIsConnected)
+                            ? colorFromString(value.maincycle_color)
+                            : colorFromString("0xFF555555"),
                         height: 150.h,
                         width: 80.w,
                       ),
@@ -60,6 +59,11 @@ class Netvana extends StatelessWidget {
                         title: "وای فای جدید",
                         trailingIcon: LucideIcons.plus,
                         onTap: () {
+                          if (!value.bleIsConnected) {
+                            value.Show_Snackbar("بلوتوث متصل نیست", 1000,
+                                type: 3);
+                            return;
+                          }
                           showWiFiDialog(context);
                         },
                       ),
@@ -71,192 +75,95 @@ class Netvana extends StatelessWidget {
             ],
           ),
           Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                EasyContainer(
-                  height: 60.h,
-                  showBorder: true,
-                  borderColor: FIGMA.Gray2,
-                  color: FIGMA.Gray,
-                  customPadding: const EdgeInsets.symmetric(horizontal: 8),
-                  elevation: 0,
-                  shadowColor: FIGMA.Gray2,
-                  borderWidth: 3,
-                  borderRadius: 30,
-                  child: Row(
+            child: value.netvanaIsConnected
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(
-                        "Wifi:",
-                        style: TextStyle(
-                            color: FIGMA.Gray4,
-                            fontFamily: FIGMA.estre,
-                            fontSize: 13.sp),
+                      EasyContainer(
+                        height: 60.h,
+                        showBorder: true,
+                        borderColor: FIGMA.Gray2,
+                        color: FIGMA.Gray,
+                        customPadding:
+                            const EdgeInsets.symmetric(horizontal: 8),
+                        elevation: 0,
+                        shadowColor: FIGMA.Gray2,
+                        borderWidth: 3,
+                        borderRadius: 30,
+                        child: Row(
+                          children: [
+                            Text(
+                              "Wifi:",
+                              style: TextStyle(
+                                  color: FIGMA.Gray4,
+                                  fontFamily: FIGMA.estre,
+                                  fontSize: 13.sp),
+                            ),
+                            Text(
+                              value.Device_SSID,
+                              style: TextStyle(
+                                  color: FIGMA.Wrn,
+                                  fontFamily: FIGMA.estsb,
+                                  fontSize: 13.sp),
+                            ),
+                          ],
+                        ),
                       ),
-                      Text(
-                        value.Device_SSID,
-                        style: TextStyle(
-                            color: FIGMA.Wrn,
-                            fontFamily: FIGMA.estsb,
-                            fontSize: 13.sp),
+                      EasyContainer(
+                        height: 60.h,
+                        width: 148.w,
+                        showBorder: true,
+                        borderColor: FIGMA.Gray2,
+                        color: FIGMA.Gray,
+                        padding: 16,
+                        elevation: 5,
+                        shadowColor: FIGMA.Gray2,
+                        borderWidth: 3,
+                        borderRadius: 30,
+                        child: Row(
+                          children: [
+                            Text(
+                              "عالی",
+                              style: TextStyle(
+                                  color: FIGMA.Prn2,
+                                  fontFamily: FIGMA.estsb,
+                                  fontSize: 13.sp),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              ":وضعیت اتصال",
+                              style: TextStyle(
+                                  color: FIGMA.Gray4,
+                                  fontFamily: FIGMA.estre,
+                                  fontSize: 13.sp),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
+                  )
+                : EasyContainer(
+                    width: 240.w,
+                    height: 60.h,
+                    showBorder: true,
+                    borderColor: FIGMA.Gray2,
+                    color: FIGMA.Gray,
+                    customPadding: const EdgeInsets.symmetric(horizontal: 8),
+                    elevation: 0,
+                    shadowColor: FIGMA.Gray2,
+                    borderWidth: 3,
+                    borderRadius: 30,
+                    child: Text(
+                      "دستگاه شما به نتوانا متصل نیست",
+                      style: TextStyle(
+                          color: FIGMA.Gray4,
+                          fontFamily: FIGMA.estre,
+                          fontSize: 13.sp),
+                    ),
                   ),
-                ),
-                EasyContainer(
-                  height: 60.h,
-                  width: 148.w,
-                  showBorder: true,
-                  borderColor: FIGMA.Gray2,
-                  color: FIGMA.Gray,
-                  padding: 16,
-                  elevation: 5,
-                  shadowColor: FIGMA.Gray2,
-                  borderWidth: 3,
-                  borderRadius: 30,
-                  child: Row(
-                    children: [
-                      Text(
-                        "عالی",
-                        style: TextStyle(
-                            color: FIGMA.Prn2,
-                            fontFamily: FIGMA.estsb,
-                            fontSize: 13.sp),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        ":وضعیت اتصال",
-                        style: TextStyle(
-                            color: FIGMA.Gray4,
-                            fontFamily: FIGMA.estre,
-                            fontSize: 13.sp),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
           )
         ]);
       },
     ));
-  }
-}
-
-class WifiTile extends StatefulWidget {
-  final bool isConnected;
-  final String ssid;
-
-  const WifiTile({
-    super.key,
-    required this.isConnected,
-    required this.ssid,
-  });
-
-  @override
-  State<WifiTile> createState() => _WifiTileState();
-}
-
-class _WifiTileState extends State<WifiTile>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    )..repeat(reverse: true);
-
-    _animation = Tween<double>(begin: 1.0, end: 1.4).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Widget _buildSignalIcon() {
-    return Icon(
-      Icons.wifi,
-      size: 32,
-      color: widget.isConnected ? Colors.green : Colors.red,
-    );
-  }
-
-  Widget _buildConnectionIcon() {
-    return ScaleTransition(
-      scale: _animation,
-      child: Icon(
-        widget.isConnected
-            ? Icons.check_circle
-            : Icons.radio_button_off_rounded,
-        size: 28,
-        color: widget.isConnected ? Colors.green : Colors.red.shade500,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: widget.isConnected ? Colors.green.shade50 : Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: widget.isConnected ? Colors.green : Colors.grey.shade300,
-            width: 1.5,
-          ),
-        ),
-        child: Row(
-          children: [
-            // 🔁 Animated icon (right side)
-            _buildConnectionIcon(),
-            const SizedBox(width: 16),
-
-            // 📄 SSID & info
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.ssid,
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    widget.isConnected
-                        ? "متصل شده به این شبکه"
-                        : "دستگاه متصل نیست",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // 📶 Signal icon
-            const SizedBox(width: 16),
-            _buildSignalIcon(),
-          ],
-        ),
-      ),
-    );
   }
 }

@@ -1,15 +1,17 @@
+// ignore_for_file: camel_case_types
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 
 class Choose_Product extends StatelessWidget {
-  String prefix;
-  double myheight;
-  double mywidth;
+  final String prefix;
+  final double myheight;
+  final double mywidth;
   final Function onTrytoconnect;
   final Function ondelete;
-  Choose_Product({
+  const Choose_Product({
     super.key,
     required this.prefix,
     required this.myheight,

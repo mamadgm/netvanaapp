@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:netvana/BLE/screens/Setting/espsettings.dart';
-import 'package:netvana/Login/Login.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/ButtonIcon.dart';
+import 'package:netvana/customwidgets/EyeText.dart';
+import 'package:netvana/customwidgets/NewScreen.dart';
 import 'package:netvana/customwidgets/cylander.dart';
-import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/providerble.dart';
+import 'package:netvana/models/SingleHive.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScr extends StatefulWidget {
@@ -21,38 +20,6 @@ class ProfileScr extends StatefulWidget {
 }
 
 class _ProfileScrState extends State<ProfileScr> {
-  void setup() {
-    final funcy = context.read<ProvData>();
-    var sdcard = Hive.box(FIGMA.HIVE);
-
-    var token = sdcard.get("access_token", defaultValue: "empty");
-
-    if (token != "empty") {
-      String s1 = sdcard.get("phone", defaultValue: "empty");
-      String s2 = sdcard.get("name", defaultValue: "empty");
-      String s3 = sdcard.get("last", defaultValue: "empty");
-      String s4 = sdcard.get("token", defaultValue: "empty");
-
-      funcy.Set_Userdetails(s1, s2, s3, s4);
-      var products = sdcard.get("products", defaultValue: "empty");
-
-      if (products != "empty") {
-        funcy.setProducts(products);
-      } else {
-        debugPrint("no products");
-      }
-
-      for (var i = 0; i < 5; i++) {
-        funcy.Defalult_colors[i] =
-            sdcard.get("COLOR$i", defaultValue: 0xFFFFFF);
-      }
-    } else {
-      debugPrint("no token");
-    }
-    funcy.setIsUserLoggedIn(false);
-    funcy.hand_update();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<ProvData>(builder: (context, value, child) {
@@ -67,7 +34,7 @@ class _ProfileScrState extends State<ProfileScr> {
               width: 120.w,
               child: LampWidget(
                 glowIntensity: 1,
-                lampColor: (!value.nextmoveisconnect | value.isConnectedWifi)
+                lampColor: (value.netvanaIsConnected)
                     ? colorFromString(value.maincycle_color)
                     : colorFromString("0xFF555555"),
                 height: 150.h,
@@ -86,11 +53,49 @@ class _ProfileScrState extends State<ProfileScr> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 WiFiItem(
-                  leadingIcon: Icons.arrow_back_ios_new_rounded,
-                  title: "حساب کاربری",
-                  trailingIcon: LucideIcons.user,
-                  onTap: () {},
-                ),
+                    leadingIcon: Icons.arrow_back_ios_new_rounded,
+                    title: "حساب کاربری",
+                    trailingIcon: LucideIcons.user,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CustomScreen(
+                            title: "حساب کاربری",
+                            body: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(height: 8.h),
+                                SizedBox(
+                                  width: 329.w,
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      "نام کاربری",
+                                      style: TextStyle(
+                                          fontFamily: FIGMA.estsb,
+                                          fontSize: 12.sp,
+                                          color: FIGMA.Gray4),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 6.h),
+                                SizedBox(
+                                  height: 68.h,
+                                  width: 329.w,
+                                  child: EyeTextField(
+                                    controller: value.UserNameController,
+                                    showEye: false,
+                                    hintText: "username",
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
                 WiFiItem(
                   leadingIcon: Icons.arrow_back_ios_new_rounded,
                   title: "حالت خواب",

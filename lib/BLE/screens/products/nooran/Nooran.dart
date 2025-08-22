@@ -18,6 +18,7 @@ import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_container/easy_container.dart';
+import 'package:netvana/models/SingleHive.dart';
 import 'package:provider/provider.dart';
 // import 'package:universal_ble/universal_ble.dart';
 // import 'package:record/record.dart';
@@ -43,43 +44,61 @@ class _NooranState extends State<Nooran> {
     super.initState();
     final value = Provider.of<ProvData>(context, listen: false);
     value.loadFavoritesFromHive();
-    value.loadTimersFromHive();
 
     SingleBle().init(value);
     Sliderwidgets = [
       Speed_slider(
         senddata: (speed) {
-          value.nextmoveisconnect
-              ? NetClass().setSpeed(
-                  value.token, value.Products[0]["id"].toString(), speed)
-              : null;
-          value.setMainCycleSpeed(int.parse(speed));
-          String jsonPayload = jsonEncode({"Ls": speed});
-          SingleBle().sendMain(jsonPayload);
+          if (value.bleIsConnected) {
+            String jsonPayload = jsonEncode({"Ls": speed});
+            SingleBle().sendMain(jsonPayload);
+            value.setMainCycleSpeed(int.parse(speed));
+            return;
+          }
+          if (value.netvanaIsConnected) {
+            NetClass().setSpeed(SdcardService.instance.token!,
+                SdcardService.instance.firstDevice!.id.toString(), speed);
+            value.setMainCycleSpeed(int.parse(speed));
+            return;
+          }
+          showCannotSend(value);
         },
       ),
       Bright_slider(
         senddata: (bright) {
-          value.nextmoveisconnect
-              ? NetClass().setBright(
-                  value.token, value.Products[0]["id"].toString(), bright)
-              : null;
-          value.setBrightness(int.parse(bright));
-          String jsonPayload = jsonEncode({"Lb": bright});
-          SingleBle().sendMain(jsonPayload);
+          if (value.bleIsConnected) {
+            String jsonPayload = jsonEncode({"Lb": bright});
+            SingleBle().sendMain(jsonPayload);
+
+            value.setBrightness(int.parse(bright));
+            return;
+          }
+          if (value.netvanaIsConnected) {
+            NetClass().setBright(SdcardService.instance.token!,
+                SdcardService.instance.firstDevice!.id.toString(), bright);
+            value.setBrightness(int.parse(bright));
+            return;
+          }
+          showCannotSend(value);
         },
         brightness: value.Brightness,
         netvana: 1,
       ),
       Color_Picker_HSV(
         senddata: (p0) {
-          value.setMainCycleColor(p0);
-          value.nextmoveisconnect
-              ? NetClass()
-                  .setColor(value.token, value.Products[0]["id"].toString(), p0)
-              : null;
-          String jsonPayload = jsonEncode({"Lc": p0});
-          SingleBle().sendMain(jsonPayload);
+          if (value.bleIsConnected) {
+            String jsonPayload = jsonEncode({"Lc": p0});
+            SingleBle().sendMain(jsonPayload);
+            value.setMainCycleColor(p0);
+            return;
+          }
+          if (value.netvanaIsConnected) {
+            NetClass().setColor(SdcardService.instance.token!,
+                SdcardService.instance.firstDevice!.id.toString(), p0);
+            value.setMainCycleColor(p0);
+            return;
+          }
+          showCannotSend(value);
         },
         netvana: 1,
       ),
@@ -95,7 +114,7 @@ class _NooranState extends State<Nooran> {
 
   @override
   Widget build(BuildContext context) {
-    var sdcard = Hive.box(FIGMA.HIVE);
+    var sdcard = Hive.box(FIGMA.HIVE2);
 
     return Consumer<ProvData>(builder: (context, value, child) {
       return SafeArea(
@@ -120,7 +139,7 @@ class _NooranState extends State<Nooran> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(right: 0),
+                          padding: const EdgeInsets.only(right: 0),
                           child: Text(
                             "نوروانا",
                             style: TextStyle(
@@ -130,7 +149,7 @@ class _NooranState extends State<Nooran> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(left: 0),
+                          padding: const EdgeInsets.only(left: 0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -148,56 +167,44 @@ class _NooranState extends State<Nooran> {
                                   margin: 0,
                                   padding: 0,
                                   child: Icon(
-                                    value.isConnectedWifi
+                                    value.netvanaIsConnected
                                         ? Icons.wifi_rounded
                                         : Icons.wifi_off_rounded,
-                                    color: value.isConnectedWifi
+                                    color: value.netvanaIsConnected
                                         ? FIGMA.Prn
                                         : FIGMA.Gray3,
                                     size: 24.sp,
                                   ),
                                   onTap: () async {
-                                    var box = Hive.box(FIGMA.HIVE);
+                                    final service = SdcardService.instance;
 
-                                    var meResponse = await NetClass()
-                                        .getProducts(value.token)
-                                        .timeout(const Duration(seconds: 5));
-
-                                    if (meResponse != null) {
-                                      value.setProducts(meResponse["devices"]);
-                                      box.put(
-                                          "products", meResponse["devices"]);
-                                      box.put("name", meResponse["first_name"]);
-                                      box.put("last", meResponse["last_name"]);
-                                      box.put("phone", meResponse["phone"]);
-
-                                      debugPrint("Got Devices");
-
-                                      // TODO: add setup
+                                    try {
+                                      await service.updateUser(service.token!);
+                                    } catch (e) {
+                                      debugPrint("error in update user $e");
                                     }
 
-                                    if (value.Products[0]["is_online"] ==
-                                        false) {
-                                      value.wifi_update_connected(false);
-                                      value.Show_Snackbar(
-                                          " ...دستگاه متصل نیست . راه اندازی مجدد",
-                                          1000);
-                                    } else {
-                                      value.wifi_update_connected(true);
-                                      return;
+                                    final firstDevice = service.firstDevice;
+                                    if (firstDevice != null) {
+                                      if (!firstDevice.isOnline) {
+                                        value.wifi_update_connected(false);
+                                        value.Show_Snackbar(
+                                            "دستگاه متصل نیست . راه اندازی مجدد ...",
+                                            1000);
+                                      } else {
+                                        value.wifi_update_connected(true);
+                                      }
+
+                                      if (value.bleIsConnected) {
+                                        showWiFiDialog(context);
+                                      } else {
+                                        value.Show_Snackbar(
+                                            "برای تنظیم ابتدا به بلوتوث متصل شوید",
+                                            1000);
+                                      }
+
+                                      value.hand_update();
                                     }
-
-                                    if (value.isConnected) {
-                                      // show the WiFi Menu
-
-                                      showWiFiDialog(context);
-                                    } else {
-                                      value.Show_Snackbar(
-                                          "برای تنظیم ابتدا به بلوتوث متصل شوید",
-                                          1000);
-                                    }
-
-                                    value.hand_update();
                                   },
                                 ),
                               ),
@@ -215,32 +222,23 @@ class _NooranState extends State<Nooran> {
                                     margin: 0,
                                     padding: 0,
                                     child: Icon(
-                                      value.isConnected
+                                      value.bleIsConnected
                                           ? Icons.bluetooth_connected
                                           : Icons.bluetooth_disabled,
-                                      color: value.isConnected
+                                      color: value.bleIsConnected
                                           ? FIGMA.Prn
                                           : FIGMA.Gray3,
                                       size: 24.sp,
                                     ),
                                     onTap: () async {
-                                      debugPrint(value.nextmoveisconnect
-                                          ? "Connect"
-                                          : "Disconnect");
-
-                                      if (value.nextmoveisconnect == false) {
-                                        // Device is connected → Disconnect
+                                      if (value.bleIsConnected == true) {
                                         await SingleBle().disconnect();
-                                        value.ble_update_connected(false);
-                                        value.change_nextmoveisconnect(true);
+                                        value.setBleIsConnected(false);
                                         debugPrint("Device Disconnected");
                                         return;
                                       }
-
-                                      // Device is NOT connected → Start Scan
                                       try {
                                         debugPrint("Starting BLE Scan...");
-
                                         var result = await SingleBle()
                                             .startScanAndGetDevice();
                                         String? selectedDeviceId;
@@ -262,8 +260,7 @@ class _NooranState extends State<Nooran> {
                                                 selectedDeviceId, 200);
 
                                         if (connected) {
-                                          value.change_nextmoveisconnect(false);
-                                          value.ble_update_connected(true);
+                                          value.setBleIsConnected(true);
                                           debugPrint(
                                               "Successfully Connected to $selectedDeviceId");
 
@@ -281,11 +278,11 @@ class _NooranState extends State<Nooran> {
                                             }
                                           });
                                         } else {
-                                          value.ble_update_connected(false);
+                                          value.setBleIsConnected(false);
                                           debugPrint("Failed to Connect.");
                                         }
                                       } catch (e) {
-                                        value.ble_update_connected(false);
+                                        value.setBleIsConnected(false);
                                         debugPrint('Connection Error: $e');
                                       }
                                     }),
@@ -314,16 +311,22 @@ class _NooranState extends State<Nooran> {
                                   child: Sleep_Button(
                                     state: value.Brightness == 5,
                                     onDataChange: (s) {
-                                      value.nextmoveisconnect
-                                          ? NetClass().setBright(
-                                              value.token,
-                                              value.Products[0]["id"]
-                                                  .toString(),
-                                              "5")
-                                          : null;
-                                      String jsonPayload =
-                                          jsonEncode({"Lb": 5});
-                                      SingleBle().sendMain(jsonPayload);
+                                      if (value.bleIsConnected) {
+                                        String jsonPayload =
+                                            jsonEncode({"Lb": 5});
+                                        SingleBle().sendMain(jsonPayload);
+                                        return;
+                                      }
+                                      if (value.netvanaIsConnected) {
+                                        NetClass().setBright(
+                                            SdcardService.instance.token!,
+                                            SdcardService
+                                                .instance.firstDevice!.id
+                                                .toString(),
+                                            "5");
+                                        return;
+                                      }
+                                      showCannotSend(value);
                                     },
                                   )),
                             ),
@@ -339,16 +342,22 @@ class _NooranState extends State<Nooran> {
                                 // setPower
                                 onof: value.isdeviceon,
                                 onDataChange: () {
-                                  String jsonPayload =
-                                      jsonEncode({"Cp": !value.isdeviceon});
-                                  value.nextmoveisconnect
-                                      ? NetClass().setPower(
-                                          value.token,
-                                          value.Products[0]["id"].toString(),
-                                          !value.isdeviceon == true ? 1 : 0)
-                                      : null;
+                                  if (value.bleIsConnected) {
+                                    String jsonPayload =
+                                        jsonEncode({"Cp": !value.isdeviceon});
+                                    SingleBle().sendMain(jsonPayload);
 
-                                  SingleBle().sendMain(jsonPayload);
+                                    return;
+                                  }
+                                  if (value.netvanaIsConnected) {
+                                    NetClass().setPower(
+                                        SdcardService.instance.token!,
+                                        SdcardService.instance.firstDevice!.id
+                                            .toString(),
+                                        !value.isdeviceon == true ? 1 : 0);
+                                    return;
+                                  }
+                                  showCannotSend(value);
                                 },
                                 netvana: 1),
                           ),
@@ -369,13 +378,13 @@ class _NooranState extends State<Nooran> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           LampWidget(
-                            glowIntensity: (!value.nextmoveisconnect |
-                                    value.isConnectedWifi)
+                            glowIntensity: (value.bleIsConnected |
+                                    value.netvanaIsConnected)
                                 ? value.Brightness.toDouble() / 90
                                 : 2,
                             key: lampKey,
-                            lampColor: (!value.nextmoveisconnect |
-                                    value.isConnectedWifi)
+                            lampColor: (value.bleIsConnected |
+                                    value.netvanaIsConnected)
                                 ? colorFromString(value.maincycle_color)
                                 : colorFromString("0xFF555555"),
                             height: 125.h,
@@ -384,14 +393,18 @@ class _NooranState extends State<Nooran> {
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: Text(
-                              "${value.Products[0]['category_name']}-${value.Products[0]['part_number']}",
+                              "${SdcardService.instance.firstDevice!.categoryName}-${SdcardService.instance.firstDevice!.partNumber}",
                               style: const TextStyle(color: FIGMA.Wrn2),
                             ),
                           )
                         ],
                       ),
                       onTap: () async {
-                        await value.getDetailsFromNet();
+                        if (value.netvanaIsConnected) {
+                          await value.getDetailsFromNet();
+                          return;
+                        }
+                        showCannotSend(value);
                       },
                     ),
                   ],
@@ -401,7 +414,11 @@ class _NooranState extends State<Nooran> {
                   height: 80.h,
                   width: 329.w,
                   child: Spelco(handlechange: (index) {
-                    value.change_slider(index);
+                    if (value.netvanaIsConnected | value.bleIsConnected) {
+                      value.change_slider(index);
+                      return;
+                    }
+                    showCannotSend(value);
                   }),
                 ),
                 SizedBox(height: 8.h),
@@ -414,7 +431,9 @@ class _NooranState extends State<Nooran> {
                 EasyContainer(
                   height: 102.h,
                   width: 329.w,
-                  color: Colors.deepOrange,
+                  color: (value.bleIsConnected | value.netvanaIsConnected)
+                      ? Colors.deepOrange
+                      : FIGMA.Gray4,
                   borderWidth: 0,
                   elevation: 0,
                   margin: 0,
@@ -478,16 +497,25 @@ class _NooranState extends State<Nooran> {
                             child: Circlecolor(
                               color: value.Defalult_colors[index],
                               onDataChange: (String f) {
+                                if (value.bleIsConnected) {
+                                  String jsonPayload = jsonEncode({"Lc": f});
+                                  SingleBle().sendMain(jsonPayload);
+                                  value.setMainCycleColor(f);
+                                  return;
+                                }
+                                if (value.netvanaIsConnected) {
+                                  NetClass().setColor(
+                                      SdcardService.instance.token!,
+                                      SdcardService.instance.firstDevice!.id
+                                          .toString(),
+                                      f);
+                                  value.setMainCycleColor(f);
+
+                                  return;
+                                }
                                 value.set_Defalult_colors(int.parse(f), index);
                                 sdcard.put("COLOR$index", int.parse(f));
-
-                                value.setMainCycleColor(f);
-                                value.nextmoveisconnect
-                                    ? NetClass().setColor(value.token,
-                                        value.Products[0]["id"].toString(), f)
-                                    : null;
-                                String jsonPayload = jsonEncode({"Lc": f});
-                                SingleBle().sendMain(jsonPayload);
+                                showCannotSend(value);
                               },
                             ),
                           );
@@ -512,22 +540,28 @@ class ShortTimer extends StatelessWidget {
   Widget build(BuildContext context) {
     void TimerSend(int s, ProvData value) {
       calculateTimeStore(s);
-      debugPrint("Minute $s");
 
-      value.nextmoveisconnect
-          ? NetClass()
-              .setTimer(value.token, value.Products[0]["id"].toString(), s)
-          : null;
-
-      String jsonPayload = jsonEncode({"Tf": s.toString()});
-      SingleBle().sendMain(jsonPayload);
+      if (value.bleIsConnected) {
+        String jsonPayload = jsonEncode({"Tf": s.toString()});
+        SingleBle().sendMain(jsonPayload);
+        FocusScope.of(context).unfocus();
+        Navigator.of(context).pop();
+        return;
+      }
+      if (value.netvanaIsConnected) {
+        NetClass().setTimer(SdcardService.instance.token!,
+            SdcardService.instance.firstDevice!.id.toString(), s);
+        FocusScope.of(context).unfocus();
+        Navigator.of(context).pop();
+        return;
+      }
       FocusScope.of(context).unfocus();
       Navigator.of(context).pop();
     }
 
     return Consumer<ProvData>(
       builder: (context, value, child) {
-        var sdcard = Hive.box(FIGMA.HIVE);
+        var sdcard = Hive.box(FIGMA.HIVE2);
         return Padding(
           padding: const EdgeInsets.all(4.0),
           child: SizedBox(

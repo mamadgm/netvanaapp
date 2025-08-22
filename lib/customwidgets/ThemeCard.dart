@@ -5,6 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/themes.dart';
+import 'package:netvana/customwidgets/global.dart';
+import 'package:netvana/models/SingleHive.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
@@ -37,32 +39,33 @@ class ThemeCard extends StatelessWidget {
         final bool isFavorite = value.Favorites.contains(id);
         return EasyContainer(
           onTap: () async {
-            debugPrint("Tapped Theme id: $id");
-            if (value.nextmoveisconnect) {
-              try {
-                await NetClass().setMode(
-                  value.token,
-                  value.Products[0]["id"].toString(),
-                  id.toString(),
-                );
-                debugPrint("Theme set successfully");
-              } catch (e) {
-                debugPrint("Failed to set theme: $e");
-              }
+            if (value.bleIsConnected) {
+              int modeValue = 0;
+              modeValue = content[0].m;
+              String jsonPayload = jsonEncode({
+                "Mode": [
+                  {
+                    "s": 0,
+                    "e": 15,
+                    "m": modeValue,
+                    "sc": scale,
+                  }
+                ]
+              });
+              SingleBle().sendMain(jsonPayload);
+              lampKey.currentState?.shake();
+              return;
             }
-            int modeValue = 0;
-            modeValue = content[0].m;
-            String jsonPayload = jsonEncode({
-              "Mode": [
-                {
-                  "s": 0,
-                  "e": 15,
-                  "m": modeValue,
-                  "sc": scale,
-                }
-              ]
-            });
-            SingleBle().sendMain(jsonPayload);
+            if (value.bleIsConnected) {
+              await NetClass().setMode(
+                SdcardService.instance.token!,
+                SdcardService.instance.firstDevice!.id.toString(),
+                id.toString(),
+              );
+              debugPrint("Theme set successfully");
+              return;
+            }
+            showCannotSend(value);
           },
           padding: 8,
           borderRadius: 15,
@@ -98,7 +101,7 @@ class ThemeCard extends StatelessWidget {
                       } else {
                         value.Favorites.add(id);
                       }
-                      final sdcard = Hive.box(FIGMA.HIVE);
+                      final sdcard = Hive.box(FIGMA.HIVE2);
                       sdcard.put('Favorites', value.Favorites.toList());
                       value.hand_update();
                     },

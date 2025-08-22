@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types, must_be_immutanetvana, unused_import, avoid_print, unnecessary_brace_in_string_interps, non_constant_identifier_names
+// ignore_for_file: camel_case_types, must_be_immutanetvana, unused_import, avoid_print, unnecessary_brace_in_string_interps, non_constant_identifier_names, deprecated_member_use
 
 import 'package:netvana/const/figma.dart';
 import 'package:easy_container/easy_container.dart';
@@ -9,9 +9,10 @@ import 'package:netvana/data/ble/providerble.dart';
 import 'package:provider/provider.dart';
 
 class Color_Picker_HSV extends StatefulWidget {
-  int netvana;
-  Function(String) senddata;
-  Color_Picker_HSV({Key? key, required this.netvana, required this.senddata})
+  final int netvana;
+  final Function(String) senddata;
+  const Color_Picker_HSV(
+      {Key? key, required this.netvana, required this.senddata})
       : super(key: key);
 
   @override
@@ -49,29 +50,18 @@ class _Color_Picker_HSVState extends State<Color_Picker_HSV> {
             width: constsize.maxWidth,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              gradient: LinearGradient(
-                end: Alignment.centerRight,
-                begin: Alignment.centerLeft,
-                colors: (!value.nextmoveisconnect | value.isConnectedWifi)
-                    ? [
-                        const Color.fromARGB(255, 255, 0, 0),
-                        const Color.fromARGB(255, 255, 255, 0),
-                        const Color.fromARGB(255, 0, 255, 0),
-                        const Color.fromARGB(255, 0, 255, 255),
-                        const Color.fromARGB(255, 0, 0, 255),
-                        const Color.fromARGB(255, 255, 0, 255),
-                        const Color.fromARGB(255, 255, 0, 0),
-                      ]
-                    : [
-                        const Color.fromARGB(255, 255, 0, 0),
-                        const Color.fromARGB(255, 255, 255, 0),
-                        const Color.fromARGB(255, 0, 255, 0),
-                        const Color.fromARGB(255, 0, 255, 255),
-                        const Color.fromARGB(255, 0, 0, 255),
-                        const Color.fromARGB(255, 255, 0, 255),
-                        const Color.fromARGB(255, 255, 0, 0),
-                      ],
-              ),
+              gradient: const LinearGradient(
+                  end: Alignment.centerRight,
+                  begin: Alignment.centerLeft,
+                  colors: [
+                    Color.fromARGB(255, 255, 0, 0),
+                    Color.fromARGB(255, 255, 255, 0),
+                    Color.fromARGB(255, 0, 255, 0),
+                    Color.fromARGB(255, 0, 255, 255),
+                    Color.fromARGB(255, 0, 0, 255),
+                    Color.fromARGB(255, 255, 0, 255),
+                    Color.fromARGB(255, 255, 0, 0),
+                  ]),
             ),
             child: HuePicker(
               thumbShape: const HueSliderThumbShape(
@@ -80,7 +70,7 @@ class _Color_Picker_HSVState extends State<Color_Picker_HSV> {
               initialColor: HSVColor.fromColor(maincolor),
               onChanged: (color) {
                 setState(() {
-                  maincolor = color.toColor();
+                  // maincolor = color.toColor();
                 });
               },
               onChangeEnd: (color) async {
@@ -226,7 +216,7 @@ class Speed_sliderState extends State<Speed_slider> {
             width: constsize.maxWidth,
             height: constsize.maxHeight,
             direction: FillingSliderDirection.horizontal,
-            color: (!value.nextmoveisconnect | value.isConnectedWifi)
+            color: (value.bleIsConnected | value.netvanaIsConnected)
                 ? FIGMA.Orn
                 : Colors.grey,
             fillColor: FIGMA.Gray2,
@@ -279,7 +269,7 @@ class _Bright_sliderState extends State<Bright_slider> {
             width: constsize.maxWidth,
             height: constsize.maxHeight,
             direction: FillingSliderDirection.horizontal,
-            color: (!value.nextmoveisconnect | value.isConnectedWifi)
+            color: (value.bleIsConnected | value.netvanaIsConnected)
                 ? FIGMA.Orn
                 : Colors.grey,
             fillColor: FIGMA.Gray2,

@@ -3,13 +3,15 @@ import 'dart:convert';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
+import 'package:netvana/data/ble/providerble.dart';
+import 'package:netvana/models/SingleHive.dart';
 
 void showWiFiDialog(BuildContext context) {
-  final obscureNotifier = ValueNotifier(true);
   bool connected = false;
   final ssidController = TextEditingController();
   final passController = TextEditingController();
@@ -57,7 +59,7 @@ void showWiFiDialog(BuildContext context) {
                                 color: FIGMA.Wrn),
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         EasyContainer(
                           width: MediaQuery.of(context).size.width * 0.9,
                           height: 95,
@@ -167,4 +169,28 @@ void showWiFiDialog(BuildContext context) {
       );
     },
   );
+}
+
+Future<void> setup(ProvData funcy) async {
+  final service = SdcardService.instance;
+
+  // Check if token exists
+  if (service.token != null && service.token!.isNotEmpty) {
+    funcy.setIsUserLoggedIn(true);
+
+    // Load default colors from Hive if you still need them
+    var sdcardBox = Hive.box(FIGMA.HIVE2);
+    for (var i = 0; i < 5; i++) {
+      funcy.Defalult_colors[i] =
+          sdcardBox.get("COLOR$i", defaultValue: 0xFFFFFF);
+    }
+
+    await funcy.getDetailsFromNet();
+  } else {
+    debugPrint("no token found in SdcardService");
+  }
+}
+
+void showCannotSend(ProvData value) {
+  value.Show_Snackbar("هیچ اتصالی وجود ندارد", 1000);
 }

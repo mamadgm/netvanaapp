@@ -8,6 +8,7 @@ import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/const/themes.dart';
+import 'package:netvana/models/SingleHive.dart';
 import 'package:universal_ble/universal_ble.dart';
 
 enum ThemeFilter { liked, single, multiple, none }
@@ -39,16 +40,14 @@ class ProvData extends ChangeNotifier {
 
   List<EspTheme> themes = [];
 
-  bool nextmoveisconnect = true;
+  bool bleIsConnected = false;
+  bool netvanaIsConnected = false;
+
   int current_sync_pos = 0;
   int current_selected_slider = 0;
   List<BleDevice> mynetvanaDevices = <BleDevice>[];
-  bool isConnected = false;
-  bool isConnectedWifi = false;
   int appsync = FIGMA.FLUTTER_ESSENTIALS;
   //Setting Screen
-  bool NetvanaFlag = false;
-  bool NetvanaUpdateFlag = false;
   TextEditingController r_ssid_netvana = TextEditingController();
   TextEditingController r_pass_netvana = TextEditingController();
   //Nooran
@@ -66,12 +65,8 @@ class ProvData extends ChangeNotifier {
   bool issmarttimerpaused = true;
   int ESPVersion = 10;
   List<int> Defalult_colors = [0xFF0000, 1900288, 0x0000FF, 0xFFFFFF, 0x00A594];
-  //Loggin
-  String name_last = 'mamad';
-  String phone_number = "ss";
-  String token = "empty";
+
   String DeviceBleName = "";
-  List Products = [];
   //Test
   String TEST_DATA = "EMPTY";
   //Smarttimer
@@ -79,6 +74,8 @@ class ProvData extends ChangeNotifier {
   ThemeFilter selectedFilter = ThemeFilter.none;
 
   bool isUserLoggedIn = false;
+
+  TextEditingController UserNameController = TextEditingController();
 
   void setIsUserLoggedIn(bool p, {bool update = false}) {
     isUserLoggedIn = p;
@@ -94,37 +91,9 @@ class ProvData extends ChangeNotifier {
   }
 
   void loadFavoritesFromHive() {
-    final box = Hive.box(FIGMA.HIVE);
+    final box = Hive.box(FIGMA.HIVE2);
     final stored = box.get('Favorites', defaultValue: []);
     Favorites = List<int>.from(stored);
-  }
-
-  void setSmartTimerMinSec(int index, int hour, int minute, String color,
-      {bool update = false}) {
-    final duration = Duration(hours: hour, minutes: minute);
-
-    if (index >= SmartTimerTime.length) return;
-
-    SmartTimerTime[index] = duration;
-    Remaining[index] = duration;
-    SmartTimerColor[index] = color;
-
-    if (update) {
-      final box = Hive.box(FIGMA.HIVE);
-
-      // Combine all values into a list of maps
-      final timers = List.generate(
-          SmartTimerTime.length,
-          (i) => {
-                "time": SmartTimerTime[i].inSeconds,
-                "remaining": Remaining[i].inSeconds,
-                "color": SmartTimerColor[i],
-              });
-
-      box.put("timers", timers);
-
-      notifyListeners();
-    }
   }
 
   disable_Smarttimer(int index, {bool value = false}) {
@@ -142,53 +111,14 @@ class ProvData extends ChangeNotifier {
     return true;
   }
 
-  Future<void> loadTimersFromHive() async {
-    final box = Hive.box(FIGMA.HIVE);
-    final stored = box.get("timers");
-
-    SmartTimerTime = [];
-    Remaining = [];
-    SmartTimerColor = [];
-
-    if (stored != null && stored is List) {
-      for (var item in stored) {
-        if (item is Map) {
-          SmartTimerTime.add(Duration(seconds: item["time"] ?? 300));
-          Remaining.add(Duration(seconds: item["remaining"] ?? 300));
-          SmartTimerColor.add(item["color"] ?? "0xFFFFFFFF");
-        }
-      }
-    } else {
-      // fallback default values
-      SmartTimerTime = List.generate(3, (_) => const Duration(seconds: 300));
-      Remaining = List.from(SmartTimerTime);
-      SmartTimerColor = List.generate(3, (_) => "0xFFFFFFFF");
-    }
-  }
-
   void set_Defalult_colors(int p, int which) {
     Defalult_colors[which] = p;
     notifyListeners();
   }
 
-  // Setters
-  void setProducts(List products) {
-    Products = products;
-    for (var i = 0; i < Products.length; i++) {
-      debugPrint("product $i = ${Products[i]}");
-    }
-  }
-
   void setIsDeviceOn(bool value) {
     isdeviceon = value;
     notifyListeners();
-  }
-
-  void Set_Userdetails(String phone, String Name, String Last, String Token) {
-    name_last = "$Name $Last";
-    phone_number = phone;
-    token = Token;
-    // notifyListeners();
   }
 
   void setIsNooranNet(bool value) {
@@ -244,13 +174,13 @@ class ProvData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void ble_update_connected(bool p) {
-    isConnected = p;
+  void setBleIsConnected(bool p) {
+    bleIsConnected = p;
     notifyListeners();
   }
 
   void wifi_update_connected(bool p) {
-    isConnectedWifi = p;
+    netvanaIsConnected = p;
     notifyListeners();
   }
 
@@ -264,24 +194,8 @@ class ProvData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void update_netvana(bool input) {
-    NetvanaFlag = input;
-    notifyListeners();
-  }
-
-  void update_NetvanaUpdateFlag(bool input) {
-    NetvanaUpdateFlag = input;
-    notifyListeners();
-  }
-
   void update_mynetvanadevice() {
     mynetvanaDevices = mynetvanaDevices;
-    notifyListeners();
-  }
-
-  //
-  void change_nextmoveisconnect(bool input) {
-    nextmoveisconnect = input;
     notifyListeners();
   }
 
@@ -306,24 +220,9 @@ class ProvData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void Show_Snackbar(String value, int dur) {
-    scaffoldMessengerKey.currentState?.showSnackBar(
-      SnackBar(
-        backgroundColor: FIGMA.Gray2,
-        duration: Duration(milliseconds: dur),
-        content: Text(
-          value,
-          textAlign: TextAlign.end,
-          style: TextStyle(
-              fontFamily: FIGMA.abrlb, fontSize: 14.sp, color: FIGMA.Wrn),
-        ),
-      ),
-    );
-  }
-
   Future<void> fetchThemes() async {
     try {
-      final res = await NetClass().getThemes(token);
+      final res = await NetClass().getThemes(SdcardService.instance.token!);
       // res یک List<dynamic> هست
 
       themes = res.map((e) => EspTheme.fromJson(e)).toList();
@@ -366,7 +265,7 @@ class ProvData extends ChangeNotifier {
     }
 
     // Ensure result has enough values to avoid index errors
-    isdeviceon = result.length > 0 ? result[0] == 1 : false;
+    isdeviceon = result.isNotEmpty ? result[0] == 1 : false;
     isnooranNet = result.length > 1 ? result[1] == 1 : false;
     whereami = result.length > 2 ? result[2] : 0;
     timeroffvalue = result.length > 3 ? result[3] : 0;
@@ -380,11 +279,12 @@ class ProvData extends ChangeNotifier {
     ESPVersion = result.length > 11 ? result[11] : 0;
     DeviceBleName = deviceName; // Store the parsed device name
     notifyListeners();
-    if (deviceName !=
-        "${Products[0]["category_name"] + "-" + Products[0]["part_number"].toString()}") {
-      SingleBle().disconnect();
-      return;
-    }
+    // TODO:
+    // if (deviceName !=
+    //     "${Products[0]["category_name"] + "-" + Products[0]["part_number"].toString()}") {
+    //   SingleBle().disconnect();
+    //   return;
+    // }
   }
 
   void Set_Screen_Values_From_JSON(Map<String, dynamic>? jsonResponse) {
@@ -413,17 +313,14 @@ class ProvData extends ChangeNotifier {
     smarttimercolor = 0; // Not present in JSON, set to default
     Device_SSID = data['ssid'] as String;
     ESPVersion = int.tryParse(data['version'] as String? ?? '0') ?? 0;
-
-    debugPrint("device mode $maincycle_mode");
-    debugPrint("device color $maincycle_color");
-
     notifyListeners();
   }
 
   Future<void> getDetailsFromNet() async {
     try {
-      var result = await NetClass()
-          .getDeviceVariables(token, Products[0]["id"].toString());
+      var result = await NetClass().getDeviceVariables(
+          SdcardService.instance.token!,
+          SdcardService.instance.firstDevice!.id.toString());
       Set_Screen_Values_From_JSON(result);
     } catch (e) {
       debugPrint("Error in vars $e");
@@ -454,5 +351,67 @@ class ProvData extends ChangeNotifier {
       debugPrint("Invalid color string: $input");
       return Colors.red;
     }
+  }
+
+  void Show_Snackbar(String value, int dur, {int type = 1}) {
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        backgroundColor: _getSnackBarColor(type),
+        duration: Duration(milliseconds: dur),
+        content: _buildSnackBarContent(type, value),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+    );
+  }
+
+  Color _getSnackBarColor(int type) {
+    if (type == 1) {
+      return FIGMA.Grn; // Info Notification
+    } else if (type == 2) {
+      return FIGMA.Prn2; // Success Notification
+    } else if (type == 3) {
+      return FIGMA.Orn; // Error Notification
+    }
+    return FIGMA.Back; // Default
+  }
+
+  Widget _buildSnackBarContent(int value, String mes) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Icon(
+            _getSnackBarIcon(value), // Add icons for different types
+            color: Colors.white,
+            size: 24.sp,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              mes,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontFamily: FIGMA.estre,
+                fontSize: 13.sp,
+                color: FIGMA.Wrn,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  IconData _getSnackBarIcon(int message) {
+    if (message == 2) {
+      return Icons.check_box_rounded; // Success icon
+    } else if (message == 3) {
+      return Icons.warning_amber_rounded; // Error icon
+    }
+    return Icons.info; // Default info icon
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:netvana/const/figma.dart';
+import 'package:netvana/models/HiveModel.dart';
 
 class NetClass {
   static final NetClass _instance = NetClass._internal();
@@ -55,8 +56,8 @@ class NetClass {
     }
   }
 
-  Future<Map<String, dynamic>?> getProducts(String token) async {
-    var response = await http.get(
+  Future<User?> getUser(String token) async {
+    final response = await http.get(
       Uri.parse('${FIGMA.urlnetwana}/me'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -65,9 +66,10 @@ class NetClass {
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      final json = jsonDecode(response.body);
+      return User.fromJson(json);
     } else {
-      throw Exception('Failed to fetch products: ${response.body}');
+      throw Exception('Failed to fetch user: ${response.body}');
     }
   }
 
@@ -152,6 +154,31 @@ class NetClass {
 
     try {
       final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        debugPrint("Theme set successfully: ${response.body}");
+      } else {
+        debugPrint(
+            "Failed to set theme: ${response.statusCode} - ${response.body}");
+      }
+    } catch (e) {
+      debugPrint("Error setting theme: $e");
+    }
+  }
+
+  Future<void> editUserName(String token, String id, String newusername) async {
+    final url = Uri.parse("${FIGMA.urlnetwana}/user/theme/set/");
+    final headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token", // If your API requires auth
+    };
+
+    final body = jsonEncode({
+      "username": newusername,
+    });
+
+    try {
+      final response = await http.put(url, headers: headers, body: body);
 
       if (response.statusCode == 200) {
         debugPrint("Theme set successfully: ${response.body}");

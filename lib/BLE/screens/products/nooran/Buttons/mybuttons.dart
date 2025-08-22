@@ -86,7 +86,6 @@ class Power_ButtonState extends State<Power_Button> {
     return EasyContainer(
       color: widget.onof ? FIGMA.Prn : FIGMA.Gray2,
       onTap: () {
-        debugPrint("PowerButton Clicked");
         widget.onDataChange();
       },
       margin: 0,
@@ -221,7 +220,7 @@ class _TimerMinutesState extends State<TimerMinutes> {
 }
 
 void calculateTimeStore(int minutes) {
-  var sdcard = Hive.box(FIGMA.HIVE);
+  var sdcard = Hive.box(FIGMA.HIVE2);
   if (minutes == 999) {
     sdcard.put("Timeofdie", "0");
   } else {
@@ -291,7 +290,8 @@ class _CirclecolorState extends State<Circlecolor> {
           content: SingleChildScrollView(
             child: SizedBox(
               child: ColorPicker(
-                pickerAreaBorderRadius: BorderRadius.all(Radius.circular(4)),
+                pickerAreaBorderRadius:
+                    const BorderRadius.all(Radius.circular(4)),
                 enableAlpha: false,
                 hexInputBar: false,
                 showLabel: false,

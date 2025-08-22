@@ -1,10 +1,12 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
+import 'package:netvana/customwidgets/EyeText.dart';
+import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
+import 'package:netvana/models/SingleHive.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
@@ -15,47 +17,15 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  late TextEditingController formemail;
+  late TextEditingController formphone;
   late TextEditingController formpass;
   double _topPadding = 300;
 
   @override
   void initState() {
     super.initState();
-    formemail = TextEditingController();
+    formphone = TextEditingController();
     formpass = TextEditingController();
-  }
-
-  void setup() {
-    final funcy = context.read<ProvData>();
-    var sdcard = Hive.box(FIGMA.HIVE);
-
-    var token = sdcard.get("access_token", defaultValue: "empty");
-
-    if (token != "empty") {
-      String s1 = sdcard.get("phone", defaultValue: "empty");
-      String s2 = sdcard.get("name", defaultValue: "empty");
-      String s3 = sdcard.get("last", defaultValue: "empty");
-      String s4 = sdcard.get("token", defaultValue: "empty");
-
-      funcy.Set_Userdetails(s1, s2, s3, s4);
-      var products = sdcard.get("products", defaultValue: "empty");
-
-      if (products != "empty") {
-        funcy.setProducts(products);
-      } else {
-        debugPrint("no products");
-      }
-
-      for (var i = 0; i < 5; i++) {
-        funcy.Defalult_colors[i] =
-            sdcard.get("COLOR$i", defaultValue: 0xFFFFFF);
-      }
-      funcy.setIsUserLoggedIn(true);
-      funcy.hand_update();
-    } else {
-      debugPrint("no token");
-    }
   }
 
   @override
@@ -110,7 +80,7 @@ class _LoginState extends State<Login> {
                                 ),
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 20,
                             ),
                           ],
@@ -123,21 +93,10 @@ class _LoginState extends State<Login> {
                           elevation: 0,
                           padding: 0,
                           borderRadius: 0,
-                          child: TextField(
-                            style: TextStyle(
-                                fontFamily: FIGMA.estre,
-                                fontSize: 16.sp,
-                                color: FIGMA.Wrn),
-                            textAlign: TextAlign.start,
-                            decoration: InputDecoration(
-                              hintStyle: TextStyle(
-                                  fontFamily: FIGMA.abrlb,
-                                  fontSize: 12.sp,
-                                  color: FIGMA.Wrn2),
-                              hintText: "Mobile",
-                              border: OutlineInputBorder(),
-                            ),
-                            controller: formemail,
+                          child: EyeTextField(
+                            controller: formphone,
+                            hintText: "شماره تلفن",
+                            showEye: false,
                           ),
                         ),
                         EasyContainer(
@@ -148,84 +107,54 @@ class _LoginState extends State<Login> {
                           elevation: 0,
                           padding: 0,
                           borderRadius: 0,
-                          child: TextField(
-                            style: TextStyle(
-                                fontFamily: FIGMA.estre,
-                                fontSize: 16.sp,
-                                color: FIGMA.Wrn),
-                            obscureText: true,
-                            textAlign: TextAlign.start,
-                            decoration: InputDecoration(
-                              hintStyle: TextStyle(
-                                  fontFamily: FIGMA.abrlb,
-                                  fontSize: 12.sp,
-                                  color: FIGMA.Wrn2),
-                              hintText: "Password",
-                              border: OutlineInputBorder(),
-                            ),
+                          child: EyeTextField(
                             controller: formpass,
+                            hintText: "رمز عبور",
                           ),
                         ),
                         EasyContainer(
-                          height: 68.h,
-                          width: 320.w,
-                          color: FIGMA.Prn,
-                          borderWidth: 0,
-                          elevation: 0,
-                          padding: 0,
-                          borderRadius: 17,
-                          child: Text(
-                            'ورود به نت وانا',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18.sp,
-                                fontFamily: FIGMA.abreb),
-                          ),
-                          onTap: () async {
-                            var box = Hive.box(FIGMA.HIVE);
-                            try {
-                              var loginResponse = await NetClass()
-                                  .login(formemail.text, formpass.text)
-                                  .timeout(const Duration(seconds: 5));
-
-                              if (loginResponse != null) {
-                                debugPrint(loginResponse.toString());
-
-                                box.put("access_token",
-                                    loginResponse["access_token"]);
-
-                                var meResponse = await NetClass()
-                                    .getProducts(loginResponse['access_token'])
+                            height: 68.h,
+                            width: 320.w,
+                            color: FIGMA.Prn,
+                            borderWidth: 0,
+                            elevation: 0,
+                            padding: 0,
+                            borderRadius: 17,
+                            child: Text(
+                              'ورود به نت وانا',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.sp,
+                                  fontFamily: FIGMA.abreb),
+                            ),
+                            onTap: () async {
+                              try {
+                                var loginResponse = await NetClass()
+                                    .login(formphone.text, formpass.text)
                                     .timeout(const Duration(seconds: 5));
 
-                                if (meResponse != null) {
-                                  value.setProducts(meResponse["devices"]);
-                                  box.put("products", meResponse["devices"]);
-                                  box.put("name", meResponse["first_name"]);
-                                  box.put("last", meResponse["last_name"]);
-                                  box.put("phone", meResponse["phone"]);
-                                  box.put(
-                                      "token", loginResponse['access_token']);
-
-                                  debugPrint("Got Devices");
-
-                                  // TODO: add setup
-                                  setup();
-                                } else {
-                                  value.Show_Snackbar("ورود نا موفق", 1000);
-                                  debugPrint("getProducts returned null");
+                                if (loginResponse == null ||
+                                    loginResponse['access_token'] == null) {
+                                  value.Show_Snackbar("ورود ناموفق", 1000);
+                                  return;
                                 }
-                              } else {
-                                value.Show_Snackbar("ورود نا موفق", 1000);
+
+                                final token = loginResponse['access_token'];
+
+                                final service = SdcardService.instance;
+                                service.sdcard.token = token;
+                                await service.sdcard.save();
+
+                                await service.updateUser(token);
+
                                 debugPrint(
-                                    "Login response is null or missing token");
+                                    "Got Devices: ${service.products.length}");
+
+                                setup(value);
+                              } catch (e) {
+                                value.Show_Snackbar("ورود ناموفق", 1000);
                               }
-                            } catch (e) {
-                              value.Show_Snackbar("ورود نا موفق", 1000);
-                              debugPrint('Error: $e');
-                            }
-                          },
-                        ),
+                            }),
                       ],
                     ),
                   ),
