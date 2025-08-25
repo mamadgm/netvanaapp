@@ -40,7 +40,6 @@ class _NooranState extends State<Nooran> {
   @override
   void initState() {
     startRecording();
-    debugPrint("NOORAN");
     super.initState();
     final value = Provider.of<ProvData>(context, listen: false);
     value.loadFavoritesFromHive();
@@ -85,7 +84,9 @@ class _NooranState extends State<Nooran> {
         netvana: 1,
       ),
       Color_Picker_HSV(
-        senddata: (p0) {
+        senddata: (p0) async {
+          await checkModeColors(value);
+
           if (value.bleIsConnected) {
             String jsonPayload = jsonEncode({"Lc": p0});
             SingleBle().sendMain(jsonPayload);
@@ -191,16 +192,16 @@ class _NooranState extends State<Nooran> {
                                         value.Show_Snackbar(
                                             "دستگاه متصل نیست . راه اندازی مجدد ...",
                                             1000);
+
+                                        if (value.bleIsConnected) {
+                                          showWiFiDialog(context);
+                                        } else {
+                                          value.Show_Snackbar(
+                                              "برای تنظیم ابتدا به بلوتوث متصل شوید",
+                                              1000);
+                                        }
                                       } else {
                                         value.wifi_update_connected(true);
-                                      }
-
-                                      if (value.bleIsConnected) {
-                                        showWiFiDialog(context);
-                                      } else {
-                                        value.Show_Snackbar(
-                                            "برای تنظیم ابتدا به بلوتوث متصل شوید",
-                                            1000);
                                       }
 
                                       value.hand_update();
@@ -234,11 +235,11 @@ class _NooranState extends State<Nooran> {
                                       if (value.bleIsConnected == true) {
                                         await SingleBle().disconnect();
                                         value.setBleIsConnected(false);
-                                        debugPrint("Device Disconnected");
+                                        // debugPrint("Device Disconnected");
                                         return;
                                       }
                                       try {
-                                        debugPrint("Starting BLE Scan...");
+                                        debugPrint("[B] S");
                                         var result = await SingleBle()
                                             .startScanAndGetDevice();
                                         String? selectedDeviceId;
@@ -247,22 +248,20 @@ class _NooranState extends State<Nooran> {
                                         }
 
                                         if (selectedDeviceId == null) {
-                                          debugPrint("No device selected.");
+                                          // debugPrint("No device selected.");
                                           return;
                                         } else {
-                                          debugPrint("Wellcome");
+                                          // debugPrint("Wellcome");
                                         }
 
-                                        debugPrint(
-                                            "Attempting to connect to $selectedDeviceId...");
+                                        debugPrint("[B] ...");
                                         bool connected = await SingleBle()
                                             .connectToDevice(
                                                 selectedDeviceId, 200);
 
                                         if (connected) {
                                           value.setBleIsConnected(true);
-                                          debugPrint(
-                                              "Successfully Connected to $selectedDeviceId");
+                                          debugPrint("[B] Ok");
 
                                           Future.delayed(
                                               const Duration(
@@ -279,11 +278,12 @@ class _NooranState extends State<Nooran> {
                                           });
                                         } else {
                                           value.setBleIsConnected(false);
-                                          debugPrint("Failed to Connect.");
+                                          debugPrint("[B] F");
                                         }
                                       } catch (e) {
                                         value.setBleIsConnected(false);
-                                        debugPrint('Connection Error: $e');
+                                        // debugPrint('Connection Error: $e');
+                                        debugPrint('[B] E');
                                       }
                                     }),
                               ),
@@ -309,11 +309,17 @@ class _NooranState extends State<Nooran> {
                                   height: 111.h,
                                   width: 74.w,
                                   child: Sleep_Button(
-                                    state: value.Brightness == 5,
+                                    state:
+                                        value.Brightness == value.sleepBright,
                                     onDataChange: (s) {
+                                      int Bright = value.sleepBright;
+                                      if (value.Brightness ==
+                                          value.sleepBright) {
+                                        Bright = 255;
+                                      }
                                       if (value.bleIsConnected) {
                                         String jsonPayload =
-                                            jsonEncode({"Lb": 5});
+                                            jsonEncode({"Lb": Bright});
                                         SingleBle().sendMain(jsonPayload);
                                         return;
                                       }
@@ -323,7 +329,7 @@ class _NooranState extends State<Nooran> {
                                             SdcardService
                                                 .instance.firstDevice!.id
                                                 .toString(),
-                                            "5");
+                                            Bright.toString());
                                         return;
                                       }
                                       showCannotSend(value);
@@ -366,7 +372,7 @@ class _NooranState extends State<Nooran> {
                     ),
                     EasyContainer(
                       color: FIGMA.Gray2,
-                      height: 192.h,
+                      height: 196.h,
                       width: 165.w,
                       margin: 4,
                       padding: 0,
@@ -387,8 +393,8 @@ class _NooranState extends State<Nooran> {
                                     value.netvanaIsConnected)
                                 ? colorFromString(value.maincycle_color)
                                 : colorFromString("0xFF555555"),
-                            height: 125.h,
-                            width: 54.w,
+                            height: 120.h,
+                            width: 64.w,
                           ),
                           Padding(
                             padding: const EdgeInsets.all(4.0),
@@ -497,6 +503,8 @@ class _NooranState extends State<Nooran> {
                             child: Circlecolor(
                               color: value.Defalult_colors[index],
                               onDataChange: (String f) {
+                                value.set_Defalult_colors(int.parse(f), index);
+                                sdcard.put("COLOR$index", int.parse(f));
                                 if (value.bleIsConnected) {
                                   String jsonPayload = jsonEncode({"Lc": f});
                                   SingleBle().sendMain(jsonPayload);
@@ -513,8 +521,7 @@ class _NooranState extends State<Nooran> {
 
                                   return;
                                 }
-                                value.set_Defalult_colors(int.parse(f), index);
-                                sdcard.put("COLOR$index", int.parse(f));
+
                                 showCannotSend(value);
                               },
                             ),
@@ -539,11 +546,10 @@ class ShortTimer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void TimerSend(int s, ProvData value) {
-      calculateTimeStore(s);
-
       if (value.bleIsConnected) {
         String jsonPayload = jsonEncode({"Tf": s.toString()});
         SingleBle().sendMain(jsonPayload);
+        calculateTimeStore(s);
         FocusScope.of(context).unfocus();
         Navigator.of(context).pop();
         return;
@@ -551,6 +557,7 @@ class ShortTimer extends StatelessWidget {
       if (value.netvanaIsConnected) {
         NetClass().setTimer(SdcardService.instance.token!,
             SdcardService.instance.firstDevice!.id.toString(), s);
+        calculateTimeStore(s);
         FocusScope.of(context).unfocus();
         Navigator.of(context).pop();
         return;

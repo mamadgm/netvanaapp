@@ -80,4 +80,3 @@ class _MyappState extends State<Myapp> {
     );
   }
 }
-// flutter build web --web-renderer canvaskit

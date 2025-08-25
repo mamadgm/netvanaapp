@@ -3,13 +3,16 @@ import 'package:easy_container/easy_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:netvana/ProfilePages/About.dart';
+import 'package:netvana/ProfilePages/Account.dart';
+import 'package:netvana/ProfilePages/Sleep.dart';
+import 'package:netvana/ProfilePages/Update.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/ButtonIcon.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
 import 'package:netvana/customwidgets/NewScreen.dart';
 import 'package:netvana/customwidgets/cylander.dart';
 import 'package:netvana/data/ble/providerble.dart';
-import 'package:netvana/models/SingleHive.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScr extends StatefulWidget {
@@ -34,7 +37,7 @@ class _ProfileScrState extends State<ProfileScr> {
               width: 120.w,
               child: LampWidget(
                 glowIntensity: 1,
-                lampColor: (value.netvanaIsConnected)
+                lampColor: (value.netvanaIsConnected | value.bleIsConnected)
                     ? colorFromString(value.maincycle_color)
                     : colorFromString("0xFF555555"),
                 height: 150.h,
@@ -57,62 +60,32 @@ class _ProfileScrState extends State<ProfileScr> {
                     title: "حساب کاربری",
                     trailingIcon: LucideIcons.user,
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CustomScreen(
-                            title: "حساب کاربری",
-                            body: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(height: 8.h),
-                                SizedBox(
-                                  width: 329.w,
-                                  child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text(
-                                      "نام کاربری",
-                                      style: TextStyle(
-                                          fontFamily: FIGMA.estsb,
-                                          fontSize: 12.sp,
-                                          color: FIGMA.Gray4),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 6.h),
-                                SizedBox(
-                                  height: 68.h,
-                                  width: 329.w,
-                                  child: EyeTextField(
-                                    controller: value.UserNameController,
-                                    showEye: false,
-                                    hintText: "username",
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
+                      showAccount(context, value);
                     }),
                 WiFiItem(
                   leadingIcon: Icons.arrow_back_ios_new_rounded,
                   title: "حالت خواب",
                   trailingIcon: LucideIcons.moon,
-                  onTap: () {},
+                  onTap: () {
+                    showSleepSetting(context, value);
+                  },
                 ),
                 WiFiItem(
                   leadingIcon: Icons.arrow_back_ios_new_rounded,
                   title: "بروزرسانی",
                   trailingIcon: LucideIcons.downloadCloud,
-                  onTap: () {},
+                  onTap: () {
+                    showUpdate(context, value);
+                    // value.Show_Snackbar("محصول شما آخرین نسخه است", 1000);
+                  },
                 ),
                 WiFiItem(
                   leadingIcon: Icons.arrow_back_ios_new_rounded,
                   title: "درباره ما",
                   trailingIcon: LucideIcons.info,
-                  onTap: () {},
+                  onTap: () {
+                    showAboutUs(context, value);
+                  },
                 ),
                 const Spacer(),
                 Stack(

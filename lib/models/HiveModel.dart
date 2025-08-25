@@ -78,6 +78,10 @@ class User extends HiveObject {
   @HiveField(4)
   List<Device> devices;
 
+  // NEW
+  @HiveField(5)
+  List<EspTheme> themes;
+
   @override
   String toString() {
     return 'User(phone: $phone, firstName: $firstName, lastName: $lastName, devices: $devices)';
@@ -89,7 +93,9 @@ class User extends HiveObject {
     required this.lastName,
     required this.phone,
     List<Device>? devices,
-  }) : devices = devices ?? [];
+    List<EspTheme>? themes,
+  })  : devices = devices ?? [],
+        themes = themes ?? [];
 
   factory User.fromJson(Map<String, dynamic> json) {
     var devicesJson = json['devices'] as List<dynamic>? ?? [];
@@ -115,13 +121,82 @@ class Sdcard extends HiveObject {
   @HiveField(1)
   User? user;
 
-  Sdcard({
-    this.token,
-    this.user,
-  });
+  @HiveField(2)
+  int sleepValue;
+
+  Sdcard({this.token, this.user, this.sleepValue = 5});
 }
 
 extension SdcardHelpers on Sdcard {
   Device? get firstDevice =>
       user?.devices.isNotEmpty == true ? user!.devices[0] : null;
+}
+
+// -------------------- Themes --------------------
+@HiveType(typeId: 4)
+class ContentItem {
+  @HiveField(0)
+  int s;
+
+  @HiveField(1)
+  int e;
+
+  @HiveField(2)
+  int m;
+
+  @HiveField(3)
+  int sp;
+
+  // Must be Hive-serializable at runtime (int/double/bool/String/Map/List/null)
+  @HiveField(4)
+  dynamic c;
+
+  ContentItem({
+    required this.s,
+    required this.e,
+    required this.m,
+    required this.sp,
+    this.c,
+  });
+
+  factory ContentItem.fromJson(Map<String, dynamic> json) {
+    return ContentItem(
+      s: json['s'],
+      e: json['e'],
+      m: json['m'],
+      sp: json['sp'],
+      c: json['c'],
+    );
+  }
+}
+
+@HiveType(typeId: 3)
+class EspTheme {
+  @HiveField(0)
+  int id;
+
+  @HiveField(1)
+  String name;
+
+  @HiveField(2)
+  List<ContentItem> content;
+
+  EspTheme({
+    required this.id,
+    required this.name,
+    required this.content,
+  });
+
+  // Computed, not stored
+  bool get isColorSingle => content.isNotEmpty && content.first.m == 0;
+
+  factory EspTheme.fromJson(Map<String, dynamic> json) {
+    return EspTheme(
+      id: json['id'],
+      name: json['name'],
+      content: (json['content'] as List)
+          .map((e) => ContentItem.fromJson(e))
+          .toList(),
+    );
+  }
 }

@@ -7,6 +7,7 @@ import 'package:netvana/const/figma.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:provider/provider.dart';
 
@@ -349,6 +350,11 @@ class _NewPopupState2 extends State<TimerButton> {
     return Consumer<ProvData>(builder: (context, value, child) {
       return EasyContainer(
         onTap: () {
+          if (!(value.bleIsConnected | value.netvanaIsConnected)) {
+            showCannotSend(value);
+            return;
+          }
+
           // debugPrint('Timer Button Clicked');
           showGeneralDialog(
             context: context,

@@ -60,6 +60,7 @@ dependencies:
 
 
   hive: any
+  responsive_framework: ^1.5.1
 dev_dependencies:
   hive_generator: 
   build_runner:

@@ -33,15 +33,15 @@ class _EyeTextFieldState extends State<EyeTextField> {
           filled: true,
           fillColor: FIGMA.Gray2,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(color: FIGMA.Gray2),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(color: FIGMA.Gray2),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(color: FIGMA.Prn),
           ),
           focusColor: Colors.transparent,

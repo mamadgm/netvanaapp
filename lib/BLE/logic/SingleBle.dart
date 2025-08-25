@@ -35,43 +35,60 @@ class SingleBle {
         discoveredDevices[index] = result;
       }
 
-      debugPrint("Discovered device: ${result.deviceId}, Name: ${result.name}");
+      // debugPrint("Discovered device: ${result.deviceId}, Name: ${result.name}");
     };
     await UniversalBle.startScan(scanFilter: scanFilter);
-    debugPrint("Started BLE scan");
+    // debugPrint("Started BLE scan");
   }
 
   Future<void> stopScan() async {
     await UniversalBle.stopScan();
-    debugPrint("Stopped BLE scan");
+    // debugPrint("Stopped BLE scan");
   }
 
   Future<bool> connectToDevice(String deviceId, int loginCounter) async {
     try {
       await UniversalBle.connect(deviceId);
+      _setupConnectionListener();
       connectedDeviceId = deviceId;
-      debugPrint("Connected to device: $deviceId");
+      // debugPrint("Connected to device: $deviceId");
 
       await listenToNotifications();
       await Future.delayed(const Duration(milliseconds: 1000));
       await loginTheClient();
       return true;
     } catch (e) {
-      debugPrint("Failed to connect to $deviceId: $e");
+      // debugPrint("Failed to connect to $deviceId: $e");
       return false;
     }
+  }
+
+  void _setupConnectionListener() {
+    UniversalBle.onConnectionChange =
+        (String devId, bool connected, String? error) {
+      if (devId == connectedDeviceId) {
+        if (connected) {
+          debugPrint("Device $devId connected.");
+        } else {
+          debugPrint("Device $devId disconnected. Error: $error");
+
+          connectedDeviceId = null;
+          _provider.setBleIsConnected(false);
+        }
+      }
+    };
   }
 
   Future<void> loginTheClient() async {
     String jsonPayload = jsonEncode({"Scrt": "7382641987836gsjhd"});
     await sendMain(jsonPayload);
-    debugPrint("Sent login payload: $jsonPayload");
+    // debugPrint("Sent login payload: $jsonPayload");
   }
 
   Future<void> disconnect() async {
     if (connectedDeviceId != null) {
       await UniversalBle.disconnect(connectedDeviceId!);
-      debugPrint("Disconnected from $connectedDeviceId");
+      // debugPrint("Disconnected from $connectedDeviceId");
       connectedDeviceId = null;
     }
   }
@@ -79,7 +96,7 @@ class SingleBle {
   Future<void> sendToEsp32(String value, String characteristicId,
       {bool showwhathappened = false}) async {
     if (connectedDeviceId == null) {
-      debugPrint("No device connected.");
+      // debugPrint("No device connected.");
       return;
     }
 
@@ -87,7 +104,7 @@ class SingleBle {
     try {
       output = Uint8List.fromList(utf8.encode(value));
     } catch (e) {
-      debugPrint('WriteError: Invalid value format: $e');
+      debugPrint('WriteError: Invalid value format:');
       return;
     }
 
@@ -99,10 +116,11 @@ class SingleBle {
         output,
       );
       if (showwhathappened) {
-        debugPrint('Wrote to $characteristicId: $value');
+        // debugPrint('Wrote to $characteristicId: $value');
       }
     } catch (e) {
-      debugPrint('WriteError: $e');
+      // debugPrint('WriteError: $e');
+      debugPrint('WriteError');
     }
   }
 
@@ -122,18 +140,16 @@ class SingleBle {
         FIGMA.ESP32_SERVICE_Micro,
         service: FIGMA.ESP32_SERVICE_ID,
       );
-      debugPrint("Subscribed to characteristic: ${characteristic.uuid}");
+      // debugPrint("Subscribed to characteristic: ${characteristic.uuid}");
       await characteristic.notifications.subscribe();
 
       characteristic.onValueReceived.listen((value) async {
         String str = String.fromCharCodes(value);
-        debugPrint("Received notification: $str");
+        // debugPrint("[B] N");
         _provider.Set_Screen_Values(str);
       });
-      debugPrint(
-          "Subscribed to notifications for ${FIGMA.ESP32_SERVICE_Micro}");
     } catch (e) {
-      debugPrint("Failed to set up notifications: $e");
+      debugPrint("Failed to set up notifications");
     }
   }
 
@@ -143,7 +159,7 @@ class SingleBle {
       await Future.delayed(const Duration(seconds: 3));
       if (discoveredDevices.isNotEmpty) {
         var device = discoveredDevices.last;
-        debugPrint("Found device: ${device.deviceId}, Name: ${device.name}");
+        // debugPrint("Found device: ${device.deviceId}, Name: ${device.name}");
         return {
           'deviceId': device.deviceId,
           'name': device.name ?? 'Unknown',
@@ -153,24 +169,8 @@ class SingleBle {
         return null;
       }
     } catch (e) {
-      debugPrint("Scan Error: $e");
+      debugPrint("Scan Error:");
       return null;
-    }
-  }
-
-  Future<String> triggerFunction() async {
-    try {
-      if (connectedDeviceId == null) {
-        throw Exception("connectedDeviceId Is Null");
-      }
-      Uint8List input1 = await UniversalBle.read(connectedDeviceId!,
-          FIGMA.ESP32_SERVICE_ID, FIGMA.ESP32_SERVICE_Micro);
-      String result = String.fromCharCodes(input1);
-      debugPrint("Read from ESP32: $result");
-      return result;
-    } catch (e) {
-      debugPrint("Error in Reading From ESP32: $e");
-      return "Error";
     }
   }
 

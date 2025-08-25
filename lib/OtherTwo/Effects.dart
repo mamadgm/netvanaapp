@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/const/themes.dart';
 import 'package:netvana/customwidgets/ThemeCard.dart';
 import 'package:netvana/data/ble/providerble.dart';
+import 'package:netvana/models/HiveModel.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/const/figma.dart';
@@ -73,10 +74,11 @@ class _EffectsscrState extends State<Effectsscr> {
                     childAspectRatio: 3 / 4,
                     children: themes?.map((theme) {
                           return ThemeCard(
-                            id: theme.id,
-                            picUrl: getPicUrlByThemeName(theme.name),
+                            id: theme!.id,
+                            // picUrl: getPicUrlByThemeName(theme.name),
+                            picUrl: "assets/themes/static.png",
                             bigText: theme.name,
-                            smallText: theme.category.name,
+                            smallText: "هنگام جشن استفاده شود",
                             scale: theme.content.isNotEmpty
                                 ? theme.content.first.sp
                                 : 0,

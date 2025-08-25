@@ -1,13 +1,12 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:convert';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:flutter/material.dart';
-import 'package:netvana/const/themes.dart';
+import 'package:netvana/models/HiveModel.dart';
 import 'package:netvana/models/SingleHive.dart';
 import 'package:universal_ble/universal_ble.dart';
 
@@ -21,16 +20,6 @@ class ProvData extends ChangeNotifier {
   bool Isdevicefound = false;
   int Current_screen = 0;
 
-  List<Duration> SmartTimerTime = [
-    const Duration(minutes: 5),
-    const Duration(minutes: 30),
-    const Duration(minutes: 60)
-  ];
-  List<Duration> Remaining = [
-    const Duration(minutes: 5),
-    const Duration(minutes: 30),
-    const Duration(minutes: 60)
-  ];
   List<String> SmartTimerColor = ["0xFFFF00FF", "0xFFFFFF00", "0xFFFFFF00"];
   List<String> SmartTimerTitle = ["تایمر هوشمند", "پومودورو", "تایمر طولانی"];
   List<bool> SmarttimerActive = [false, false, false];
@@ -66,6 +55,8 @@ class ProvData extends ChangeNotifier {
   int ESPVersion = 10;
   List<int> Defalult_colors = [0xFF0000, 1900288, 0x0000FF, 0xFFFFFF, 0x00A594];
 
+  int sleepBright = SdcardService.instance.sdcard.sleepValue;
+
   String DeviceBleName = "";
   //Test
   String TEST_DATA = "EMPTY";
@@ -76,6 +67,11 @@ class ProvData extends ChangeNotifier {
   bool isUserLoggedIn = false;
 
   TextEditingController UserNameController = TextEditingController();
+
+  void setsleepBright(int input) {
+    sleepBright = input;
+    notifyListeners();
+  }
 
   void setIsUserLoggedIn(bool p, {bool update = false}) {
     isUserLoggedIn = p;
@@ -99,16 +95,6 @@ class ProvData extends ChangeNotifier {
   disable_Smarttimer(int index, {bool value = false}) {
     SmarttimerActive[index] = value;
     notifyListeners();
-  }
-
-  are_all_false() {
-    for (var i = 0; i < SmartTimerTime.length; i++) {
-      if (SmarttimerActive[i]) {
-        // debugPrint("FALSE $i");
-        return false;
-      }
-    }
-    return true;
   }
 
   void set_Defalult_colors(int p, int which) {
@@ -222,21 +208,20 @@ class ProvData extends ChangeNotifier {
 
   Future<void> fetchThemes() async {
     try {
-      final res = await NetClass().getThemes(SdcardService.instance.token!);
-      // res یک List<dynamic> هست
-
-      themes = res.map((e) => EspTheme.fromJson(e)).toList();
+      final list = await SdcardService.instance.refreshThemes();
+      themes = list; // your Provider field
       notifyListeners();
     } catch (e) {
-      debugPrint("Error fetching themes: $e");
+      debugPrint("Error fetching themes (provider): $e");
+      // Offline fallback (just in case)
+      themes = SdcardService.instance.cachedThemes;
+      notifyListeners();
     }
   }
 
   final SingleBle singleble = SingleBle.instance; // Use the singleton instance
 
   void Set_Screen_Values(String input) {
-    debugPrint("Received encoded string: $input");
-
     // Parse numeric fields (A to L)
     List<int> result = [];
     RegExp regExp = RegExp(r'([A-L])(\d+)');
@@ -253,10 +238,8 @@ class ProvData extends ChangeNotifier {
     var nameMatch = nameRegExp.firstMatch(input);
     if (nameMatch != null) {
       deviceName = nameMatch.group(1)!;
-      debugPrint("Parsed device name: $deviceName");
-    } else {
-      debugPrint("No device name found in input string");
-    }
+      debugPrint("[B] <- $deviceName");
+    } else {}
 
     // Assign values
     TEST_DATA = "";
@@ -279,12 +262,12 @@ class ProvData extends ChangeNotifier {
     ESPVersion = result.length > 11 ? result[11] : 0;
     DeviceBleName = deviceName; // Store the parsed device name
     notifyListeners();
-    // TODO:
-    // if (deviceName !=
-    //     "${Products[0]["category_name"] + "-" + Products[0]["part_number"].toString()}") {
-    //   SingleBle().disconnect();
-    //   return;
-    // }
+    if (deviceName !=
+        "${SdcardService.instance.firstDevice!.categoryName}-${SdcardService.instance.firstDevice!.partNumber}") {
+      SingleBle().disconnect();
+      debugPrint("This Is Not Your Device 401");
+      return;
+    }
   }
 
   void Set_Screen_Values_From_JSON(Map<String, dynamic>? jsonResponse) {

@@ -1,11 +1,18 @@
 // ignore_for_file: camel_case_types, must_be_immutanetvana, unused_import, avoid_print, unnecessary_brace_in_string_interps, non_constant_identifier_names, deprecated_member_use
 
+import 'dart:convert';
+
+import 'package:netvana/BLE/logic/SingleBle.dart';
+import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/Rawlibs/hsv/hsv_color_pickers.dart';
 import 'package:filling_slider/filling_slider.dart';
+import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/providerble.dart';
+import 'package:netvana/models/HiveModel.dart';
+import 'package:netvana/models/SingleHive.dart';
 import 'package:provider/provider.dart';
 
 class Color_Picker_HSV extends StatefulWidget {
@@ -68,23 +75,19 @@ class _Color_Picker_HSVState extends State<Color_Picker_HSV> {
                   radius: 28, color: FIGMA.Wrn, borderColor: FIGMA.Wrn),
               trackHeight: 10,
               initialColor: HSVColor.fromColor(maincolor),
-              onChanged: (color) {
-                setState(() {
-                  // maincolor = color.toColor();
-                });
-              },
+              onChanged: (color) {},
               onChangeEnd: (color) async {
+                //Changing The Mode
+
                 color = color.withAlpha(1.0);
                 color = color.withSaturation(1.0);
                 int red = color.toColor().red;
                 int grn = color.toColor().green;
                 int blu = color.toColor().blue;
 
-                debugPrint("Color Changed");
                 // Convert RGB to decimal string
                 String colorStr =
                     ((red * 65536) + (grn * 256) + blu).toString();
-                debugPrint(colorStr);
                 widget.senddata(colorStr);
               },
             ),
@@ -189,7 +192,6 @@ class Speed_sliderState extends State<Speed_slider> {
   @override
   void initState() {
     final funcy = context.read<ProvData>();
-    debugPrint("orginal");
     super.initState();
     speed = mapIntTodouble(funcy.maincycle_speed, 200, 5000, 1.0, 0.0);
   }
@@ -223,7 +225,6 @@ class Speed_sliderState extends State<Speed_slider> {
             onFinish: (value) async {
               int finalspeed = mapdoubleToInt(value, 1.0, 0.0, 2500, 100);
               widget.senddata(finalspeed.toString());
-              debugPrint(finalspeed.toString());
             },
           ),
         );
@@ -276,7 +277,6 @@ class _Bright_sliderState extends State<Bright_slider> {
             onChange: (val1, val2) {},
             onFinish: (value) async {
               int finallight = mapdoubleToInt(value, 1.0, 0.0, 1, 255);
-              debugPrint(finallight.toString());
               widget.senddata(finallight.toString());
             },
           ),

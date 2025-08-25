@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/themes.dart';
 import 'package:netvana/customwidgets/global.dart';
+import 'package:netvana/models/HiveModel.dart';
 import 'package:netvana/models/SingleHive.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_container/easy_container.dart';
@@ -56,18 +57,18 @@ class ThemeCard extends StatelessWidget {
               lampKey.currentState?.shake();
               return;
             }
-            if (value.bleIsConnected) {
+            if (value.netvanaIsConnected) {
               await NetClass().setMode(
                 SdcardService.instance.token!,
                 SdcardService.instance.firstDevice!.id.toString(),
                 id.toString(),
               );
-              debugPrint("Theme set successfully");
               return;
             }
             showCannotSend(value);
           },
           padding: 8,
+          margin: 0,
           borderRadius: 15,
           elevation: isSelected ? 5 : 0,
           color: isSelected ? FIGMA.Prn : FIGMA.Gray2,
@@ -83,7 +84,7 @@ class ThemeCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 6),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -112,7 +113,7 @@ class ThemeCard extends StatelessWidget {
                       Text(
                         bigText,
                         style: TextStyle(
-                          fontSize: 16.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.bold,
                           fontFamily: FIGMA.estsb,
                           color: FIGMA.Wrn,
@@ -121,7 +122,7 @@ class ThemeCard extends StatelessWidget {
                       Text(
                         smallText,
                         style: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 9.sp,
                           fontFamily: FIGMA.estre,
                           color: FIGMA.Wrn2,
                         ),

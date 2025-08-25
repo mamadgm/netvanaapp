@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
+import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
 import 'package:netvana/data/ble/providerble.dart';
@@ -186,6 +187,15 @@ Future<void> setup(ProvData funcy) async {
     }
 
     await funcy.getDetailsFromNet();
+    await SdcardService.instance.updateUser(service.token!);
+
+    final firstDevice = service.firstDevice;
+
+    if (firstDevice != null) {
+      if (firstDevice.isOnline) {
+        funcy.wifi_update_connected(true);
+      }
+    }
   } else {
     debugPrint("no token found in SdcardService");
   }
@@ -193,4 +203,50 @@ Future<void> setup(ProvData funcy) async {
 
 void showCannotSend(ProvData value) {
   value.Show_Snackbar("هیچ اتصالی وجود ندارد", 1000);
+}
+
+Future<void> checkModeColors(ProvData value) async {
+  int idOfStatic = 1;
+  int maincycleMode = value.maincycle_mode;
+  for (var theme in value.themes) {
+    var item = theme.content[0];
+
+    if (item.m == 0) {
+      idOfStatic = theme.id;
+    }
+
+    if (item.m == maincycleMode) {
+      value.setMainCycleMode(item.m);
+      if (item.c != null) {
+        if (value.bleIsConnected) {
+          int modeValue = 0;
+          modeValue = 0;
+          String jsonPayload = jsonEncode({
+            "Mode": [
+              {
+                "s": 0,
+                "e": 15,
+                "m": modeValue,
+                "sc": 100,
+              }
+            ]
+          });
+          SingleBle().sendMain(jsonPayload);
+          lampKey.currentState?.shake();
+          value.Show_Snackbar("تم برای رنگ تغییر کرد", 500);
+          return;
+        }
+        if (value.netvanaIsConnected) {
+          await NetClass().setMode(
+            SdcardService.instance.token!,
+            SdcardService.instance.firstDevice!.id.toString(),
+            idOfStatic.toString(),
+          );
+          value.Show_Snackbar("تم برای رنگ تغییر کرد", 500);
+          return;
+        }
+        showCannotSend(value);
+      }
+    }
+  }
 }

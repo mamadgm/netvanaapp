@@ -126,7 +126,7 @@ class NetClass {
 
   Future<List<dynamic>> getThemes(String token) async {
     final response = await http.get(
-      Uri.parse('${FIGMA.urlnetwana}/user/theme/'),
+      Uri.parse('${FIGMA.urlnetwana}/user/theme/?last_id=0&limit=30'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -156,7 +156,7 @@ class NetClass {
       final response = await http.post(url, headers: headers, body: body);
 
       if (response.statusCode == 200) {
-        debugPrint("Theme set successfully: ${response.body}");
+        debugPrint("Theme 200");
       } else {
         debugPrint(
             "Failed to set theme: ${response.statusCode} - ${response.body}");
@@ -166,8 +166,8 @@ class NetClass {
     }
   }
 
-  Future<void> editUserName(String token, String id, String newusername) async {
-    final url = Uri.parse("${FIGMA.urlnetwana}/user/theme/set/");
+  Future<void> editUserName(String token, String newusername) async {
+    final url = Uri.parse("${FIGMA.urlnetwana}/update");
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token", // If your API requires auth
@@ -181,13 +181,15 @@ class NetClass {
       final response = await http.put(url, headers: headers, body: body);
 
       if (response.statusCode == 200) {
-        debugPrint("Theme set successfully: ${response.body}");
+        debugPrint("Data Updated successfully: ${response.body}");
       } else {
         debugPrint(
-            "Failed to set theme: ${response.statusCode} - ${response.body}");
+            "Failed to update: ${response.statusCode} - ${response.body}");
+        throw Exception();
       }
     } catch (e) {
-      debugPrint("Error setting theme: $e");
+      debugPrint("Error setting Data: $e");
+      throw Exception();
     }
   }
 
@@ -238,7 +240,7 @@ class NetClass {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        debugPrint('API Response: $responseData');
+
         return responseData;
       } else {
         throw Exception('Failed to get device variables: ${response.body}');

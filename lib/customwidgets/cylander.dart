@@ -80,7 +80,7 @@ class LampWidgetState extends State<LampWidget>
                 ),
                 // Middle (glowing)
                 Expanded(
-                  flex: 5,
+                  flex: 4,
                   child: Container(
                     margin:
                         EdgeInsets.symmetric(horizontal: widget.width * 0.12),
