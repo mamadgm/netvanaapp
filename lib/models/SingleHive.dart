@@ -76,6 +76,7 @@ extension ThemeHelpers on SdcardService {
 
     try {
       final res = await NetClass().getThemes(token!);
+
       final themes = (res).map((e) => EspTheme.fromJson(e)).toList();
 
       // cache into user

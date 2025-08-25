@@ -209,7 +209,7 @@ class ProvData extends ChangeNotifier {
   Future<void> fetchThemes() async {
     try {
       final list = await SdcardService.instance.refreshThemes();
-      themes = list; // your Provider field
+      themes = list;
       notifyListeners();
     } catch (e) {
       debugPrint("Error fetching themes (provider): $e");

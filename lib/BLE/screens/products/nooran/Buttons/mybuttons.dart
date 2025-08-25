@@ -291,8 +291,8 @@ class _CirclecolorState extends State<Circlecolor> {
           content: SingleChildScrollView(
             child: SizedBox(
               child: ColorPicker(
-                pickerAreaBorderRadius:
-                    const BorderRadius.all(Radius.circular(4)),
+                paletteType: PaletteType.hueWheel,
+                displayThumbColor: false,
                 enableAlpha: false,
                 hexInputBar: false,
                 showLabel: false,

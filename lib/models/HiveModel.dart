@@ -181,10 +181,18 @@ class EspTheme {
   @HiveField(2)
   List<ContentItem> content;
 
+  @HiveField(3)
+  String description;
+
+  @HiveField(4)
+  String image_url;
+
   EspTheme({
     required this.id,
     required this.name,
     required this.content,
+    required this.description,
+    required this.image_url,
   });
 
   // Computed, not stored
@@ -194,6 +202,8 @@ class EspTheme {
     return EspTheme(
       id: json['id'],
       name: json['name'],
+      description: json['description'],
+      image_url: json['image_url'],
       content: (json['content'] as List)
           .map((e) => ContentItem.fromJson(e))
           .toList(),

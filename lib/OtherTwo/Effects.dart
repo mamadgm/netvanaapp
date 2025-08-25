@@ -74,11 +74,10 @@ class _EffectsscrState extends State<Effectsscr> {
                     childAspectRatio: 3 / 4,
                     children: themes?.map((theme) {
                           return ThemeCard(
-                            id: theme!.id,
-                            // picUrl: getPicUrlByThemeName(theme.name),
-                            picUrl: "assets/themes/static.png",
+                            id: theme.id,
+                            picUrl: "https://api.netvana.ir${theme.image_url}",
                             bigText: theme.name,
-                            smallText: "هنگام جشن استفاده شود",
+                            smallText: theme.description,
                             scale: theme.content.isNotEmpty
                                 ? theme.content.first.sp
                                 : 0,
