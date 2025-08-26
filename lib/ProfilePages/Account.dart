@@ -5,6 +5,7 @@ import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
 import 'package:netvana/customwidgets/NewScreen.dart';
+import 'package:netvana/customwidgets/cylander.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:netvana/models/SingleHive.dart';
 
@@ -110,14 +111,14 @@ void showAccount(context, ProvData value) {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "1403/10/25",
+                      "${SdcardService.instance.user!.phone}",
                       style: TextStyle(
                           fontSize: 14.sp,
                           color: FIGMA.Wrn,
                           fontFamily: FIGMA.estsb),
                     ),
                     Text(
-                      ":تاریخ پیوستن",
+                      ":شماره تلفن",
                       style: TextStyle(
                           fontSize: 12.sp,
                           color: FIGMA.Gray4,
@@ -160,12 +161,54 @@ void showAccount(context, ProvData value) {
                         elevation: 0,
                         margin: 0,
                         padding: 4,
-                        child: Text(
-                          "${SdcardService.instance.firstDevice!.categoryName}-${SdcardService.instance.firstDevice!.partNumber}",
-                          style: TextStyle(
-                              fontSize: 18.sp,
-                              color: FIGMA.Wrn,
-                              fontFamily: FIGMA.abrlb),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(12.sp),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  SizedBox(height: 16.h),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text('نوران',
+                                        style: TextStyle(
+                                            fontSize: 14.sp,
+                                            color: FIGMA.Wrn,
+                                            fontFamily: FIGMA.estsb)),
+                                  ),
+                                  Text(
+                                      "${SdcardService.instance.firstDevice!.categoryName}-${SdcardService.instance.firstDevice!.partNumber} :نام دستگاه",
+                                      style: TextStyle(
+                                          fontSize: 11.sp,
+                                          color: FIGMA.Gray4,
+                                          fontFamily: FIGMA.estre)),
+                                  const Spacer(),
+                                  Text(
+                                      "${SdcardService.instance.firstDevice!.macAddress} :سریال نامبر",
+                                      style: TextStyle(
+                                          fontSize: 11.sp,
+                                          color: FIGMA.Gray4,
+                                          fontFamily: FIGMA.estre)),
+                                  SizedBox(height: 16.h),
+                                ],
+                              ),
+                            ),
+                            EasyContainer(
+                                height: 110.h,
+                                width: 100.w,
+                                color: FIGMA.Gray2,
+                                borderRadius: 20,
+                                elevation: 0,
+                                margin: 0,
+                                padding: 4,
+                                child: SizedBox(
+                                    height: 70.h,
+                                    width: 40.w,
+                                    child: LampWidget(lampColor: FIGMA.Prn))),
+                            SizedBox(width: 6.w),
+                          ],
                         ))
                   ],
                 ))

@@ -79,7 +79,7 @@ class ThemeCard extends StatelessWidget {
               AspectRatio(
                 aspectRatio: 1,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(15),
                   child: Image.network(
                     (id % 2 == 0) ? picUrl : "${picUrl}",
                     fit: BoxFit.cover,
