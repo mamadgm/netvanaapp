@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/ButtonIcon.dart';
-import 'package:netvana/customwidgets/cylander.dart';
+import 'package:netvana/customwidgets/Lampwidet.dart';
 import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:provider/provider.dart';

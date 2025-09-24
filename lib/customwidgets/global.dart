@@ -105,6 +105,7 @@ void showWiFiDialog(BuildContext context) {
                             child: EyeTextField(
                               controller: ssidController,
                               hintText: "WiFi نام",
+                              showEye: false,
                             )),
                         SizedBox(
                             width: 269.w,
@@ -249,4 +250,17 @@ Future<void> checkModeColors(ProvData value) async {
       }
     }
   }
+}
+
+int getIdbyMode(ProvData value) {
+  int maincycleMode = value.maincycle_mode;
+  for (var theme in value.themes) {
+    var item = theme.content[0];
+
+    if (item.m == maincycleMode) {
+      return theme.id;
+    }
+  }
+
+  return 0;
 }

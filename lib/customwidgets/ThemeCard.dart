@@ -160,11 +160,12 @@ Widget buildFilters(BuildContext context) {
       TextStyle(color: FIGMA.Wrn, fontFamily: FIGMA.estsb, fontSize: 12.sp);
   TextStyle disabled = enabled;
   return Padding(
-    padding: const EdgeInsets.all(16.0),
+    padding: const EdgeInsets.all(12),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         FilterChip(
+          padding: EdgeInsets.all(14.sp),
           backgroundColor: FIGMA.Gray2,
           showCheckmark: false,
           shape: RoundedRectangleBorder(
@@ -174,7 +175,7 @@ Widget buildFilters(BuildContext context) {
             color: prov.selectedFilter == ThemeFilter.liked
                 ? FIGMA.Prn
                 : FIGMA.Gray2,
-            width: prov.selectedFilter == ThemeFilter.liked ? 1.5.sp : 0,
+            width: prov.selectedFilter == ThemeFilter.liked ? 1.sp : 0,
           ),
           disabledColor: FIGMA.Gray2,
           selectedColor: FIGMA.Grn,
@@ -188,6 +189,7 @@ Widget buildFilters(BuildContext context) {
         ),
         const SizedBox(width: 8),
         FilterChip(
+          padding: EdgeInsets.all(14.sp),
           backgroundColor: FIGMA.Gray2,
           showCheckmark: false,
           shape: RoundedRectangleBorder(
@@ -197,7 +199,7 @@ Widget buildFilters(BuildContext context) {
               color: prov.selectedFilter == ThemeFilter.single
                   ? FIGMA.Prn
                   : FIGMA.Gray2,
-              width: prov.selectedFilter == ThemeFilter.single ? 1.5.sp : 0),
+              width: prov.selectedFilter == ThemeFilter.single ? 1.sp : 0),
           disabledColor: FIGMA.Gray2,
           selectedColor: FIGMA.Grn,
           label: Text(
@@ -210,6 +212,7 @@ Widget buildFilters(BuildContext context) {
         ),
         const SizedBox(width: 8),
         FilterChip(
+          padding: EdgeInsets.all(14.sp),
           backgroundColor: FIGMA.Gray2,
           showCheckmark: false,
           shape: RoundedRectangleBorder(
@@ -219,7 +222,7 @@ Widget buildFilters(BuildContext context) {
             color: prov.selectedFilter == ThemeFilter.multiple
                 ? FIGMA.Prn
                 : FIGMA.Gray2,
-            width: prov.selectedFilter == ThemeFilter.multiple ? 1.5.sp : 0,
+            width: prov.selectedFilter == ThemeFilter.multiple ? 1.sp : 0,
           ),
           disabledColor: FIGMA.Gray2,
           selectedColor: FIGMA.Grn,

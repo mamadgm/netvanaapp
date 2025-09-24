@@ -63,7 +63,7 @@ class _TheAppNavState extends State<TheAppNav> {
                     text: "خانه",
                     textStyle: TextStyle(
                       fontFamily: FIGMA.estbo,
-                      fontSize: 14.sp,
+                      fontSize: 11.sp,
                       color: FIGMA.Prn2,
                     ),
                   ),
@@ -78,7 +78,7 @@ class _TheAppNavState extends State<TheAppNav> {
                     text: "افکت ها",
                     textStyle: TextStyle(
                       fontFamily: FIGMA.estbo,
-                      fontSize: 14.sp,
+                      fontSize: 11.sp,
                       color: FIGMA.Prn2,
                     ),
                   ),
@@ -93,7 +93,7 @@ class _TheAppNavState extends State<TheAppNav> {
                     text: "نت وانا",
                     textStyle: TextStyle(
                       fontFamily: FIGMA.estbo,
-                      fontSize: 14.sp,
+                      fontSize: 11.sp,
                       color: FIGMA.Prn2,
                     ),
                   ),
@@ -108,7 +108,7 @@ class _TheAppNavState extends State<TheAppNav> {
                     text: "تنظیمات",
                     textStyle: TextStyle(
                       fontFamily: FIGMA.estbo,
-                      fontSize: 14.sp,
+                      fontSize: 11.sp,
                       color: FIGMA.Prn2,
                     ),
                   ),

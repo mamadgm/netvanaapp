@@ -63,7 +63,7 @@ class _EffectsscrState extends State<Effectsscr> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  // const SizedBox(height: 4),
                   buildFilters(context),
                   GridView.count(
                     crossAxisCount: 2,

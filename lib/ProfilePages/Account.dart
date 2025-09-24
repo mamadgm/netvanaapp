@@ -5,7 +5,7 @@ import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
 import 'package:netvana/customwidgets/NewScreen.dart';
-import 'package:netvana/customwidgets/cylander.dart';
+import 'package:netvana/customwidgets/Lampwidet.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:netvana/models/SingleHive.dart';
 

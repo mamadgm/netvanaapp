@@ -13,7 +13,7 @@ import 'package:netvana/Network/netmain.dart';
 // import 'package:netvana/ble/logic/esp_ble.dart';
 
 import 'package:netvana/const/figma.dart';
-import 'package:netvana/customwidgets/cylander.dart';
+import 'package:netvana/customwidgets/Lampwidet.dart';
 import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:flutter/material.dart';
@@ -434,50 +434,128 @@ class _NooranState extends State<Nooran> {
                   child: Sliderwidgets[value.current_selected_slider],
                 ),
                 SizedBox(height: 24.h),
-                EasyContainer(
+                Container(
                   height: 102.h,
                   width: 329.w,
-                  color: (value.bleIsConnected | value.netvanaIsConnected)
-                      ? Colors.deepOrange
-                      : FIGMA.Gray4,
-                  borderWidth: 0,
-                  elevation: 0,
-                  margin: 0,
-                  padding: 0,
-                  borderRadius: 17,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(17),
+                    image: DecorationImage(
+                      image: NetworkImage(
+                          "https://api.netvana.ir${SdcardService.instance.getThemeById(getIdbyMode(value))?.image_url.toString() ?? "/media/images/theme/267022d16cad47d0ad087d3d92363d24.png"}"),
+                      fit: BoxFit.cover,
+                      colorFilter:
+                          (value.bleIsConnected | value.netvanaIsConnected)
+                              ? null
+                              : const ColorFilter.mode(
+                                  Colors.grey,
+                                  BlendMode.saturation,
+                                ),
+                    ),
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       EasyContainer(
-                          color: FIGMA.Back,
-                          width: 90.w,
-                          height: 44.h,
-                          elevation: 0,
-                          borderRadius: 15,
-                          child: Text(
-                            "ویرایش",
-                            style: TextStyle(
-                                color: FIGMA.Wrn,
-                                fontSize: 13.sp,
-                                fontFamily: FIGMA.estsb),
-                          )),
+                        color: FIGMA.Back,
+                        width: 90.w,
+                        height: 44.h,
+                        elevation: 0,
+                        borderRadius: 15,
+                        onTap: () {
+                          value.Change_current_screen(1);
+                        },
+                        child: Text(
+                          "ویرایش",
+                          style: TextStyle(
+                            color: FIGMA.Wrn,
+                            fontSize: 13.sp,
+                            fontFamily: FIGMA.estsb,
+                          ),
+                        ),
+                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("آتش بازی",
-                              style: TextStyle(
-                                  color: FIGMA.Wrn,
-                                  fontSize: 18.sp,
-                                  fontFamily: FIGMA.abrlb)),
-                          Text("هنگام جشن استفاده شود",
-                              style: TextStyle(
-                                  color: FIGMA.Wrn,
-                                  fontSize: 11.sp,
-                                  fontFamily: FIGMA.estre))
+                          Text(
+                            SdcardService.instance
+                                    .getThemeById(getIdbyMode(value))
+                                    ?.name
+                                    .toString() ??
+                                "تک رنگ",
+                            style: TextStyle(
+                              color: FIGMA.Wrn,
+                              fontSize: 18.sp,
+                              fontFamily: FIGMA.abrlb,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withOpacity(
+                                      0.5), // Stroke color (adjustable)
+                                  offset: const Offset(
+                                      1, 1), // Small offset for stroke effect
+                                  blurRadius: 1, // Small blur for smooth stroke
+                                ),
+                                Shadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  offset: const Offset(-1,
+                                      -1), // Opposite direction for full outline
+                                  blurRadius: 1,
+                                ),
+                                Shadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  offset:
+                                      const Offset(1, -1), // Covers all sides
+                                  blurRadius: 1,
+                                ),
+                                Shadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  offset: const Offset(-1, 1),
+                                  blurRadius: 1,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            SdcardService.instance
+                                    .getThemeById(getIdbyMode(value))
+                                    ?.description
+                                    .toString() ??
+                                "نمایش یک رنگ ثابت",
+                            style: TextStyle(
+                              color: FIGMA.Wrn,
+                              fontSize: 11.sp,
+                              fontFamily: FIGMA.estre,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withOpacity(
+                                      0.5), // Stroke color (adjustable)
+                                  offset: const Offset(
+                                      1, 1), // Small offset for stroke effect
+                                  blurRadius: 1, // Small blur for smooth stroke
+                                ),
+                                Shadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  offset: const Offset(-1,
+                                      -1), // Opposite direction for full outline
+                                  blurRadius: 1,
+                                ),
+                                Shadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  offset:
+                                      const Offset(1, -1), // Covers all sides
+                                  blurRadius: 1,
+                                ),
+                                Shadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  offset: const Offset(-1, 1),
+                                  blurRadius: 1,
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),

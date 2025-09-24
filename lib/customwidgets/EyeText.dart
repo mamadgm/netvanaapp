@@ -14,10 +14,10 @@ class EyeTextField extends StatefulWidget {
       this.showEye = true});
 
   @override
-  _EyeTextFieldState createState() => _EyeTextFieldState();
+  EyeTextFieldState createState() => EyeTextFieldState();
 }
 
-class _EyeTextFieldState extends State<EyeTextField> {
+class EyeTextFieldState extends State<EyeTextField> {
   bool _obscureText = true;
 
   @override

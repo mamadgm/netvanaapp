@@ -132,7 +132,7 @@ class BrightSleepState extends State<BrightSleep> {
                 fillColor: FIGMA.Gray2,
                 onChange: (val1, val2) {},
                 onFinish: (out) async {
-                  int finallight = mapdoubleToInt(out, 1.0, 0.0, 1, 255);
+                  int finallight = mapdoubleToInt(out, 1.0, 0.0, 1, 100);
                   widget.senddata(finallight.toString());
                   value.setsleepBright(finallight);
                 },

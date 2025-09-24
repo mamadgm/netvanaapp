@@ -262,12 +262,12 @@ class ProvData extends ChangeNotifier {
     ESPVersion = result.length > 11 ? result[11] : 0;
     DeviceBleName = deviceName; // Store the parsed device name
     notifyListeners();
-    if (deviceName !=
-        "${SdcardService.instance.firstDevice!.categoryName}-${SdcardService.instance.firstDevice!.partNumber}") {
-      SingleBle().disconnect();
-      debugPrint("This Is Not Your Device 401");
-      return;
-    }
+    // if (deviceName !=
+    //     "${SdcardService.instance.firstDevice!.categoryName}-${SdcardService.instance.firstDevice!.partNumber}") {
+    //   SingleBle().disconnect();
+    //   debugPrint("This Is Not Your Device 401");
+    //   return;
+    // }
   }
 
   void Set_Screen_Values_From_JSON(Map<String, dynamic>? jsonResponse) {

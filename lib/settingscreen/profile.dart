@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/ProfilePages/About.dart';
 import 'package:netvana/ProfilePages/Account.dart';
 import 'package:netvana/ProfilePages/Sleep.dart';
@@ -11,7 +14,7 @@ import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/ButtonIcon.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
 import 'package:netvana/customwidgets/NewScreen.dart';
-import 'package:netvana/customwidgets/cylander.dart';
+import 'package:netvana/customwidgets/Lampwidet.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:provider/provider.dart';
 
@@ -75,6 +78,8 @@ class _ProfileScrState extends State<ProfileScr> {
                   title: "بروزرسانی",
                   trailingIcon: LucideIcons.downloadCloud,
                   onTap: () {
+                    String jsonPayload = jsonEncode({"Ue": 1});
+                    SingleBle().sendMain(jsonPayload);
                     showUpdate(context, value);
                     // value.Show_Snackbar("محصول شما آخرین نسخه است", 1000);
                   },
