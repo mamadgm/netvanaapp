@@ -34,16 +34,28 @@ class NetClass {
   }
 
   Future<Map<String, dynamic>?> sendOtp(String phone) async {
-    var body = <String, String>{
-      'phone_number': phone,
-    };
-
     var response = await http.post(
-      Uri.parse('${FIGMA.urlnetwana}/ownership/otp/send'),
+      Uri.parse('${FIGMA.urlnetwana}/ownership/otp/send/'),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json',
       },
-      body: body,
+      body: jsonEncode({"phone_number": phone}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception(response.body);
+    }
+  }
+
+  Future<Map<String, dynamic>?> checkOtp(String phone, String otp) async {
+    var response = await http.post(
+      Uri.parse('${FIGMA.urlnetwana}/ownership/otp/check/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({"phone_number": phone, "otp_code": otp}),
     );
 
     if (response.statusCode == 200) {

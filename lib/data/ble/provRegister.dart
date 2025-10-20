@@ -5,8 +5,14 @@ import 'package:flutter/material.dart';
 
 class RegisterProvider extends ChangeNotifier {
   String phoneNumber = "";
-  setPhoneNumber(String PhoneNumber) {
+  void setPhoneNumber(String PhoneNumber) {
     phoneNumber = PhoneNumber;
+    notifyListeners();
+  }
+
+  String token = "";
+  void setToken(String Token) {
+    token = Token;
     notifyListeners();
   }
 

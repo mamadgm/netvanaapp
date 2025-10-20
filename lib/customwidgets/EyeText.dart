@@ -6,12 +6,14 @@ class EyeTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final bool showEye;
+  final bool center;
 
   const EyeTextField(
       {super.key,
       required this.controller,
       this.hintText = "",
-      this.showEye = true});
+      this.showEye = true,
+      this.center = false});
 
   @override
   EyeTextFieldState createState() => EyeTextFieldState();
@@ -26,7 +28,7 @@ class EyeTextFieldState extends State<EyeTextField> {
       style: TextStyle(fontSize: 16.sp, color: FIGMA.Wrn),
       controller: widget.controller,
       obscureText: widget.showEye ? _obscureText : false,
-      textAlign: TextAlign.right,
+      textAlign: widget.center ? TextAlign.center : TextAlign.right,
       decoration: InputDecoration(
           hintText: widget.hintText,
           hintStyle: TextStyle(color: FIGMA.Gray4, fontSize: 14.sp),

@@ -4,7 +4,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:netvana/Login/otp_check.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
@@ -13,21 +12,21 @@ import 'package:flutter/material.dart';
 import 'package:netvana/data/ble/provRegister.dart';
 import 'package:provider/provider.dart';
 
-class Register extends StatefulWidget {
-  const Register({super.key});
+class OtpCheck extends StatefulWidget {
+  const OtpCheck({super.key});
 
   @override
-  RegisterState createState() => RegisterState();
+  OtpCheckState createState() => OtpCheckState();
 }
 
-class RegisterState extends State<Register> {
-  late TextEditingController formphone;
+class OtpCheckState extends State<OtpCheck> {
+  late TextEditingController formotp;
   double _topPadding = 300;
 
   @override
   void initState() {
     super.initState();
-    formphone = TextEditingController();
+    formotp = TextEditingController();
   }
 
   @override
@@ -89,7 +88,7 @@ class RegisterState extends State<Register> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            "ثبت نام در نوروانا",
+                            "تایید شماره تلفن",
                             style: TextStyle(
                               fontFamily: FIGMA.abrlb,
                               fontSize: 24.sp,
@@ -99,7 +98,7 @@ class RegisterState extends State<Register> {
                             textDirection: TextDirection.rtl,
                           ),
                           Text(
-                            "شماره تلفن همراه خود را وارد کنید",
+                            "کد ارسال شده را وارد کنید",
                             style: TextStyle(
                               fontFamily: FIGMA.estre,
                               fontSize: 14.sp,
@@ -124,9 +123,10 @@ class RegisterState extends State<Register> {
                     margin: 0,
                     borderRadius: 0,
                     child: EyeTextField(
-                      controller: formphone,
-                      hintText: "شماره تلفن",
+                      controller: formotp,
+                      hintText: "کد یکبار مصرف",
                       showEye: false,
+                      center: true,
                     ),
                   ),
                   EasyContainer(
@@ -138,7 +138,7 @@ class RegisterState extends State<Register> {
                     padding: 0,
                     borderRadius: 17,
                     child: Text(
-                      'ارسال کد تایید',
+                      'تایید کد',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.sp,
@@ -146,21 +146,14 @@ class RegisterState extends State<Register> {
                       ),
                     ),
                     onTap: () async {
-                      debugPrint("Sending...");
                       try {
-                        await NetClass()
-                            .sendOtp(formphone.text)
+                        var result = await NetClass()
+                            .checkOtp(value.phoneNumber, formotp.text)
                             .timeout(const Duration(seconds: 5));
-
-                        value.setPhoneNumber(formphone.text);
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const OtpCheck(),
-                          ),
-                        );
+                        value.Show_Snackbar("تایید شد", 500, type: 2);
                       } catch (e) {
-                        debugPrint("error otp send $e");
-                        value.Show_Snackbar("کد ارسال نشد", 1000, type: 3);
+                        value.Show_Snackbar("ورود ناموفق", 1000, type: 3);
+                        debugPrint(e.toString());
                       }
                     },
                   ),

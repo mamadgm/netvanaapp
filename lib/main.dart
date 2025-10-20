@@ -66,8 +66,10 @@ class _MyAppState extends State<MyApp> {
         // decide based on URL
         if (currentPath == '/register') {
           // show your registration MaterialApp
-          return const MaterialApp(
-              debugShowCheckedModeBanner: false, home: Register());
+          return MaterialApp(
+              scaffoldMessengerKey: scaffoldMessengerKey,
+              debugShowCheckedModeBanner: false,
+              home: const Register());
         }
 
         // default route ("/" or others)
@@ -96,3 +98,4 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+// flutter run -d chrome --web-browser-flag "--disable-web-security" --web-browser-flag "--user-data-dir=/tmp/chrome_dev"
