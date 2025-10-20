@@ -3,7 +3,7 @@ import 'package:filling_slider/filling_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/const/figma.dart';
-import 'package:netvana/data/ble/providerble.dart';
+import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/models/SingleHive.dart';
 import 'package:provider/provider.dart';
 

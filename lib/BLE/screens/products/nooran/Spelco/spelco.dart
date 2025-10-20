@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:netvana/const/figma.dart';
-import 'package:netvana/data/ble/providerble.dart';
+import 'package:netvana/data/ble/provMain.dart';
 import 'package:provider/provider.dart';
 
 class Spelco extends StatelessWidget {

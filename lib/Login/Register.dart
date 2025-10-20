@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:ui' as ui;
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,30 +7,27 @@ import 'package:flutter_svg/svg.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
-import 'package:netvana/customwidgets/global.dart';
-import 'package:netvana/data/ble/provMain.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
+import 'package:netvana/data/ble/provRegister.dart';
 import 'package:netvana/models/SingleHive.dart';
 import 'package:provider/provider.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class Register extends StatefulWidget {
+  const Register({super.key});
 
   @override
-  _LoginState createState() => _LoginState();
+  RegisterState createState() => RegisterState();
 }
 
-class _LoginState extends State<Login> {
+class RegisterState extends State<Register> {
   late TextEditingController formphone;
-  late TextEditingController formpass;
   double _topPadding = 300;
 
   @override
   void initState() {
     super.initState();
     formphone = TextEditingController();
-    formpass = TextEditingController();
   }
 
   @override
@@ -42,7 +41,7 @@ class _LoginState extends State<Login> {
       _topPadding = 300;
     }
 
-    return Consumer<ProvData>(
+    return Consumer<RegisterProvider>(
       builder: (context, value, child) => Scaffold(
         backgroundColor: FIGMA.Back, // Background color from FIGMA
         resizeToAvoidBottomInset:
@@ -90,7 +89,7 @@ class _LoginState extends State<Login> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            "خوش آمدید",
+                            "ثبت نام در نوروانا",
                             style: TextStyle(
                               fontFamily: FIGMA.abrlb,
                               fontSize: 24.sp,
@@ -100,7 +99,7 @@ class _LoginState extends State<Login> {
                             textDirection: TextDirection.rtl,
                           ),
                           Text(
-                            "برای ورود به اپلیکیشن رمز عبور\n و شماره خود را وارد کنید",
+                            "شماره تلفن همراه خود را وارد کنید",
                             style: TextStyle(
                               fontFamily: FIGMA.estre,
                               fontSize: 14.sp,
@@ -133,27 +132,13 @@ class _LoginState extends State<Login> {
                   EasyContainer(
                     height: 68.h,
                     width: 320.w,
-                    color: Colors.black12.withOpacity(0),
-                    borderWidth: 0,
-                    elevation: 0,
-                    padding: 0,
-                    margin: 0,
-                    borderRadius: 0,
-                    child: EyeTextField(
-                      controller: formpass,
-                      hintText: "رمز عبور",
-                    ),
-                  ),
-                  EasyContainer(
-                    height: 68.h,
-                    width: 320.w,
                     color: FIGMA.Prn,
                     borderWidth: 0,
                     elevation: 0,
                     padding: 0,
                     borderRadius: 17,
                     child: Text(
-                      'ورود به نت وانا',
+                      'ارسال کد تایید',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.sp,
@@ -162,27 +147,11 @@ class _LoginState extends State<Login> {
                     ),
                     onTap: () async {
                       try {
-                        var loginResponse = await NetClass()
-                            .login(formphone.text, formpass.text)
+                        await NetClass()
+                            .sendOtp(formphone.text)
                             .timeout(const Duration(seconds: 5));
 
-                        if (loginResponse == null ||
-                            loginResponse['access_token'] == null) {
-                          value.Show_Snackbar("ورود ناموفق", 1000);
-                          return;
-                        }
-
-                        final token = loginResponse['access_token'];
-
-                        final service = SdcardService.instance;
-                        service.sdcard.token = token;
-                        await service.sdcard.save();
-
-                        await service.updateUser(token);
-
-                        debugPrint("Got Devices: ${service.products.length}");
-
-                        setup(value);
+                        value.setPhoneNumber(formphone.text);
                       } catch (e) {
                         value.Show_Snackbar("ورود ناموفق", 1000);
                       }

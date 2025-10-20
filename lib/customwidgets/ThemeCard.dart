@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/const/figma.dart';
-import 'package:netvana/data/ble/providerble.dart';
+import 'package:netvana/data/ble/provMain.dart';
 
 class ThemeCard extends StatelessWidget {
   final int id;

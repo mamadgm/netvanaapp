@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:netvana/Login/Register.dart';
+import 'package:netvana/data/ble/provRegister.dart';
+import 'package:provider/provider.dart';
 import 'package:netvana/BLE/screens/products/nooran/Nooran.dart';
 import 'package:netvana/Login/Login.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:netvana/OtherTwo/Effects.dart';
-import 'package:netvana/OtherTwo/Netvana.dart';
+import 'package:netvana/screens/Effects.dart';
+import 'package:netvana/screens/Netvana.dart';
 import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/models/SingleHive.dart';
-import 'package:netvana/settingscreen/profile.dart';
-import 'package:provider/provider.dart';
-import 'package:netvana/data/ble/providerble.dart';
+import 'package:netvana/screens/profile.dart';
+import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/navbar/TheAppNav.dart';
 import 'package:netvana/const/figma.dart';
 
@@ -19,31 +21,37 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ProvData()),
+        ChangeNotifierProvider(create: (_) => RegisterProvider()),
       ],
-      child: const Myapp(),
+      child: const MyApp(),
     ),
   );
 }
 
-class Myapp extends StatefulWidget {
-  const Myapp({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
 
   @override
-  State<Myapp> createState() => _MyappState();
+  State<MyApp> createState() => _MyAppState();
 }
 
-class _MyappState extends State<Myapp> {
+class _MyAppState extends State<MyApp> {
   late List<Widget> mybody;
+  late final String currentPath;
+
   @override
   void initState() {
+    super.initState();
     mybody = [
-      const Nooran(), // Main
-      const Effectsscr(), // Effects
-      const Netvana(), // Timers
+      const Nooran(),
+      const Effectsscr(),
+      const Netvana(),
       const ProfileScr(),
     ];
 
-    super.initState();
+    // read current browser path (e.g. "/", "/register")
+    currentPath = Uri.base.path; // works only on web
+
     final value = Provider.of<ProvData>(context, listen: false);
     setup(value);
   }
@@ -51,10 +59,18 @@ class _MyappState extends State<Myapp> {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(360, 667), // Your Figma design size
+      designSize: const Size(360, 667),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
+        // decide based on URL
+        if (currentPath == '/register') {
+          // show your registration MaterialApp
+          return const MaterialApp(
+              debugShowCheckedModeBanner: false, home: Register());
+        }
+
+        // default route ("/" or others)
         return MaterialApp(
           scaffoldMessengerKey: scaffoldMessengerKey,
           debugShowCheckedModeBanner: false,

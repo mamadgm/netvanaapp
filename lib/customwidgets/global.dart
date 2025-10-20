@@ -9,7 +9,7 @@ import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
-import 'package:netvana/data/ble/providerble.dart';
+import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/models/SingleHive.dart';
 
 void showWiFiDialog(BuildContext context) {

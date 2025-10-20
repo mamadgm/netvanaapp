@@ -3,7 +3,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:netvana/const/figma.dart';
-import 'package:netvana/data/ble/providerble.dart';
+import 'package:netvana/data/ble/provMain.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';

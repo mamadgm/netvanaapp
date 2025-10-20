@@ -1,5 +1,5 @@
-import 'package:netvana/Rawlibs/hsv/hsv_color_pickers.dart';
-import 'package:netvana/Rawlibs/hsv/src/common.dart';
+import 'package:netvana/slider/hsv_color_pickers.dart';
+import 'package:netvana/slider/src/common.dart';
 import 'package:flutter/material.dart';
 
 /// This class defines a slider for picking the hue of a [HSVColor].

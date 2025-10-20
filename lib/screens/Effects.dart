@@ -2,7 +2,7 @@
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/customwidgets/ThemeCard.dart';
-import 'package:netvana/data/ble/providerble.dart';
+import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/models/HiveModel.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';

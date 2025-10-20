@@ -33,18 +33,15 @@ class NetClass {
     }
   }
 
-  Future<Map<String, dynamic>?> reset_password(
-      String email, String password, String token) async {
+  Future<Map<String, dynamic>?> sendOtp(String phone) async {
     var body = <String, String>{
-      'phone': email,
-      'new_password': password,
+      'phone_number': phone,
     };
 
     var response = await http.post(
-      Uri.parse('${FIGMA.urlnetwana}/admin/reset-password'),
+      Uri.parse('${FIGMA.urlnetwana}/ownership/otp/send'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
       },
       body: body,
     );

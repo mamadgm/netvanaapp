@@ -13,7 +13,7 @@ import 'package:netvana/ProfilePages/Update.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/ButtonIcon.dart';
 import 'package:netvana/customwidgets/Lampwidet.dart';
-import 'package:netvana/data/ble/providerble.dart';
+import 'package:netvana/data/ble/provMain.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScr extends StatefulWidget {

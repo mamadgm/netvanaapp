@@ -15,7 +15,7 @@ import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/Lampwidet.dart';
 import 'package:netvana/customwidgets/global.dart';
-import 'package:netvana/data/ble/providerble.dart';
+import 'package:netvana/data/ble/provMain.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:netvana/models/SingleHive.dart';
