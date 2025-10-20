@@ -2,6 +2,7 @@
 
 import 'dart:ui' as ui;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:netvana/Network/netmain.dart';
@@ -11,6 +12,7 @@ import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/data/ble/provRegister.dart';
 import 'package:provider/provider.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -20,25 +22,87 @@ class Signup extends StatefulWidget {
 }
 
 class SignupState extends State<Signup> {
-  late TextEditingController formotp;
-  double _topPadding = 300;
+  final TextEditingController formFirst = TextEditingController();
+  final TextEditingController formLast = TextEditingController();
+  final TextEditingController formUsername = TextEditingController();
+  final TextEditingController formPass1 = TextEditingController();
+  final TextEditingController formPass2 = TextEditingController();
+  Jalali? pickedDate;
+  String? birthLabel;
 
   @override
   void initState() {
     super.initState();
-    formotp = TextEditingController();
+  }
+
+  Future<void> getDate() async {
+    pickedDate = await showModalBottomSheet<Jalali>(
+        backgroundColor: FIGMA.Gray4, // Background color from FIGMA
+        context: context,
+        builder: (context) {
+          Jalali? tempPickedDate;
+          return SizedBox(
+            height: 250,
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    CupertinoButton(
+                      child: Text(
+                        'لغو',
+                        style: TextStyle(
+                            fontFamily: FIGMA.estbo,
+                            color: FIGMA.Wrn,
+                            fontSize: 9.sp),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    CupertinoButton(
+                      child: Text('تایید',
+                          style: TextStyle(
+                              fontFamily: FIGMA.estbo,
+                              color: FIGMA.Wrn,
+                              fontSize: 9.sp)),
+                      onPressed: () {
+                        debugPrint("date is ${tempPickedDate ?? Jalali.now()}");
+                        Navigator.of(context)
+                            .pop(tempPickedDate ?? Jalali.now());
+                      },
+                    ),
+                  ],
+                ),
+                const Divider(
+                  height: 0,
+                  thickness: 1,
+                ),
+                Expanded(
+                  child: PersianCupertinoDatePicker(
+                    backgroundColor: FIGMA.Gray4, // Background color from FIGMA
+                    initialDateTime: Jalali.now(),
+                    mode: PersianCupertinoDatePickerMode.date,
+                    onDateTimeChanged: (Jalali dateTime) {
+                      tempPickedDate = dateTime;
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+
+    setState(() {
+      if (pickedDate != null) {
+        birthLabel = pickedDate!.formatCompactDate();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     // Check if the keyboard is visinetvana
-    bool isKeyboardVisinetvana = MediaQuery.of(context).viewInsets.bottom != 0;
-
-    if (isKeyboardVisinetvana) {
-      _topPadding = 100;
-    } else {
-      _topPadding = 300;
-    }
 
     return Consumer<RegisterProvider>(
       builder: (context, value, child) => Scaffold(
@@ -79,16 +143,17 @@ class SignupState extends State<Signup> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: _topPadding),
+                  SizedBox(height: 32.h),
                   // RTL text
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            "تایید شماره تلفن",
+                            "تکمیل اطلاعات",
                             style: TextStyle(
                               fontFamily: FIGMA.abrlb,
                               fontSize: 24.sp,
@@ -97,8 +162,9 @@ class SignupState extends State<Signup> {
                             textAlign: TextAlign.end,
                             textDirection: TextDirection.rtl,
                           ),
+                          SizedBox(height: 24.h),
                           Text(
-                            "کد ارسال شده را وارد کنید",
+                            "شما کی هستید",
                             style: TextStyle(
                               fontFamily: FIGMA.estre,
                               fontSize: 14.sp,
@@ -106,28 +172,122 @@ class SignupState extends State<Signup> {
                             ),
                             textAlign: TextAlign.end,
                           ),
+                          EasyContainer(
+                            height: 68.h,
+                            width: 320.w,
+                            color: Colors.black12.withOpacity(0),
+                            borderWidth: 0,
+                            elevation: 0,
+                            padding: 0,
+                            margin: 0,
+                            borderRadius: 0,
+                            child: EyeTextField(
+                              controller: formFirst,
+                              hintText: "نام",
+                              showEye: false,
+                            ),
+                          ),
+                          EasyContainer(
+                            height: 68.h,
+                            width: 320.w,
+                            color: Colors.black12.withOpacity(0),
+                            borderWidth: 0,
+                            elevation: 0,
+                            padding: 0,
+                            margin: 0,
+                            borderRadius: 0,
+                            child: EyeTextField(
+                              controller: formLast,
+                              hintText: "نام خانوادگی",
+                              showEye: false,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 50.h,
+                            width: 320.w,
+                            child: EasyContainer(
+                                height: 50.h,
+                                width: 320.w,
+                                color: FIGMA.Prn,
+                                borderWidth: 0,
+                                elevation: 0,
+                                padding: 0,
+                                borderRadius: 17,
+                                child: Text(
+                                  birthLabel ?? "ورود تاریخ تولد",
+                                  style: TextStyle(
+                                      fontFamily: FIGMA.estbo,
+                                      fontSize: 13.sp,
+                                      color: FIGMA.Wrn),
+                                ),
+                                onTap: () async {
+                                  await getDate();
+                                }),
+                          ),
+                          SizedBox(height: 24.h),
+                          Text(
+                            "این اطلاعات یادتون نره",
+                            style: TextStyle(
+                              fontFamily: FIGMA.estre,
+                              fontSize: 14.sp,
+                              color: FIGMA.Wrn2,
+                            ),
+                            textAlign: TextAlign.end,
+                          ),
+                          EasyContainer(
+                            height: 68.h,
+                            width: 320.w,
+                            color: Colors.black12.withOpacity(0),
+                            borderWidth: 0,
+                            elevation: 0,
+                            padding: 0,
+                            margin: 0,
+                            borderRadius: 0,
+                            child: EyeTextField(
+                              controller: formUsername,
+                              hintText: "نام کاربری",
+                              showEye: false,
+                              center: true,
+                            ),
+                          ),
+                          EasyContainer(
+                            height: 68.h,
+                            width: 320.w,
+                            color: Colors.black12.withOpacity(0),
+                            borderWidth: 0,
+                            elevation: 0,
+                            padding: 0,
+                            margin: 0,
+                            borderRadius: 0,
+                            child: EyeTextField(
+                              controller: formPass1,
+                              hintText: "رمز عبور",
+                              showEye: true,
+                              center: true,
+                            ),
+                          ),
+                          EasyContainer(
+                            height: 68.h,
+                            width: 320.w,
+                            color: Colors.black12.withOpacity(0),
+                            borderWidth: 0,
+                            elevation: 0,
+                            padding: 0,
+                            margin: 0,
+                            borderRadius: 0,
+                            child: EyeTextField(
+                              controller: formPass2,
+                              hintText: "رمز عبور دوباره",
+                              showEye: true,
+                              center: true,
+                            ),
+                          ),
                         ],
                       ),
-                      const SizedBox(
-                        width: 20,
+                      SizedBox(
+                        width: 24.w,
                       ),
                     ],
-                  ),
-                  EasyContainer(
-                    height: 68.h,
-                    width: 320.w,
-                    color: Colors.black12.withOpacity(0),
-                    borderWidth: 0,
-                    elevation: 0,
-                    padding: 0,
-                    margin: 0,
-                    borderRadius: 0,
-                    child: EyeTextField(
-                      controller: formotp,
-                      hintText: "کد یکبار مصرف",
-                      showEye: false,
-                      center: true,
-                    ),
                   ),
                   EasyContainer(
                     height: 68.h,
@@ -138,7 +298,7 @@ class SignupState extends State<Signup> {
                     padding: 0,
                     borderRadius: 17,
                     child: Text(
-                      'تایید کد',
+                      'ثبت نام',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.sp,
@@ -148,12 +308,19 @@ class SignupState extends State<Signup> {
                     onTap: () async {
                       try {
                         var result = await NetClass()
-                            .checkOtp(value.phoneNumber, formotp.text)
-                            .timeout(const Duration(seconds: 5));
+                            .signUp(
+                                value.token,
+                                formFirst.text,
+                                formLast.text,
+                                _pickedDateToIso(),
+                                formUsername.text,
+                                formPass1.text,
+                                formPass2.text)
+                            .timeout(const Duration(seconds: 10));
                         value.Show_Snackbar("وارد شدید", 1000, type: 2);
                         debugPrint(result.toString());
                       } catch (e) {
-                        value.Show_Snackbar("ورود ناموفق", 1000, type: 3);
+                        value.Show_Snackbar("ثبت ناموفق", 1000, type: 3);
                         debugPrint(e.toString());
                       }
                     },
@@ -166,5 +333,24 @@ class SignupState extends State<Signup> {
         ),
       ),
     );
+  }
+
+  String _pickedDateToIso() {
+    if (pickedDate == null) {
+      return DateTime.now().toUtc().toIso8601String();
+    }
+    // Convert Jalali to Gregorian
+    final g = pickedDate!.toGregorian();
+    final dateTime = DateTime(
+      g.year,
+      g.month,
+      g.day,
+      0,
+      0,
+      0,
+      0,
+      0,
+    ).toUtc();
+    return dateTime.toIso8601String(); // e.g. 2025-10-20T00:00:00.000Z
   }
 }

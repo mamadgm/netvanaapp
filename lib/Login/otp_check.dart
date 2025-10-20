@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:netvana/Login/signup.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
@@ -149,8 +150,14 @@ class OtpCheckState extends State<OtpCheck> {
                       try {
                         var result = await NetClass()
                             .checkOtp(value.phoneNumber, formotp.text)
-                            .timeout(const Duration(seconds: 5));
+                            .timeout(const Duration(seconds: 10));
+                        value.setToken(result!["access_token"]);
                         value.Show_Snackbar("تایید شد", 500, type: 2);
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const Signup(),
+                          ),
+                        );
                       } catch (e) {
                         value.Show_Snackbar("ورود ناموفق", 1000, type: 3);
                         debugPrint(e.toString());

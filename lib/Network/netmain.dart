@@ -65,6 +65,32 @@ class NetClass {
     }
   }
 
+  Future<Map<String, dynamic>?> signUp(String token, String first, String last,
+      String birth, String user, String pass1, String pass2) async {
+    //         "birth_dt": "2025-10-20T10:11:14.973Z",
+    var response = await http.post(
+      Uri.parse('${FIGMA.urlnetwana}/ownership/complete-user-profile/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        "first_name": first,
+        "last_name": last,
+        "birth_dt": birth,
+        "username": user,
+        "password": pass1,
+        "password_conf": pass2
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception(response.body);
+    }
+  }
+
   Future<User?> getUser(String token) async {
     final response = await http.get(
       Uri.parse('${FIGMA.urlnetwana}/me'),

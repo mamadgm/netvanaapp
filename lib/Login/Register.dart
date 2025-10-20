@@ -150,7 +150,7 @@ class RegisterState extends State<Register> {
                       try {
                         await NetClass()
                             .sendOtp(formphone.text)
-                            .timeout(const Duration(seconds: 5));
+                            .timeout(const Duration(seconds: 10));
 
                         value.setPhoneNumber(formphone.text);
                         Navigator.of(context).push(
@@ -162,6 +162,34 @@ class RegisterState extends State<Register> {
                         debugPrint("error otp send $e");
                         value.Show_Snackbar("کد ارسال نشد", 1000, type: 3);
                       }
+                    },
+                  ),
+                  SizedBox(
+                    height: 8.h,
+                  ),
+                  EasyContainer(
+                    height: 68.h,
+                    width: 320.w,
+                    color: FIGMA.Gray4,
+                    borderWidth: 0,
+                    elevation: 0,
+                    padding: 0,
+                    borderRadius: 17,
+                    child: Text(
+                      'کد را دارم',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.sp,
+                        fontFamily: FIGMA.abreb,
+                      ),
+                    ),
+                    onTap: () async {
+                      value.setPhoneNumber(formphone.text);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const OtpCheck(),
+                        ),
+                      );
                     },
                   ),
                 ],
