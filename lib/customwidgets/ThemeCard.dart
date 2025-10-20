@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import 'package:netvana/Network/netmain.dart';
-import 'package:netvana/const/themes.dart';
 import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/models/HiveModel.dart';
 import 'package:netvana/models/SingleHive.dart';
@@ -81,7 +79,7 @@ class ThemeCard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: Image.network(
-                    (id % 2 == 0) ? picUrl : "${picUrl}",
+                    (id % 2 == 0) ? picUrl : picUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       // Optional: Handle image loading errors

@@ -1,7 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, file_names
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:netvana/const/themes.dart';
 import 'package:netvana/customwidgets/ThemeCard.dart';
 import 'package:netvana/data/ble/providerble.dart';
 import 'package:netvana/models/HiveModel.dart';

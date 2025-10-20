@@ -111,7 +111,7 @@ void showAccount(context, ProvData value) {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "${SdcardService.instance.user!.phone}",
+                      SdcardService.instance.user!.phone,
                       style: TextStyle(
                           fontSize: 14.sp,
                           color: FIGMA.Wrn,
@@ -206,7 +206,8 @@ void showAccount(context, ProvData value) {
                                 child: SizedBox(
                                     height: 70.h,
                                     width: 40.w,
-                                    child: LampWidget(lampColor: FIGMA.Prn))),
+                                    child: const LampWidget(
+                                        lampColor: FIGMA.Prn))),
                             SizedBox(width: 6.w),
                           ],
                         ))
