@@ -179,14 +179,14 @@ void showAccount(context, ProvData value) {
                                             fontFamily: FIGMA.estsb)),
                                   ),
                                   Text(
-                                      "${SdcardService.instance.firstDevice!.categoryName}-${SdcardService.instance.firstDevice!.partNumber} :نام دستگاه",
+                                      "${value.selectedDevice.categoryName}-${value.selectedDevice.partNumber} :نام دستگاه",
                                       style: TextStyle(
                                           fontSize: 11.sp,
                                           color: FIGMA.Gray4,
                                           fontFamily: FIGMA.estre)),
                                   const Spacer(),
                                   Text(
-                                      "${SdcardService.instance.firstDevice!.macAddress} :سریال نامبر",
+                                      "${value.selectedDevice.macAddress} :سریال نامبر",
                                       style: TextStyle(
                                           fontSize: 11.sp,
                                           color: FIGMA.Gray4,

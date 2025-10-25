@@ -60,7 +60,7 @@ class ThemeCard extends StatelessWidget {
             if (value.netvanaIsConnected) {
               await NetClass().setMode(
                 SdcardService.instance.token!,
-                SdcardService.instance.firstDevice!.id.toString(),
+                value.selectedDevice.id.toString(),
                 id.toString(),
               );
               return;

@@ -56,7 +56,7 @@ class _NooranState extends State<Nooran> {
           }
           if (value.netvanaIsConnected) {
             NetClass().setSpeed(SdcardService.instance.token!,
-                SdcardService.instance.firstDevice!.id.toString(), speed);
+                value.selectedDevice.id.toString(), speed);
             value.setMainCycleSpeed(int.parse(speed));
             return;
           }
@@ -74,7 +74,7 @@ class _NooranState extends State<Nooran> {
           }
           if (value.netvanaIsConnected) {
             NetClass().setBright(SdcardService.instance.token!,
-                SdcardService.instance.firstDevice!.id.toString(), bright);
+                value.selectedDevice.id.toString(), bright);
             value.setBrightness(int.parse(bright));
             return;
           }
@@ -95,7 +95,7 @@ class _NooranState extends State<Nooran> {
           }
           if (value.netvanaIsConnected) {
             NetClass().setColor(SdcardService.instance.token!,
-                SdcardService.instance.firstDevice!.id.toString(), p0);
+                value.selectedDevice.id.toString(), p0);
             value.setMainCycleColor(p0);
             return;
           }
@@ -185,27 +185,26 @@ class _NooranState extends State<Nooran> {
                                       debugPrint("error in update user $e");
                                     }
 
-                                    final firstDevice = service.firstDevice;
-                                    if (firstDevice != null) {
-                                      if (!firstDevice.isOnline) {
-                                        value.wifi_update_connected(false);
-                                        value.Show_Snackbar(
-                                            "دستگاه متصل نیست . راه اندازی مجدد ...",
-                                            1000);
+                                    final firstDevice = value.selectedDevice;
 
-                                        if (value.bleIsConnected) {
-                                          showWiFiDialog(context);
-                                        } else {
-                                          value.Show_Snackbar(
-                                              "برای تنظیم ابتدا به بلوتوث متصل شوید",
-                                              1000);
-                                        }
+                                    if (!firstDevice.isOnline) {
+                                      value.wifi_update_connected(false);
+                                      value.Show_Snackbar(
+                                          "دستگاه متصل نیست . راه اندازی مجدد ...",
+                                          1000);
+
+                                      if (value.bleIsConnected) {
+                                        showWiFiDialog(context);
                                       } else {
-                                        value.wifi_update_connected(true);
+                                        value.Show_Snackbar(
+                                            "برای تنظیم ابتدا به بلوتوث متصل شوید",
+                                            1000);
                                       }
-
-                                      value.hand_update();
+                                    } else {
+                                      value.wifi_update_connected(true);
                                     }
+
+                                    value.hand_update();
                                   },
                                 ),
                               ),
@@ -326,9 +325,7 @@ class _NooranState extends State<Nooran> {
                                       if (value.netvanaIsConnected) {
                                         NetClass().setBright(
                                             SdcardService.instance.token!,
-                                            SdcardService
-                                                .instance.firstDevice!.id
-                                                .toString(),
+                                            value.selectedDevice.id.toString(),
                                             Bright.toString());
                                         return;
                                       }
@@ -358,8 +355,7 @@ class _NooranState extends State<Nooran> {
                                   if (value.netvanaIsConnected) {
                                     NetClass().setPower(
                                         SdcardService.instance.token!,
-                                        SdcardService.instance.firstDevice!.id
-                                            .toString(),
+                                        value.selectedDevice.id.toString(),
                                         !value.isdeviceon == true ? 1 : 0);
                                     return;
                                   }
@@ -399,7 +395,7 @@ class _NooranState extends State<Nooran> {
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: Text(
-                              "${SdcardService.instance.firstDevice!.categoryName}-${SdcardService.instance.firstDevice!.partNumber}",
+                              "${value.selectedDevice.categoryName}-${value.selectedDevice.partNumber}",
                               style: const TextStyle(color: FIGMA.Wrn2),
                             ),
                           )
@@ -592,8 +588,7 @@ class _NooranState extends State<Nooran> {
                                 if (value.netvanaIsConnected) {
                                   NetClass().setColor(
                                       SdcardService.instance.token!,
-                                      SdcardService.instance.firstDevice!.id
-                                          .toString(),
+                                      value.selectedDevice.id.toString(),
                                       f);
                                   value.setMainCycleColor(f);
 
@@ -634,7 +629,7 @@ class ShortTimer extends StatelessWidget {
       }
       if (value.netvanaIsConnected) {
         NetClass().setTimer(SdcardService.instance.token!,
-            SdcardService.instance.firstDevice!.id.toString(), s);
+            value.selectedDevice.id.toString(), s);
         calculateTimeStore(s);
         FocusScope.of(context).unfocus();
         Navigator.of(context).pop();

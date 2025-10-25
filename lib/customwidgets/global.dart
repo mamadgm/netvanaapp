@@ -189,14 +189,6 @@ Future<void> setup(ProvData funcy) async {
 
     await funcy.getDetailsFromNet();
     await SdcardService.instance.updateUser(service.token!);
-
-    final firstDevice = service.firstDevice;
-
-    if (firstDevice != null) {
-      if (firstDevice.isOnline) {
-        funcy.wifi_update_connected(true);
-      }
-    }
   } else {
     debugPrint("no token found in SdcardService");
   }
@@ -240,7 +232,7 @@ Future<void> checkModeColors(ProvData value) async {
         if (value.netvanaIsConnected) {
           await NetClass().setMode(
             SdcardService.instance.token!,
-            SdcardService.instance.firstDevice!.id.toString(),
+            value.selectedDevice.id.toString(),
             idOfStatic.toString(),
           );
           value.Show_Snackbar("تم برای رنگ تغییر کرد", 500);

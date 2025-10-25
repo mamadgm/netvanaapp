@@ -180,7 +180,7 @@ class _LoginState extends State<Login> {
 
                         await service.updateUser(token);
 
-                        debugPrint("Got Devices: ${service.products.length}");
+                        debugPrint("Got Devices: ${value.devices.length}");
 
                         setup(value);
                       } catch (e) {

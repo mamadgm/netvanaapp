@@ -12,6 +12,32 @@ import 'package:universal_ble/universal_ble.dart';
 
 enum ThemeFilter { liked, single, multiple, none }
 
+class Device {
+  int id;
+  String macAddress;
+  int partNumber;
+  bool isOnline;
+  DateTime assembledAt;
+  String categoryName;
+  String? weatherCity;
+  String versionName;
+  Device({
+    required this.id,
+    required this.macAddress,
+    required this.partNumber,
+    required this.isOnline,
+    required this.assembledAt,
+    required this.categoryName,
+    this.weatherCity,
+    required this.versionName,
+  });
+
+  @override
+  String toString() {
+    return 'Device(id: $id, name: $partNumber, type: $categoryName , online: $isOnline)';
+  }
+}
+
 class ProvData extends ChangeNotifier {
   //App
   String Device_UUID = "null";
@@ -67,6 +93,9 @@ class ProvData extends ChangeNotifier {
   bool isUserLoggedIn = false;
 
   TextEditingController UserNameController = TextEditingController();
+
+  late List<Device> devices;
+  late Device selectedDevice;
 
   void setsleepBright(int input) {
     sleepBright = input;
@@ -263,7 +292,7 @@ class ProvData extends ChangeNotifier {
     DeviceBleName = deviceName; // Store the parsed device name
     notifyListeners();
     // if (deviceName !=
-    //     "${SdcardService.instance.firstDevice!.categoryName}-${SdcardService.instance.firstDevice!.partNumber}") {
+    //     "${value.selectedDevice.categoryName}-${value.selectedDevice.partNumber}") {
     //   SingleBle().disconnect();
     //   debugPrint("This Is Not Your Device 401");
     //   return;
@@ -302,8 +331,7 @@ class ProvData extends ChangeNotifier {
   Future<void> getDetailsFromNet() async {
     try {
       var result = await NetClass().getDeviceVariables(
-          SdcardService.instance.token!,
-          SdcardService.instance.firstDevice!.id.toString());
+          SdcardService.instance.token!, selectedDevice.id.toString());
       Set_Screen_Values_From_JSON(result);
     } catch (e) {
       debugPrint("Error in vars $e");

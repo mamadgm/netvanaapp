@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/Network/netmain.dart';
@@ -14,7 +16,6 @@ class SdcardService {
   Future<void> init() async {
     await Hive.initFlutter();
 
-    Hive.registerAdapter(DeviceAdapter());
     Hive.registerAdapter(UserAdapter());
     Hive.registerAdapter(SdcardAdapter());
     Hive.registerAdapter(EspThemeAdapter());
@@ -35,10 +36,6 @@ class SdcardService {
 
   String? get token => sdcard.token;
   User? get user => sdcard.user;
-  List<Device> get products => sdcard.user?.devices ?? [];
-
-  Device? get firstDevice =>
-      sdcard.user?.devices.isNotEmpty == true ? sdcard.user!.devices[0] : null;
 
   Future<void> updateUser(String token) async {
     final fetchedUser = await NetClass().getUser(token);

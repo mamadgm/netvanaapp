@@ -6,61 +6,6 @@ part of 'HiveModel.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class DeviceAdapter extends TypeAdapter<Device> {
-  @override
-  final int typeId = 0;
-
-  @override
-  Device read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return Device(
-      id: fields[0] as int,
-      macAddress: fields[1] as String,
-      partNumber: fields[2] as int,
-      isOnline: fields[3] as bool,
-      assembledAt: fields[4] as DateTime,
-      categoryName: fields[5] as String,
-      weatherCity: fields[6] as String?,
-      versionName: fields[7] as String,
-    );
-  }
-
-  @override
-  void write(BinaryWriter writer, Device obj) {
-    writer
-      ..writeByte(8)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.macAddress)
-      ..writeByte(2)
-      ..write(obj.partNumber)
-      ..writeByte(3)
-      ..write(obj.isOnline)
-      ..writeByte(4)
-      ..write(obj.assembledAt)
-      ..writeByte(5)
-      ..write(obj.categoryName)
-      ..writeByte(6)
-      ..write(obj.weatherCity)
-      ..writeByte(7)
-      ..write(obj.versionName);
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DeviceAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
 class UserAdapter extends TypeAdapter<User> {
   @override
   final int typeId = 1;
@@ -76,7 +21,6 @@ class UserAdapter extends TypeAdapter<User> {
       firstName: fields[1] as String,
       lastName: fields[2] as String,
       phone: fields[3] as String,
-      devices: (fields[4] as List?)?.cast<Device>(),
       themes: (fields[5] as List?)?.cast<EspTheme>(),
     );
   }
@@ -93,8 +37,6 @@ class UserAdapter extends TypeAdapter<User> {
       ..write(obj.lastName)
       ..writeByte(3)
       ..write(obj.phone)
-      ..writeByte(4)
-      ..write(obj.devices)
       ..writeByte(5)
       ..write(obj.themes);
   }
