@@ -9,7 +9,7 @@ import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/provMain.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
-import 'package:netvana/models/SingleHive.dart';
+import 'package:netvana/data/cache_service.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
@@ -174,11 +174,7 @@ class _LoginState extends State<Login> {
 
                         final token = loginResponse['access_token'];
 
-                        final service = SdcardService.instance;
-                        service.sdcard.token = token;
-                        await service.sdcard.save();
-                        await service.updateUser(token);
-                        debugPrint("Got Devices: ${value.devices.length}");
+                        await CacheService.instance.saveToken(token);
 
                         setup(value);
                       } catch (e) {

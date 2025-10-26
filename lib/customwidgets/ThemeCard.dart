@@ -1,18 +1,16 @@
 // ignore_for_file: file_names
 import 'dart:convert';
+import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:netvana/Network/netmain.dart';
-import 'package:netvana/customwidgets/global.dart';
-import 'package:netvana/models/HiveModel.dart';
-import 'package:netvana/models/SingleHive.dart';
-import 'package:provider/provider.dart';
-import 'package:easy_container/easy_container.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
+import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
+import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/provMain.dart';
+import 'package:netvana/data/cache_service.dart';
+import 'package:provider/provider.dart';
 
 class ThemeCard extends StatelessWidget {
   final int id;
@@ -20,7 +18,7 @@ class ThemeCard extends StatelessWidget {
   final String bigText;
   final String smallText;
   final int scale;
-  final List<ContentItem> content;
+  final List<dynamic> content;
 
   const ThemeCard({
     Key? key,
@@ -36,13 +34,13 @@ class ThemeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ProvData>(
       builder: (context, value, child) {
-        final bool isSelected = value.maincycle_mode == content[0].m;
+        final bool isSelected = value.maincycle_mode == content[0]['m'];
         final bool isFavorite = value.Favorites.contains(id);
         return EasyContainer(
           onTap: () async {
             if (value.bleIsConnected) {
               int modeValue = 0;
-              modeValue = content[0].m;
+              modeValue = content[0]['m'];
               String jsonPayload = jsonEncode({
                 "Mode": [
                   {
@@ -59,7 +57,7 @@ class ThemeCard extends StatelessWidget {
             }
             if (value.netvanaIsConnected) {
               await NetClass().setMode(
-                SdcardService.instance.token!,
+                CacheService.instance.token!,
                 value.selectedDevice.id.toString(),
                 id.toString(),
               );
@@ -115,8 +113,7 @@ class ThemeCard extends StatelessWidget {
                       } else {
                         value.Favorites.add(id);
                       }
-                      final sdcard = Hive.box(FIGMA.HIVE2);
-                      sdcard.put('Favorites', value.Favorites.toList());
+                      CacheService.instance.saveFavorites(value.Favorites);
                       value.hand_update();
                     },
                   ),

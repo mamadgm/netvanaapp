@@ -3,7 +3,6 @@ import 'package:easy_container/easy_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/customwidgets/ThemeCard.dart';
 import 'package:netvana/data/ble/provMain.dart';
-import 'package:netvana/models/HiveModel.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/const/figma.dart';
@@ -73,14 +72,15 @@ class _EffectsscrState extends State<Effectsscr> {
                     childAspectRatio: 3 / 4,
                     children: themes?.map((theme) {
                           return ThemeCard(
-                            id: theme.id,
-                            picUrl: "https://api.netvana.ir${theme.image_url}",
-                            bigText: theme.name,
-                            smallText: theme.description,
-                            scale: theme.content.isNotEmpty
-                                ? theme.content.first.sp
+                            id: theme['id'],
+                            picUrl:
+                                "https://api.netvana.ir${theme['image_url']}",
+                            bigText: theme['name'],
+                            smallText: theme['description'],
+                            scale: theme['content'].isNotEmpty
+                                ? theme['content'][0]['sp']
                                 : 0,
-                            content: theme.content,
+                            content: theme['content'],
                           );
                         }).toList() ??
                         [],
@@ -95,24 +95,25 @@ class _EffectsscrState extends State<Effectsscr> {
   }
 }
 
-List<EspTheme> getFilteredAndSortedThemes(
-    ProvData prov, List<EspTheme> allThemes) {
-  List<EspTheme> filtered = [];
+List<dynamic> getFilteredAndSortedThemes(
+    ProvData prov, List<dynamic> allThemes) {
+  List<dynamic> filtered = [];
 
   switch (prov.selectedFilter) {
     case ThemeFilter.liked:
-      filtered = allThemes.where((t) => prov.Favorites.contains(t.id)).toList();
+      filtered =
+          allThemes.where((t) => prov.Favorites.contains(t['id'])).toList();
       break;
 
     case ThemeFilter.single:
       filtered = allThemes
-          .where((t) => t.content.every((item) => item.c == null))
+          .where((t) => t['content'].every((item) => item['c'] == null))
           .toList();
       break;
 
     case ThemeFilter.multiple:
       filtered = allThemes
-          .where((t) => t.content.any((item) => item.c != null))
+          .where((t) => t['content'].any((item) => item['c'] != null))
           .toList();
       break;
 
@@ -122,8 +123,8 @@ List<EspTheme> getFilteredAndSortedThemes(
   }
 
   filtered.sort((a, b) {
-    final aFav = prov.Favorites.contains(a.id);
-    final bFav = prov.Favorites.contains(b.id);
+    final aFav = prov.Favorites.contains(a['id']);
+    final bFav = prov.Favorites.contains(b['id']);
     if (aFav == bFav) return 0;
     return aFav ? -1 : 1;
   });

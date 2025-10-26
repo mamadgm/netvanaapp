@@ -10,7 +10,7 @@ import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
 import 'package:netvana/data/ble/provMain.dart';
-import 'package:netvana/models/SingleHive.dart';
+import 'package:netvana/data/cache_service.dart';
 
 void showWiFiDialog(BuildContext context) {
   bool connected = false;
@@ -175,7 +175,7 @@ void showWiFiDialog(BuildContext context) {
 
 Future<void> setup(ProvData funcy) async {
   debugPrint("start");
-  final service = SdcardService.instance;
+  final service = CacheService.instance;
 
   // Check if token exists
   if (service.token != null && service.token!.isNotEmpty) {
@@ -189,7 +189,7 @@ Future<void> setup(ProvData funcy) async {
     }
 
     await funcy.getDetailsFromNet();
-    await SdcardService.instance.updateUser(service.token!);
+    // await CacheService.instance.updateUser(service.token!);
   } else {
     debugPrint("no token found in SdcardService");
   }
@@ -203,58 +203,58 @@ void showCannotSend(ProvData value) {
 Future<void> checkModeColors(ProvData value) async {
   int idOfStatic = 1;
   int maincycleMode = value.maincycle_mode;
-  for (var theme in value.themes) {
-    var item = theme.content[0];
+  // for (var theme in value.themes) {
+  //   var item = theme.content[0];
 
-    if (item.m == 0) {
-      idOfStatic = theme.id;
-    }
+  //   if (item.m == 0) {
+  //     idOfStatic = theme.id;
+  //   }
 
-    if (item.m == maincycleMode) {
-      value.setMainCycleMode(item.m);
-      if (item.c != null) {
-        if (value.bleIsConnected) {
-          int modeValue = 0;
-          modeValue = 0;
-          String jsonPayload = jsonEncode({
-            "Mode": [
-              {
-                "s": 0,
-                "e": 15,
-                "m": modeValue,
-                "sc": 100,
-              }
-            ]
-          });
-          SingleBle().sendMain(jsonPayload);
-          lampKey.currentState?.shake();
-          value.Show_Snackbar("تم برای رنگ تغییر کرد", 500);
-          return;
-        }
-        if (value.netvanaIsConnected) {
-          await NetClass().setMode(
-            SdcardService.instance.token!,
-            value.selectedDevice.id.toString(),
-            idOfStatic.toString(),
-          );
-          value.Show_Snackbar("تم برای رنگ تغییر کرد", 500);
-          return;
-        }
-        showCannotSend(value);
-      }
-    }
-  }
+  //   if (item.m == maincycleMode) {
+  //     value.setMainCycleMode(item.m);
+  //     if (item.c != null) {
+  //       if (value.bleIsConnected) {
+  //         int modeValue = 0;
+  //         modeValue = 0;
+  //         String jsonPayload = jsonEncode({
+  //           "Mode": [
+  //             {
+  //               "s": 0,
+  //               "e": 15,
+  //               "m": modeValue,
+  //               "sc": 100,
+  //             }
+  //           ]
+  //         });
+  //         SingleBle().sendMain(jsonPayload);
+  //         lampKey.currentState?.shake();
+  //         value.Show_Snackbar("تم برای رنگ تغییر کرد", 500);
+  //         return;
+  //       }
+  //       if (value.netvanaIsConnected) {
+  //         await NetClass().setMode(
+  //           CacheService.instance.token!,
+  //           value.selectedDevice.id.toString(),
+  //           idOfStatic.toString(),
+  //         );
+  //         value.Show_Snackbar("تم برای رنگ تغییر کرد", 500);
+  //         return;
+  //       }
+  //       showCannotSend(value);
+  //     }
+  //   }
+  // }
 }
 
 int getIdbyMode(ProvData value) {
   int maincycleMode = value.maincycle_mode;
-  for (var theme in value.themes) {
-    var item = theme.content[0];
+  // for (var theme in value.themes) {
+  //   var item = theme.content[0];
 
-    if (item.m == maincycleMode) {
-      return theme.id;
-    }
-  }
+  //   if (item.m == maincycleMode) {
+  //     return theme.id;
+  //   }
+  // }
 
   return 0;
 }

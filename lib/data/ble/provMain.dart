@@ -1,13 +1,11 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:flutter/material.dart';
-import 'package:netvana/models/HiveModel.dart';
-import 'package:netvana/models/SingleHive.dart';
+import 'package:netvana/data/cache_service.dart';
 import 'package:universal_ble/universal_ble.dart';
 
 enum ThemeFilter { liked, single, multiple, none }
@@ -48,7 +46,7 @@ class ProvData extends ChangeNotifier {
 
   //netvana
 
-  List<EspTheme> themes = [];
+  List<dynamic> themes = [];
 
   bool bleIsConnected = false;
   bool netvanaIsConnected = false;
@@ -76,7 +74,7 @@ class ProvData extends ChangeNotifier {
   int ESPVersion = 10;
   List<int> Defalult_colors = [0xFF0000, 1900288, 0x0000FF, 0xFFFFFF, 0x00A594];
 
-  int sleepBright = SdcardService.instance.sdcard.sleepValue;
+  int sleepBright = CacheService.instance.sleepValue;
 
   String DeviceBleName = "";
   //Test
@@ -94,6 +92,7 @@ class ProvData extends ChangeNotifier {
 
   void setsleepBright(int input) {
     sleepBright = input;
+    CacheService.instance.saveSleepValue(input);
     notifyListeners();
   }
 
@@ -103,18 +102,16 @@ class ProvData extends ChangeNotifier {
 
   void toggleFilter(ThemeFilter filter) {
     if (selectedFilter == filter) {
-      selectedFilter = ThemeFilter.none; // اگر دوباره زدن، فیلتر رو غیرفعال کن
+      selectedFilter = ThemeFilter.none; 
     } else {
       selectedFilter = filter;
     }
-    notifyListeners(); // حتماً این رو بذار تا ویجت‌ها رفرش بشن
+    notifyListeners(); 
   }
 
   List<int> Favorites = [];
   void loadFavoritesFromHive() {
-    final box = Hive.box(FIGMA.HIVE2);
-    final stored = box.get('Favorites', defaultValue: []);
-    Favorites = List<int>.from(stored);
+    Favorites = CacheService.instance.favorites;
   }
 
   void set_Defalult_colors(int p, int which) {
@@ -228,13 +225,11 @@ class ProvData extends ChangeNotifier {
 
   Future<void> fetchThemes() async {
     try {
-      final list = await SdcardService.instance.refreshThemes();
+      final list = await NetClass().getThemes(CacheService.instance.token!);
       themes = list;
       notifyListeners();
     } catch (e) {
       debugPrint("Error fetching themes (provider): $e");
-      // Offline fallback (just in case)
-      themes = SdcardService.instance.cachedThemes;
       notifyListeners();
     }
   }
@@ -276,18 +271,12 @@ class ProvData extends ChangeNotifier {
     maincycle_color = result.length > 5 ? result[5].toString() : "";
     maincycle_mode = result.length > 6 ? result[6] : 0;
     maincycle_speed = result.length > 7 ? result[7] : 0;
-    smartdelaysec = result.length > 8 ? result[8] : 0;
-    smarttimerpos = result.length > 9 ? result[9] : 0;
-    smarttimercolor = result.length > 10 ? result[10] : 0;
+    smartdelaysec = 0; // Not present in JSON, set to default
+    smarttimerpos = 0; // Not present in JSON, set to default
+    smarttimercolor = 0; // Not present in JSON, set to default
     ESPVersion = result.length > 11 ? result[11] : 0;
     DeviceBleName = deviceName; // Store the parsed device name
     notifyListeners();
-    // if (deviceName !=
-    //     "${value.selectedDevice.categoryName}-${value.selectedDevice.partNumber}") {
-    //   SingleBle().disconnect();
-    //   debugPrint("This Is Not Your Device 401");
-    //   return;
-    // }
   }
 
   void Set_Screen_Values_From_JSON(Map<String, dynamic>? jsonResponse) {
@@ -322,7 +311,7 @@ class ProvData extends ChangeNotifier {
   Future<void> getDetailsFromNet() async {
     try {
       var result = await NetClass().getDeviceVariables(
-          SdcardService.instance.token!, selectedDevice.id.toString());
+          CacheService.instance.token!, selectedDevice.id.toString());
       Set_Screen_Values_From_JSON(result);
     } catch (e) {
       debugPrint("Error in vars $e");

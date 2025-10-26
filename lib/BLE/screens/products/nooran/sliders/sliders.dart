@@ -11,8 +11,6 @@ import 'package:netvana/slider/hsv_color_pickers.dart';
 import 'package:filling_slider/filling_slider.dart';
 import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/provMain.dart';
-import 'package:netvana/models/HiveModel.dart';
-import 'package:netvana/models/SingleHive.dart';
 import 'package:provider/provider.dart';
 
 class Color_Picker_HSV extends StatefulWidget {

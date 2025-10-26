@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/data/ble/provMain.dart';
-import 'package:netvana/models/SingleHive.dart';
+import 'package:netvana/data/cache_service.dart';
 import 'package:provider/provider.dart';
 
 void showSleepSetting(context, ProvData value) {
@@ -84,8 +84,7 @@ void showSleepSetting(context, ProvData value) {
                 ),
                 onTap: () {
                   debugPrint(value.sleepBright.toString());
-                  SdcardService.instance.sdcard.sleepValue = value.sleepBright;
-                  SdcardService.instance.sdcard.save();
+                  CacheService.instance.saveSleepValue(value.sleepBright);
                   Navigator.of(context).pop();
                 },
               ),

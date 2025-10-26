@@ -7,7 +7,7 @@ import 'package:netvana/customwidgets/EyeText.dart';
 import 'package:netvana/customwidgets/NewScreen.dart';
 import 'package:netvana/customwidgets/Lampwidet.dart';
 import 'package:netvana/data/ble/provMain.dart';
-import 'package:netvana/models/SingleHive.dart';
+import 'package:netvana/data/cache_service.dart';
 
 void showAccount(context, ProvData value) {
   Navigator.push(
@@ -60,7 +60,7 @@ void showAccount(context, ProvData value) {
               ),
               onTap: () async {
                 try {
-                  await NetClass().editUserName(SdcardService.instance.token!,
+                  await NetClass().editUserName(CacheService.instance.token!,
                       value.UserNameController.text);
                   value.Show_Snackbar("اطلاعات ویرایش شد", 1000, type: 2);
                 } catch (e) {
@@ -99,33 +99,7 @@ void showAccount(context, ProvData value) {
                 hintText: "username",
               ),
             ),
-            EasyContainer(
-                height: 68.h,
-                width: 329.w,
-                color: FIGMA.Gray2,
-                borderRadius: 20,
-                elevation: 0,
-                margin: 0,
-                padding: 16,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      SdcardService.instance.user!.phone,
-                      style: TextStyle(
-                          fontSize: 14.sp,
-                          color: FIGMA.Wrn,
-                          fontFamily: FIGMA.estsb),
-                    ),
-                    Text(
-                      ":شماره تلفن",
-                      style: TextStyle(
-                          fontSize: 12.sp,
-                          color: FIGMA.Gray4,
-                          fontFamily: FIGMA.estre),
-                    ),
-                  ],
-                )),
+            // TODO: Fetch and display user phone number from network
             SizedBox(height: 12.h),
             EasyContainer(
                 height: 190.h,

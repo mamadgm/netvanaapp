@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/Login/Register.dart';
 import 'package:netvana/data/ble/provRegister.dart';
+import 'package:netvana/data/cache_service.dart';
 import 'package:provider/provider.dart';
 import 'package:netvana/BLE/screens/products/nooran/Nooran.dart';
 import 'package:netvana/Login/Login.dart';
 import 'package:netvana/screens/Effects.dart';
 import 'package:netvana/screens/Netvana.dart';
 import 'package:netvana/customwidgets/global.dart';
-import 'package:netvana/models/SingleHive.dart';
 import 'package:netvana/screens/profile.dart';
 import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/navbar/TheAppNav.dart';
@@ -16,7 +16,7 @@ import 'package:netvana/const/figma.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SdcardService.instance.init();
+  await CacheService.instance.init();
   runApp(
     MultiProvider(
       providers: [

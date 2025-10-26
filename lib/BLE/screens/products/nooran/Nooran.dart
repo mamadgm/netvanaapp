@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/BLE/screens/products/nooran/Buttons/mybuttons.dart';
 import 'package:netvana/BLE/screens/products/nooran/Spelco/spelco.dart';
 import 'package:netvana/BLE/screens/products/nooran/sliders/sliders.dart';
@@ -18,17 +19,27 @@ import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/provMain.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_container/easy_container.dart';
-import 'package:netvana/models/SingleHive.dart';
+import 'package:netvana/data/cache_service.dart';
 import 'package:provider/provider.dart';
-// import 'package:universal_ble/universal_ble.dart';
-// import 'package:record/record.dart';
-import 'package:netvana/BLE/logic/SingleBle.dart';
 
 class Nooran extends StatefulWidget {
   const Nooran({super.key});
 
   @override
   State<Nooran> createState() => _NooranState();
+}
+
+dynamic getThemeByMode(ProvData value) {
+  int maincycleMode = value.maincycle_mode;
+  for (var theme in value.themes) {
+    if (theme['content'] != null && theme['content'].isNotEmpty) {
+      var item = theme['content'][0];
+      if (item['m'] == maincycleMode) {
+        return theme;
+      }
+    }
+  }
+  return null;
 }
 
 class _NooranState extends State<Nooran> {
@@ -55,7 +66,7 @@ class _NooranState extends State<Nooran> {
             return;
           }
           if (value.netvanaIsConnected) {
-            NetClass().setSpeed(SdcardService.instance.token!,
+            NetClass().setSpeed(CacheService.instance.token!,
                 value.selectedDevice.id.toString(), speed);
             value.setMainCycleSpeed(int.parse(speed));
             return;
@@ -73,7 +84,7 @@ class _NooranState extends State<Nooran> {
             return;
           }
           if (value.netvanaIsConnected) {
-            NetClass().setBright(SdcardService.instance.token!,
+            NetClass().setBright(CacheService.instance.token!,
                 value.selectedDevice.id.toString(), bright);
             value.setBrightness(int.parse(bright));
             return;
@@ -94,7 +105,7 @@ class _NooranState extends State<Nooran> {
             return;
           }
           if (value.netvanaIsConnected) {
-            NetClass().setColor(SdcardService.instance.token!,
+            NetClass().setColor(CacheService.instance.token!,
                 value.selectedDevice.id.toString(), p0);
             value.setMainCycleColor(p0);
             return;
@@ -118,6 +129,7 @@ class _NooranState extends State<Nooran> {
     var sdcard = Hive.box(FIGMA.HIVE2);
 
     return Consumer<ProvData>(builder: (context, value, child) {
+      var currentTheme = getThemeByMode(value);
       return SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(right: 0, left: 0),
@@ -177,14 +189,6 @@ class _NooranState extends State<Nooran> {
                                     size: 24.sp,
                                   ),
                                   onTap: () async {
-                                    final service = SdcardService.instance;
-
-                                    try {
-                                      await service.updateUser(service.token!);
-                                    } catch (e) {
-                                      debugPrint("error in update user $e");
-                                    }
-
                                     final firstDevice = value.selectedDevice;
 
                                     if (!firstDevice.isOnline) {
@@ -324,7 +328,7 @@ class _NooranState extends State<Nooran> {
                                       }
                                       if (value.netvanaIsConnected) {
                                         NetClass().setBright(
-                                            SdcardService.instance.token!,
+                                            CacheService.instance.token!,
                                             value.selectedDevice.id.toString(),
                                             Bright.toString());
                                         return;
@@ -354,7 +358,7 @@ class _NooranState extends State<Nooran> {
                                   }
                                   if (value.netvanaIsConnected) {
                                     NetClass().setPower(
-                                        SdcardService.instance.token!,
+                                        CacheService.instance.token!,
                                         value.selectedDevice.id.toString(),
                                         !value.isdeviceon == true ? 1 : 0);
                                     return;
@@ -437,7 +441,7 @@ class _NooranState extends State<Nooran> {
                     borderRadius: BorderRadius.circular(17),
                     image: DecorationImage(
                       image: NetworkImage(
-                          "https://api.netvana.ir${SdcardService.instance.getThemeById(getIdbyMode(value))?.image_url.toString() ?? "/media/images/theme/267022d16cad47d0ad087d3d92363d24.png"}"),
+                          "https://api.netvana.ir${currentTheme != null ? currentTheme['image_url'] : "/media/images/theme/267022d16cad47d0ad087d3d92363d24.png"}"),
                       fit: BoxFit.cover,
                       colorFilter:
                           (value.bleIsConnected | value.netvanaIsConnected)
@@ -475,11 +479,9 @@ class _NooranState extends State<Nooran> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            SdcardService.instance
-                                    .getThemeById(getIdbyMode(value))
-                                    ?.name
-                                    .toString() ??
-                                "تک رنگ",
+                            currentTheme != null
+                                ? currentTheme['name']
+                                : "تک رنگ",
                             style: TextStyle(
                               color: FIGMA.Wrn,
                               fontSize: 18.sp,
@@ -513,11 +515,9 @@ class _NooranState extends State<Nooran> {
                             ),
                           ),
                           Text(
-                            SdcardService.instance
-                                    .getThemeById(getIdbyMode(value))
-                                    ?.description
-                                    .toString() ??
-                                "نمایش یک رنگ ثابت",
+                            currentTheme != null
+                                ? currentTheme['description']
+                                : "نمایش یک رنگ ثابت",
                             style: TextStyle(
                               color: FIGMA.Wrn,
                               fontSize: 11.sp,
@@ -587,7 +587,7 @@ class _NooranState extends State<Nooran> {
                                 }
                                 if (value.netvanaIsConnected) {
                                   NetClass().setColor(
-                                      SdcardService.instance.token!,
+                                      CacheService.instance.token!,
                                       value.selectedDevice.id.toString(),
                                       f);
                                   value.setMainCycleColor(f);
@@ -628,7 +628,7 @@ class ShortTimer extends StatelessWidget {
         return;
       }
       if (value.netvanaIsConnected) {
-        NetClass().setTimer(SdcardService.instance.token!,
+        NetClass().setTimer(CacheService.instance.token!,
             value.selectedDevice.id.toString(), s);
         calculateTimeStore(s);
         FocusScope.of(context).unfocus();
@@ -641,7 +641,6 @@ class ShortTimer extends StatelessWidget {
 
     return Consumer<ProvData>(
       builder: (context, value, child) {
-        var sdcard = Hive.box(FIGMA.HIVE2);
         return Padding(
           padding: const EdgeInsets.all(4.0),
           child: SizedBox(
@@ -666,7 +665,7 @@ class ShortTimer extends StatelessWidget {
                 Text(
                   value.timeroffvalue == 0
                       ? "غیرفعال"
-                      : "${sdcard.get("Timeofdie", defaultValue: "00:00")}",
+                      : CacheService.instance.timeofdie,
                   style: TextStyle(
                     fontFamily: FIGMA.estre,
                     fontSize: 11.sp,

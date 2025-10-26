@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:netvana/const/figma.dart';
-import 'package:netvana/models/HiveModel.dart';
 
 class NetClass {
   static final NetClass _instance = NetClass._internal();
@@ -91,7 +90,7 @@ class NetClass {
     }
   }
 
-  Future<User?> getUser(String token) async {
+  Future<Map<String, dynamic>?> getUser(String token) async {
     final response = await http.get(
       Uri.parse('${FIGMA.urlnetwana}/me'),
       headers: <String, String>{
@@ -102,7 +101,7 @@ class NetClass {
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      return User.fromJson(json);
+      return json;
     } else {
       throw Exception('Failed to fetch user: ${response.body}');
     }
