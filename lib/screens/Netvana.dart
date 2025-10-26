@@ -59,9 +59,9 @@ class Netvana extends StatelessWidget {
                         title: "وای فای جدید",
                         trailingIcon: LucideIcons.plus,
                         onTap: () {
-                          if (!value.bleIsConnected) {
-                            value.Show_Snackbar("بلوتوث متصل نیست", 1000,
-                                type: 3);
+                          if (value.netvanaIsConnected) {
+                            value.Show_Snackbar("دستگاه شما متصل است", 1000,
+                                type: 1);
                             return;
                           }
                           showWiFiDialog(context);

@@ -187,21 +187,39 @@ class _NooranState extends State<Nooran> {
                                     size: 24.sp,
                                   ),
                                   onTap: () async {
-                                    final firstDevice = value.selectedDevice;
+                                    try {
+                                      final userData = await NetClass().getUser(
+                                          CacheService.instance.token!);
 
-                                    if (!firstDevice.isOnline) {
+                                      final devices = (userData!['devices']
+                                              as List)
+                                          .map((d) => Device(
+                                                id: d['id'],
+                                                macAddress: d['mac_address'],
+                                                partNumber: d['part_number'],
+                                                isOnline: d['is_online'],
+                                                assembledAt: DateTime.parse(
+                                                    d['assembled_at']),
+                                                categoryName:
+                                                    d['category_name'],
+                                                versionName: d['version_name'],
+                                              ))
+                                          .toList();
+
+                                      value.selectedDevice = devices.first;
+                                      value.hand_update();
+                                    } catch (e) {
+                                      value.Show_Snackbar(
+                                          "ارتباط با سرور برقرار نشد", 1000,
+                                          type: 3);
+                                    }
+
+                                    if (!value.selectedDevice.isOnline) {
                                       value.wifi_update_connected(false);
                                       value.Show_Snackbar(
-                                          "دستگاه متصل نیست . راه اندازی مجدد ...",
-                                          1000);
-
-                                      if (value.bleIsConnected) {
-                                        showWiFiDialog(context);
-                                      } else {
-                                        value.Show_Snackbar(
-                                            "برای تنظیم ابتدا به بلوتوث متصل شوید",
-                                            1000);
-                                      }
+                                          "دستگاه متصل نیست به صفحه نت وانا بروید",
+                                          1000,
+                                          type: 3);
                                     } else {
                                       value.wifi_update_connected(true);
                                     }
@@ -209,84 +227,6 @@ class _NooranState extends State<Nooran> {
                                     value.hand_update();
                                   },
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: EasyContainer(
-                                    height: 70.h,
-                                    width: 70.w,
-                                    color: FIGMA.Back,
-                                    showBorder: true,
-                                    borderWidth: 1.sp,
-                                    borderColor: FIGMA.Gray2,
-                                    borderRadius: 20,
-                                    elevation: 0,
-                                    margin: 0,
-                                    padding: 0,
-                                    child: Icon(
-                                      value.bleIsConnected
-                                          ? Icons.bluetooth_connected
-                                          : Icons.bluetooth_disabled,
-                                      color: value.bleIsConnected
-                                          ? FIGMA.Prn
-                                          : FIGMA.Gray3,
-                                      size: 24.sp,
-                                    ),
-                                    onTap: () async {
-                                      if (value.bleIsConnected == true) {
-                                        await SingleBle().disconnect();
-                                        value.setBleIsConnected(false);
-                                        // debugPrint("Device Disconnected");
-                                        return;
-                                      }
-                                      try {
-                                        debugPrint("[B] S");
-                                        var result = await SingleBle()
-                                            .startScanAndGetDevice();
-                                        String? selectedDeviceId;
-                                        if (result != null) {
-                                          selectedDeviceId = result['deviceId'];
-                                        }
-
-                                        if (selectedDeviceId == null) {
-                                          // debugPrint("No device selected.");
-                                          return;
-                                        } else {
-                                          // debugPrint("Wellcome");
-                                        }
-
-                                        debugPrint("[B] ...");
-                                        bool connected = await SingleBle()
-                                            .connectToDevice(
-                                                selectedDeviceId, 200);
-
-                                        if (connected) {
-                                          value.setBleIsConnected(true);
-                                          debugPrint("[B] Ok");
-
-                                          Future.delayed(
-                                              const Duration(
-                                                  milliseconds: 1200),
-                                              () async {
-                                            switch (
-                                                value.current_selected_slider) {
-                                              case 0:
-                                                value.change_slider(1);
-                                                break;
-                                              default:
-                                                value.change_slider(0);
-                                            }
-                                          });
-                                        } else {
-                                          value.setBleIsConnected(false);
-                                          debugPrint("[B] F");
-                                        }
-                                      } catch (e) {
-                                        value.setBleIsConnected(false);
-                                        // debugPrint('Connection Error: $e');
-                                        debugPrint('[B] E');
-                                      }
-                                    }),
                               ),
                             ],
                           ),

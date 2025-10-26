@@ -1,23 +1,15 @@
-import 'dart:convert';
-
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
-import 'package:netvana/customwidgets/EyeText.dart';
 import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/data/cache_service.dart';
 import 'package:netvana/screens/setup_screen.dart';
 
 void showWiFiDialog(BuildContext context) {
-  bool connected = false;
-  final ssidController = TextEditingController();
-  final passController = TextEditingController();
-
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -34,139 +26,141 @@ void showWiFiDialog(BuildContext context) {
           backgroundColor: FIGMA.Gray,
           content: StatefulBuilder(builder: (context, setState) {
             return EasyContainer(
-              width: MediaQuery.of(context).size.width / 1.1,
-              height: MediaQuery.of(context).size.height * 0.60,
-              color: FIGMA.Gray,
-              borderWidth: 0,
-              elevation: 0,
-              margin: 0,
-              padding: 6,
-              borderRadius: 30,
-              child: Column(
-                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: connected
-                    ? [
-                        SizedBox(height: 50.h),
-                        Icon(LucideIcons.checkCircle,
-                            size: 80.sp, color: Colors.green),
-                        SizedBox(height: 10.h),
-                        Directionality(
-                          textDirection: TextDirection.rtl,
-                          child: Text(
-                            "مراحل اتصال تکمیل شد!",
+                width: MediaQuery.of(context).size.width / 1.1,
+                height: MediaQuery.of(context).size.height * 0.70,
+                color: FIGMA.Gray,
+                borderWidth: 0,
+                elevation: 0,
+                margin: 0,
+                padding: 6,
+                borderRadius: 30,
+                child: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 24),
+                      const Text(
+                        "تنظیم مجدد دستگاه",
+                        style: TextStyle(
+                            color: FIGMA.Wrn2,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: FIGMA.abrlb),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "این مرحله فقط زمانی لازم است که:",
+                        style: TextStyle(
+                            color: FIGMA.Wrn2,
+                            fontSize: 16,
+                            fontFamily: FIGMA.estsb),
+                      ),
+                      const SizedBox(height: 8),
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "• مودم جدید گرفته‌اید",
                             style: TextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: FIGMA.estsb,
-                                color: FIGMA.Wrn),
+                                color: FIGMA.Orn,
+                                fontSize: 15,
+                                fontFamily: FIGMA.estsb),
+                            textAlign: TextAlign.right,
                           ),
-                        ),
-                        const Spacer(),
-                        EasyContainer(
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          height: 95,
-                          borderRadius: 15,
-                          color: FIGMA.Orn,
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text("برگشت",
+                          Text(
+                            "• رمز وای‌فای عوض شده است",
+                            style: TextStyle(
+                                color: FIGMA.Orn,
+                                fontSize: 15,
+                                fontFamily: FIGMA.estsb),
+                            textAlign: TextAlign.right,
+                          ),
+                          Text(
+                            "• با دستگاه نیاز به اتصال دوباره دارد",
+                            style: TextStyle(
+                                color: FIGMA.Orn,
+                                fontSize: 15,
+                                fontFamily: FIGMA.estsb),
+                            textAlign: TextAlign.right,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "نگران نباشید! دستگاه به‌صورت خودکار تلاش می‌کند به مودم قبلی وصل شود. حتی اگر دستگاه ریست شود، دوباره قابل تنظیم خواهد بود.",
+                        style: TextStyle(
+                            color: FIGMA.Gray4,
+                            fontSize: 14,
+                            height: 1.6,
+                            fontFamily: FIGMA.estbo),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        "لطفاً مراحل زیر را انجام دهید:",
+                        style: TextStyle(
+                            color: FIGMA.Wrn2,
+                            fontSize: 16,
+                            fontFamily: FIGMA.estsb),
+                      ),
+                      const SizedBox(height: 12),
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              "1. دوربین گوشی را باز کنید و QR کدی که روی کارت شناسنامه دستگاه هست را اسکن کنید تا به دستگاه وصل شوید.",
                               style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontFamily: FIGMA.estsb,
-                                  color: FIGMA.Wrn)),
-                        ),
-                      ]
-                    : [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            "اتصال به شبکه نوروانا",
+                                  color: FIGMA.Gray4,
+                                  fontSize: 14,
+                                  height: 1.5,
+                                  fontFamily: FIGMA.estsb)),
+                          Text("2. مطمئن شوید که به دستگاه متصل شدید.",
+                              style: TextStyle(
+                                  color: FIGMA.Gray4,
+                                  fontSize: 14,
+                                  height: 1.5,
+                                  fontFamily: FIGMA.estsb)),
+                          Text(
+                            "3. به این صفحه برگردید (این پاپ‌آپ را نبندید).",
                             style: TextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: FIGMA.estsb,
-                                color: FIGMA.Wrn),
+                              color: FIGMA.Gray4,
+                              fontSize: 14,
+                              height: 1.5,
+                              fontFamily: FIGMA.estsb,
+                            ),
                           ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            "لطفا کادر های زیر را برای اتصال کامل کنید",
+                          Text(
+                            "4. روی کلید پایین بزنید تا وارد تنظیمات شوید.",
                             style: TextStyle(
-                                fontSize: 12.sp,
-                                fontFamily: FIGMA.estre,
-                                color: FIGMA.Gray4),
+                              color: FIGMA.Gray4,
+                              fontSize: 14,
+                              height: 1.5,
+                              fontFamily: FIGMA.estsb,
+                            ),
                           ),
+                        ],
+                      ),
+                      const SizedBox(height: 32),
+                      EasyContainer(
+                        height: 68.h,
+                        width: 320.w,
+                        color: FIGMA.Prn,
+                        borderWidth: 0,
+                        elevation: 0,
+                        padding: 0,
+                        borderRadius: 17,
+                        child: const Text(
+                          "باز کردن صفحه تنظیمات دستگاه",
+                          style: TextStyle(
+                              color: FIGMA.Wrn,
+                              fontSize: 16,
+                              fontFamily: FIGMA.estsb),
                         ),
-                        SizedBox(height: 30.h),
-                        SizedBox(
-                            width: 269.w,
-                            height: 68.h,
-                            child: EyeTextField(
-                              controller: ssidController,
-                              hintText: "WiFi نام",
-                              showEye: false,
-                            )),
-                        SizedBox(
-                            width: 269.w,
-                            height: 68.h,
-                            child: EyeTextField(
-                              controller: passController,
-                              hintText: "رمز عبور",
-                            )),
-                        Column(
-                          children: [
-                            EasyContainer(
-                              padding: 0,
-                              margin: 0,
-                              elevation: 0,
-                              width: 269.w,
-                              height: 68.h,
-                              borderRadius: 15,
-                              color: FIGMA.Prn,
-                              onTap: () {
-                                if (ssidController.text.isNotEmpty &&
-                                    passController.text.isNotEmpty) {
-                                  setState(() {
-                                    String jsonPayload = jsonEncode({
-                                      "Np": passController.text,
-                                      "Ns": ssidController.text,
-                                    });
-                                    SingleBle().sendMain(jsonPayload);
-                                    connected = true;
-                                  });
-                                }
-                              },
-                              child: Text("ارسال اطلاعات",
-                                  style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontFamily: FIGMA.estbo,
-                                      color: FIGMA.Wrn)),
-                            ),
-                            SizedBox(height: 8.h),
-                            EasyContainer(
-                              padding: 0,
-                              margin: 0,
-                              elevation: 0,
-                              width: 269.w,
-                              height: 68.h,
-                              borderRadius: 15,
-                              color: FIGMA.Orn,
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text("خروج",
-                                  style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontFamily: FIGMA.estbo,
-                                      color: FIGMA.Wrn)),
-                            ),
-                          ],
-                        ),
-                      ],
-              ),
-            );
+                      ),
+                    ],
+                  ),
+                ));
           }),
         ),
       );
