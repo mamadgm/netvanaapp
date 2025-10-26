@@ -63,7 +63,7 @@ class _NooranState extends State<Nooran> {
             value.setMainCycleSpeed(int.parse(speed));
             return;
           }
-          if (value.netvanaIsConnected) {
+          if (value.selectedDevice.isOnline) {
             NetClass().setSpeed(CacheService.instance.token!,
                 value.selectedDevice.id.toString(), speed);
             value.setMainCycleSpeed(int.parse(speed));
@@ -81,7 +81,7 @@ class _NooranState extends State<Nooran> {
             value.setBrightness(int.parse(bright));
             return;
           }
-          if (value.netvanaIsConnected) {
+          if (value.selectedDevice.isOnline) {
             NetClass().setBright(CacheService.instance.token!,
                 value.selectedDevice.id.toString(), bright);
             value.setBrightness(int.parse(bright));
@@ -102,7 +102,7 @@ class _NooranState extends State<Nooran> {
             value.setMainCycleColor(p0);
             return;
           }
-          if (value.netvanaIsConnected) {
+          if (value.selectedDevice.isOnline) {
             NetClass().setColor(CacheService.instance.token!,
                 value.selectedDevice.id.toString(), p0);
             value.setMainCycleColor(p0);
@@ -178,10 +178,10 @@ class _NooranState extends State<Nooran> {
                                   margin: 0,
                                   padding: 0,
                                   child: Icon(
-                                    value.netvanaIsConnected
+                                    value.selectedDevice.isOnline
                                         ? Icons.wifi_rounded
                                         : Icons.wifi_off_rounded,
-                                    color: value.netvanaIsConnected
+                                    color: value.selectedDevice.isOnline
                                         ? FIGMA.Prn
                                         : FIGMA.Gray3,
                                     size: 24.sp,
@@ -215,13 +215,10 @@ class _NooranState extends State<Nooran> {
                                     }
 
                                     if (!value.selectedDevice.isOnline) {
-                                      value.wifi_update_connected(false);
                                       value.Show_Snackbar(
                                           "دستگاه متصل نیست به صفحه نت وانا بروید",
                                           1000,
                                           type: 3);
-                                    } else {
-                                      value.wifi_update_connected(true);
                                     }
 
                                     value.hand_update();
@@ -264,7 +261,7 @@ class _NooranState extends State<Nooran> {
                                         SingleBle().sendMain(jsonPayload);
                                         return;
                                       }
-                                      if (value.netvanaIsConnected) {
+                                      if (value.selectedDevice.isOnline) {
                                         NetClass().setBright(
                                             CacheService.instance.token!,
                                             value.selectedDevice.id.toString(),
@@ -294,7 +291,7 @@ class _NooranState extends State<Nooran> {
 
                                     return;
                                   }
-                                  if (value.netvanaIsConnected) {
+                                  if (value.selectedDevice.isOnline) {
                                     NetClass().setPower(
                                         CacheService.instance.token!,
                                         value.selectedDevice.id.toString(),
@@ -323,12 +320,12 @@ class _NooranState extends State<Nooran> {
                         children: [
                           LampWidget(
                             glowIntensity: (value.bleIsConnected |
-                                    value.netvanaIsConnected)
+                                    value.selectedDevice.isOnline)
                                 ? value.Brightness.toDouble() / 90
                                 : 2,
                             key: lampKey,
                             lampColor: (value.bleIsConnected |
-                                    value.netvanaIsConnected)
+                                    value.selectedDevice.isOnline)
                                 ? colorFromString(value.maincycle_color)
                                 : colorFromString("0xFF555555"),
                             height: 120.h,
@@ -344,7 +341,7 @@ class _NooranState extends State<Nooran> {
                         ],
                       ),
                       onTap: () async {
-                        if (value.netvanaIsConnected) {
+                        if (value.selectedDevice.isOnline) {
                           await value.getDetailsFromNet();
                           return;
                         }
@@ -358,7 +355,7 @@ class _NooranState extends State<Nooran> {
                   height: 80.h,
                   width: 329.w,
                   child: Spelco(handlechange: (index) {
-                    if (value.netvanaIsConnected | value.bleIsConnected) {
+                    if (value.selectedDevice.isOnline | value.bleIsConnected) {
                       value.change_slider(index);
                       return;
                     }
@@ -382,7 +379,7 @@ class _NooranState extends State<Nooran> {
                           "https://api.netvana.ir${currentTheme != null ? currentTheme['image_url'] : "/media/images/theme/267022d16cad47d0ad087d3d92363d24.png"}"),
                       fit: BoxFit.cover,
                       colorFilter:
-                          (value.bleIsConnected | value.netvanaIsConnected)
+                          (value.bleIsConnected | value.selectedDevice.isOnline)
                               ? null
                               : const ColorFilter.mode(
                                   Colors.grey,
@@ -523,7 +520,7 @@ class _NooranState extends State<Nooran> {
                                   value.setMainCycleColor(f);
                                   return;
                                 }
-                                if (value.netvanaIsConnected) {
+                                if (value.selectedDevice.isOnline) {
                                   NetClass().setColor(
                                       CacheService.instance.token!,
                                       value.selectedDevice.id.toString(),
@@ -565,7 +562,7 @@ class ShortTimer extends StatelessWidget {
         Navigator.of(context).pop();
         return;
       }
-      if (value.netvanaIsConnected) {
+      if (value.selectedDevice.isOnline) {
         NetClass().setTimer(CacheService.instance.token!,
             value.selectedDevice.id.toString(), s);
         calculateTimeStore(s);

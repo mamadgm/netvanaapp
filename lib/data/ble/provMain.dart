@@ -49,7 +49,6 @@ class ProvData extends ChangeNotifier {
   List<dynamic> themes = [];
 
   bool bleIsConnected = false;
-  bool netvanaIsConnected = false;
 
   int current_sync_pos = 0;
   int current_selected_slider = 0;
@@ -184,11 +183,6 @@ class ProvData extends ChangeNotifier {
 
   void setBleIsConnected(bool p) {
     bleIsConnected = p;
-    notifyListeners();
-  }
-
-  void wifi_update_connected(bool p) {
-    netvanaIsConnected = p;
     notifyListeners();
   }
 

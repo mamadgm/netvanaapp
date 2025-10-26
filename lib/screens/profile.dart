@@ -38,9 +38,10 @@ class _ProfileScrState extends State<ProfileScr> {
               width: 95.w,
               child: LampWidget(
                 glowIntensity: 1,
-                lampColor: (value.netvanaIsConnected | value.bleIsConnected)
-                    ? colorFromString(value.maincycle_color)
-                    : colorFromString("0xFF555555"),
+                lampColor:
+                    (value.selectedDevice.isOnline | value.bleIsConnected)
+                        ? colorFromString(value.maincycle_color)
+                        : colorFromString("0xFF555555"),
                 height: 150.h,
                 width: 80.w,
               ),

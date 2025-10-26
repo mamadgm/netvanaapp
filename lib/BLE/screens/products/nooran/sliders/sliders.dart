@@ -216,7 +216,7 @@ class Speed_sliderState extends State<Speed_slider> {
             width: constsize.maxWidth,
             height: constsize.maxHeight,
             direction: FillingSliderDirection.horizontal,
-            color: (value.bleIsConnected | value.netvanaIsConnected)
+            color: (value.bleIsConnected | value.selectedDevice.isOnline)
                 ? FIGMA.Orn
                 : Colors.grey,
             fillColor: FIGMA.Gray2,
@@ -268,7 +268,7 @@ class _Bright_sliderState extends State<Bright_slider> {
             width: constsize.maxWidth,
             height: constsize.maxHeight,
             direction: FillingSliderDirection.horizontal,
-            color: (value.bleIsConnected | value.netvanaIsConnected)
+            color: (value.bleIsConnected | value.selectedDevice.isOnline)
                 ? FIGMA.Orn
                 : Colors.grey,
             fillColor: FIGMA.Gray2,

@@ -32,7 +32,7 @@ class Netvana extends StatelessWidget {
                       width: 140.w,
                       child: LampWidget(
                         glowIntensity: 1,
-                        lampColor: (value.netvanaIsConnected)
+                        lampColor: (value.selectedDevice.isOnline)
                             ? colorFromString(value.maincycle_color)
                             : colorFromString("0xFF555555"),
                         height: 150.h,
@@ -59,7 +59,7 @@ class Netvana extends StatelessWidget {
                         title: "وای فای جدید",
                         trailingIcon: LucideIcons.plus,
                         onTap: () {
-                          if (value.netvanaIsConnected) {
+                          if (value.selectedDevice.isOnline) {
                             value.Show_Snackbar("دستگاه شما متصل است", 1000,
                                 type: 1);
                             return;
@@ -75,7 +75,7 @@ class Netvana extends StatelessWidget {
             ],
           ),
           Center(
-            child: value.netvanaIsConnected
+            child: value.selectedDevice.isOnline
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [

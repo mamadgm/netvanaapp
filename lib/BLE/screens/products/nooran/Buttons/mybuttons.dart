@@ -350,7 +350,7 @@ class _NewPopupState2 extends State<TimerButton> {
     return Consumer<ProvData>(builder: (context, value, child) {
       return EasyContainer(
         onTap: () {
-          if (!(value.bleIsConnected | value.netvanaIsConnected)) {
+          if (!(value.bleIsConnected | value.selectedDevice.isOnline)) {
             showCannotSend(value);
             return;
           }

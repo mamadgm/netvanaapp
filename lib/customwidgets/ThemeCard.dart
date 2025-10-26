@@ -55,7 +55,7 @@ class ThemeCard extends StatelessWidget {
               lampKey.currentState?.shake();
               return;
             }
-            if (value.netvanaIsConnected) {
+            if (value.selectedDevice.isOnline) {
               await NetClass().setMode(
                 CacheService.instance.token!,
                 value.selectedDevice.id.toString(),
