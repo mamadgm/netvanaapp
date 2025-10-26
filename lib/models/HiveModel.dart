@@ -40,7 +40,7 @@ class User extends HiveObject {
       id: json['id'],
       firstName: json['first_name'],
       lastName: json['last_name'],
-      phone: json['phone'],
+      phone: json['phone'].toString(),
     );
   }
 }

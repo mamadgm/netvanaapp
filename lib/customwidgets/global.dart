@@ -174,6 +174,7 @@ void showWiFiDialog(BuildContext context) {
 }
 
 Future<void> setup(ProvData funcy) async {
+  debugPrint("start");
   final service = SdcardService.instance;
 
   // Check if token exists
@@ -192,6 +193,7 @@ Future<void> setup(ProvData funcy) async {
   } else {
     debugPrint("no token found in SdcardService");
   }
+  debugPrint("end");
 }
 
 void showCannotSend(ProvData value) {

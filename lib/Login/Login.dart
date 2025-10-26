@@ -177,9 +177,7 @@ class _LoginState extends State<Login> {
                         final service = SdcardService.instance;
                         service.sdcard.token = token;
                         await service.sdcard.save();
-
                         await service.updateUser(token);
-
                         debugPrint("Got Devices: ${value.devices.length}");
 
                         setup(value);

@@ -46,11 +46,6 @@ class ProvData extends ChangeNotifier {
   bool Isdevicefound = false;
   int Current_screen = 0;
 
-  List<String> SmartTimerColor = ["0xFFFF00FF", "0xFFFFFF00", "0xFFFFFF00"];
-  List<String> SmartTimerTitle = ["تایمر هوشمند", "پومودورو", "تایمر طولانی"];
-  List<bool> SmarttimerActive = [false, false, false];
-
-  List<int> Favorites = [];
   //netvana
 
   List<EspTheme> themes = [];
@@ -115,15 +110,11 @@ class ProvData extends ChangeNotifier {
     notifyListeners(); // حتماً این رو بذار تا ویجت‌ها رفرش بشن
   }
 
+  List<int> Favorites = [];
   void loadFavoritesFromHive() {
     final box = Hive.box(FIGMA.HIVE2);
     final stored = box.get('Favorites', defaultValue: []);
     Favorites = List<int>.from(stored);
-  }
-
-  disable_Smarttimer(int index, {bool value = false}) {
-    SmarttimerActive[index] = value;
-    notifyListeners();
   }
 
   void set_Defalult_colors(int p, int which) {

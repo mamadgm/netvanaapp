@@ -14,17 +14,20 @@ class SdcardService {
   late Sdcard sdcard;
 
   Future<void> init() async {
+    debugPrint("1");
     await Hive.initFlutter();
 
     Hive.registerAdapter(UserAdapter());
     Hive.registerAdapter(SdcardAdapter());
     Hive.registerAdapter(EspThemeAdapter());
     Hive.registerAdapter(ContentItemAdapter());
+    debugPrint("2");
 
     _box = await Hive.openBox<Sdcard>(FIGMA.HIVE1);
     await Hive.openBox(FIGMA.HIVE2);
 
     // Load existing Sdcard or create new
+    debugPrint("3");
     if (_box.isNotEmpty) {
       sdcard = _box.getAt(0)!;
       sdcard.user?.themes = sdcard.user?.themes ?? [];
@@ -32,6 +35,7 @@ class SdcardService {
       sdcard = Sdcard();
       await _box.add(sdcard);
     }
+    debugPrint("4");
   }
 
   String? get token => sdcard.token;
