@@ -159,6 +159,7 @@ class Netvana extends StatelessWidget {
                           color: FIGMA.Gray4,
                           fontFamily: FIGMA.estre,
                           fontSize: 13.sp),
+                      textAlign: TextAlign.center,
                     ),
                   ),
           )

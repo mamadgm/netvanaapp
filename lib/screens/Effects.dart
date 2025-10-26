@@ -54,7 +54,7 @@ class _EffectsscrState extends State<Effectsscr> {
                             "افکت های اختصاصی",
                             style: TextStyle(
                                 fontFamily: FIGMA.abrlb,
-                                fontSize: 28.sp,
+                                fontSize: 18.sp,
                                 color: FIGMA.Wrn),
                           ),
                         ),

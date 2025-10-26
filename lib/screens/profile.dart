@@ -34,8 +34,8 @@ class _ProfileScrState extends State<ProfileScr> {
           SizedBox(height: 10.h),
           Center(
             child: SizedBox(
-              height: 240.h,
-              width: 120.w,
+              height: 200.h,
+              width: 95.w,
               child: LampWidget(
                 glowIntensity: 1,
                 lampColor: (value.netvanaIsConnected | value.bleIsConnected)
@@ -97,7 +97,7 @@ class _ProfileScrState extends State<ProfileScr> {
                     Center(
                       child: SizedBox(
                         height: 70.h,
-                        width: 140.w,
+                        width: 180.w,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -109,14 +109,14 @@ class _ProfileScrState extends State<ProfileScr> {
                                   "نوروانا",
                                   style: TextStyle(
                                       fontFamily: FIGMA.abrlb,
-                                      fontSize: 14.sp,
+                                      fontSize: 12.sp,
                                       color: FIGMA.Wrn),
                                 ),
                                 Text(
                                   "نسخه‌ی ۱.۱.۲ (۷۰۴۰۳۰)",
                                   style: TextStyle(
                                       fontFamily: FIGMA.estre,
-                                      fontSize: 10.sp,
+                                      fontSize: 9.sp,
                                       color: FIGMA.Gray4),
                                 ),
                               ],

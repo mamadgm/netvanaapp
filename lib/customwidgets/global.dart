@@ -11,6 +11,7 @@ import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
 import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/data/cache_service.dart';
+import 'package:netvana/screens/setup_screen.dart';
 
 void showWiFiDialog(BuildContext context) {
   bool connected = false;
@@ -173,88 +174,55 @@ void showWiFiDialog(BuildContext context) {
   );
 }
 
-Future<void> setup(ProvData funcy) async {
-  debugPrint("start");
+Future<SetupResult> setup(ProvData funcy) async {
   final service = CacheService.instance;
 
-  // Check if token exists
-  if (service.token != null && service.token!.isNotEmpty) {
+  if (service.token == null || service.token!.isEmpty) {
+    funcy.setIsUserLoggedIn(false);
+    return SetupResult.error; // Or a new result type like notLoggedIn
+  }
+
+  try {
+    final userData = await NetClass().getUser(service.token!);
+    if (userData == null) {
+      return SetupResult.error;
+    }
+
+    final devices = (userData['devices'] as List)
+        .map((d) => Device(
+              id: d['id'],
+              macAddress: d['mac_address'],
+              partNumber: d['part_number'],
+              isOnline: d['is_online'],
+              assembledAt: DateTime.parse(d['assembled_at']),
+              categoryName: d['category_name'],
+              versionName: d['version_name'],
+            ))
+        .toList();
+
+    if (devices.isEmpty) {
+      return SetupResult.noDevices;
+    }
+
+    funcy.devices = devices;
+    funcy.selectedDevice = devices.first;
     funcy.setIsUserLoggedIn(true);
 
-    // Load default colors from Hive if you still need them
+    // Load other data
     var sdcardBox = Hive.box(FIGMA.HIVE2);
     for (var i = 0; i < 5; i++) {
       funcy.Defalult_colors[i] =
           sdcardBox.get("COLOR$i", defaultValue: 0xFFFFFF);
     }
-
     await funcy.getDetailsFromNet();
-    // await CacheService.instance.updateUser(service.token!);
-  } else {
-    debugPrint("no token found in SdcardService");
+
+    return SetupResult.success;
+  } catch (e) {
+    debugPrint("Error during setup: $e");
+    return SetupResult.error;
   }
-  debugPrint("end");
 }
 
 void showCannotSend(ProvData value) {
   value.Show_Snackbar("هیچ اتصالی وجود ندارد", 1000);
-}
-
-Future<void> checkModeColors(ProvData value) async {
-  int idOfStatic = 1;
-  int maincycleMode = value.maincycle_mode;
-  // for (var theme in value.themes) {
-  //   var item = theme.content[0];
-
-  //   if (item.m == 0) {
-  //     idOfStatic = theme.id;
-  //   }
-
-  //   if (item.m == maincycleMode) {
-  //     value.setMainCycleMode(item.m);
-  //     if (item.c != null) {
-  //       if (value.bleIsConnected) {
-  //         int modeValue = 0;
-  //         modeValue = 0;
-  //         String jsonPayload = jsonEncode({
-  //           "Mode": [
-  //             {
-  //               "s": 0,
-  //               "e": 15,
-  //               "m": modeValue,
-  //               "sc": 100,
-  //             }
-  //           ]
-  //         });
-  //         SingleBle().sendMain(jsonPayload);
-  //         lampKey.currentState?.shake();
-  //         value.Show_Snackbar("تم برای رنگ تغییر کرد", 500);
-  //         return;
-  //       }
-  //       if (value.netvanaIsConnected) {
-  //         await NetClass().setMode(
-  //           CacheService.instance.token!,
-  //           value.selectedDevice.id.toString(),
-  //           idOfStatic.toString(),
-  //         );
-  //         value.Show_Snackbar("تم برای رنگ تغییر کرد", 500);
-  //         return;
-  //       }
-  //       showCannotSend(value);
-  //     }
-  //   }
-  // }
-}
-
-int getIdbyMode(ProvData value) {
-  int maincycleMode = value.maincycle_mode;
-  // for (var theme in value.themes) {
-  //   var item = theme.content[0];
-
-  //   if (item.m == maincycleMode) {
-  //     return theme.id;
-  //   }
-  // }
-
-  return 0;
 }

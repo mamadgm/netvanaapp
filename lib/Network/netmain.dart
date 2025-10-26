@@ -90,6 +90,26 @@ class NetClass {
     }
   }
 
+  Future<Map<String, dynamic>?> registerDevice(
+      String token, String code) async {
+    var response = await http.post(
+      Uri.parse('${FIGMA.urlnetwana}/ownership/set/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        "transfer_code": code,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception(response.body);
+    }
+  }
+
   Future<Map<String, dynamic>?> getUser(String token) async {
     final response = await http.get(
       Uri.parse('${FIGMA.urlnetwana}/me'),
@@ -100,6 +120,42 @@ class NetClass {
     );
 
     if (response.statusCode == 200) {
+/*
+  {
+  "id": 2,
+  "first_name": "محمدعلی",
+  "last_name": "گلمکانی",
+  "phone": "09016888626",
+  "username": "mamadgm",
+  "partner_message": [],
+  "devices": []
+}
+
+OR
+
+{
+  "id": 0,
+  "first_name": "string",
+  "last_name": "string",
+  "phone": "string",
+  "username": "string",
+  "partner_message": [
+    "string"
+  ],
+  "devices": [
+    {
+      "id": 0,
+      "mac_address": "string",
+      "part_number": 0,
+      "is_online": true,
+      "assembled_at": "2025-10-26T07:03:48.719Z",
+      "category_name": "string",
+      "weather_city": "string",
+      "version_name": "string"
+    }
+  ]
+}
+*/
       final json = jsonDecode(response.body);
       return json;
     } else {

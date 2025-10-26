@@ -14,6 +14,8 @@ import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/navbar/TheAppNav.dart';
 import 'package:netvana/const/figma.dart';
 
+import 'package:netvana/screens/setup_screen.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CacheService.instance.init();
@@ -28,74 +30,59 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  late List<Widget> mybody;
-  late final String currentPath;
-
-  @override
-  void initState() {
-    super.initState();
-    mybody = [
-      const Nooran(),
-      const Effectsscr(),
-      const Netvana(),
-      const ProfileScr(),
-    ];
-
-    // read current browser path (e.g. "/", "/register")
-    currentPath = Uri.base.path; // works only on web
-
-    final value = Provider.of<ProvData>(context, listen: false);
-    setup(value);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final String currentPath = Uri.base.path;
     return ScreenUtilInit(
       designSize: const Size(360, 667),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        // decide based on URL
-        if (currentPath == '/register') {
-          // show your registration MaterialApp
-          return MaterialApp(
-              scaffoldMessengerKey: scaffoldMessengerKey,
-              debugShowCheckedModeBanner: false,
-              home: const Register());
-        }
-
-        // default route ("/" or others)
         return MaterialApp(
           scaffoldMessengerKey: scaffoldMessengerKey,
           debugShowCheckedModeBanner: false,
-          home: Consumer<ProvData>(
-            builder: (context, value, child) {
-              return value.isUserLoggedIn
-                  ? Scaffold(
-                      backgroundColor: FIGMA.Back,
-                      body: IndexedStack(
-                        index: value.Current_screen,
-                        children: mybody,
-                      ),
-                      bottomNavigationBar: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: TheAppNav(),
-                      ),
-                    )
-                  : const Login();
-            },
-          ),
+          home: currentPath == '/register' ? const Register() : const AuthWrapper(),
         );
       },
     );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final provData = Provider.of<ProvData>(context);
+    final token = CacheService.instance.token;
+
+    if (token == null || token.isEmpty) {
+      return const Login();
+    }
+
+    if (provData.isUserLoggedIn) {
+      return Scaffold(
+        backgroundColor: FIGMA.Back,
+        body: IndexedStack(
+          index: provData.Current_screen,
+          children: const [
+            Nooran(),
+            Effectsscr(),
+            Netvana(),
+            ProfileScr(),
+          ],
+        ),
+        bottomNavigationBar: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: TheAppNav(),
+        ),
+      );
+    }
+
+    return const SetupScreen();
   }
 }
 // flutter run -d chrome --web-browser-flag "--disable-web-security" --web-browser-flag "--user-data-dir=/tmp/chrome_dev"

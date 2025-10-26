@@ -123,7 +123,7 @@ class ThemeCard extends StatelessWidget {
                       Text(
                         bigText,
                         style: TextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.bold,
                           fontFamily: FIGMA.estsb,
                           color: FIGMA.Wrn,

@@ -100,13 +100,18 @@ class ProvData extends ChangeNotifier {
     isUserLoggedIn = p;
   }
 
+  void logoutAndReset() {
+    isUserLoggedIn = false;
+    notifyListeners();
+  }
+
   void toggleFilter(ThemeFilter filter) {
     if (selectedFilter == filter) {
-      selectedFilter = ThemeFilter.none; 
+      selectedFilter = ThemeFilter.none;
     } else {
       selectedFilter = filter;
     }
-    notifyListeners(); 
+    notifyListeners();
   }
 
   List<int> Favorites = [];

@@ -46,11 +46,9 @@ class _NooranState extends State<Nooran> {
   // double _loudness = 0;
   // final Record _record = Record();
   late List<Widget> Sliderwidgets;
-  Future<void> startRecording() async {}
 
   @override
   void initState() {
-    startRecording();
     super.initState();
     final value = Provider.of<ProvData>(context, listen: false);
     value.loadFavoritesFromHive();
@@ -96,7 +94,7 @@ class _NooranState extends State<Nooran> {
       ),
       Color_Picker_HSV(
         senddata: (p0) async {
-          await checkModeColors(value);
+          // await checkModeColors(value);
 
           if (value.bleIsConnected) {
             String jsonPayload = jsonEncode({"Lc": p0});
@@ -157,7 +155,7 @@ class _NooranState extends State<Nooran> {
                             "نوروانا",
                             style: TextStyle(
                                 fontFamily: FIGMA.abrlb,
-                                fontSize: 24.sp,
+                                fontSize: 18.sp,
                                 color: FIGMA.Wrn),
                           ),
                         ),

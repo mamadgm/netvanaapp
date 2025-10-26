@@ -25,7 +25,8 @@ class EyeTextFieldState extends State<EyeTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      style: TextStyle(fontSize: 16.sp, color: FIGMA.Wrn),
+      style:
+          TextStyle(fontSize: 16.sp, color: FIGMA.Wrn, fontFamily: FIGMA.estsb),
       controller: widget.controller,
       obscureText: widget.showEye ? _obscureText : false,
       textAlign: widget.center ? TextAlign.center : TextAlign.right,
