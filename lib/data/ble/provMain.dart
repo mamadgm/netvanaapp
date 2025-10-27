@@ -278,12 +278,7 @@ class ProvData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void Set_Screen_Values_From_JSON(Map<String, dynamic>? jsonResponse) {
-    if (jsonResponse == null || jsonResponse['data'] == null) {
-      debugPrint("Invalid or null JSON response");
-      return;
-    }
-
+  void Set_Screen_Values_From_JSON(Map<String, dynamic> jsonResponse) {
     final data = jsonResponse['data'];
 
     // Assign values from JSON, providing defaults if fields are missing
@@ -309,8 +304,15 @@ class ProvData extends ChangeNotifier {
 
   Future<void> getDetailsFromNet() async {
     try {
-      var result = await NetClass().getDeviceVariables(
+      final result = await NetClass().getDeviceVariables(
           CacheService.instance.token!, selectedDevice.id.toString());
+
+      if (result!.length < 10) {
+        debugPrint("empty device");
+        hand_update();
+        return;
+      }
+
       Set_Screen_Values_From_JSON(result);
     } catch (e) {
       debugPrint("Error in vars $e");

@@ -2,12 +2,12 @@ import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/data/cache_service.dart';
 import 'package:netvana/screens/setup_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void showWiFiDialog(BuildContext context) {
   showGeneralDialog(
@@ -157,6 +157,12 @@ void showWiFiDialog(BuildContext context) {
                               fontSize: 16,
                               fontFamily: FIGMA.estsb),
                         ),
+                        onTap: () async {
+                          final url = Uri.parse('http://192.168.4.1');
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(url);
+                          }
+                        },
                       ),
                     ],
                   ),
