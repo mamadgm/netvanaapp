@@ -104,7 +104,7 @@ class _NooranState extends State<Nooran> {
           }
           if (value.selectedDevice.isOnline) {
             NetClass().setColor(CacheService.instance.token!,
-                value.selectedDevice.id.toString(), p0);
+                value.selectedDevice.id.toString(), p0, value);
             value.setMainCycleColor(p0);
             return;
           }
@@ -266,6 +266,7 @@ class _NooranState extends State<Nooran> {
                                             CacheService.instance.token!,
                                             value.selectedDevice.id.toString(),
                                             Bright.toString());
+                                        value.setBrightness(Bright);
                                         return;
                                       }
                                       showCannotSend(value);
@@ -524,7 +525,8 @@ class _NooranState extends State<Nooran> {
                                   NetClass().setColor(
                                       CacheService.instance.token!,
                                       value.selectedDevice.id.toString(),
-                                      f);
+                                      f,
+                                      value);
                                   value.setMainCycleColor(f);
 
                                   return;

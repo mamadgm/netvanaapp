@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:netvana/const/figma.dart';
+import 'package:netvana/data/ble/provMain.dart';
 
 class NetClass {
   static final NetClass _instance = NetClass._internal();
@@ -164,7 +165,8 @@ OR
   }
 
   Future<Map<String, dynamic>?> setColor(
-      String token, String id, String color) async {
+      String token, String id, String color, ProvData value) async {
+    await value.checkTheme();
     var response = await http.get(
       Uri.parse('${FIGMA.urlnetwana}/user/theme/$id/color/$color'),
       headers: <String, String>{

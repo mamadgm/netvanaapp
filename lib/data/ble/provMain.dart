@@ -275,6 +275,7 @@ class ProvData extends ChangeNotifier {
     smarttimercolor = 0; // Not present in JSON, set to default
     ESPVersion = result.length > 11 ? result[11] : 0;
     DeviceBleName = deviceName; // Store the parsed device name
+
     notifyListeners();
   }
 
@@ -299,6 +300,10 @@ class ProvData extends ChangeNotifier {
     smarttimercolor = 0; // Not present in JSON, set to default
     Device_SSID = data['ssid'] as String;
     ESPVersion = int.tryParse(data['version'] as String? ?? '0') ?? 0;
+
+    debugPrint("the time we have is $data");
+    debugPrint("the time we have is $timeroffvalue");
+
     notifyListeners();
   }
 
@@ -307,12 +312,11 @@ class ProvData extends ChangeNotifier {
       final result = await NetClass().getDeviceVariables(
           CacheService.instance.token!, selectedDevice.id.toString());
 
-      if (result!.length < 10) {
+      if (result!.toString().length < 10) {
         debugPrint("empty device");
         hand_update();
         return;
       }
-
       Set_Screen_Values_From_JSON(result);
     } catch (e) {
       debugPrint("Error in vars $e");
@@ -405,5 +409,46 @@ class ProvData extends ChangeNotifier {
       return Icons.warning_amber_rounded; // Error icon
     }
     return Icons.info; // Default info icon
+  }
+
+  Future<void> checkTheme() async {
+    // Find the theme that matches your current mode
+    final matchedTheme = themes.firstWhere(
+      (t) =>
+          t['content'] != null &&
+          t['content'] is List &&
+          t['content'].isNotEmpty &&
+          t['content'][0]['m'] == maincycle_mode,
+      orElse: () => null,
+    );
+
+    if (matchedTheme == null) {
+      debugPrint('⚠️ No theme found for mode $maincycle_mode');
+      return;
+    }
+
+    final content = matchedTheme['content'][0];
+    final color = content['c'];
+
+    if (color == null) {
+      debugPrint('🎨 Theme mode $maincycle_mode has c: null (no color)');
+    } else {
+      final basic = themes.firstWhere(
+        (t) =>
+            t['content'] != null &&
+            t['content'] is List &&
+            t['content'].isNotEmpty &&
+            t['content'][0]['c'] == null,
+        orElse: () => null,
+      );
+      Show_Snackbar("تغییر هوشمند تم به اکتیو", 1000, type: 2);
+      await NetClass().setMode(
+        CacheService.instance.token!,
+        selectedDevice.id.toString(),
+        basic["id"].toString(),
+      );
+      await Future.delayed(const Duration(milliseconds: 100));
+      debugPrint('🎨 Theme mode $maincycle_mode has color: $color');
+    }
   }
 }

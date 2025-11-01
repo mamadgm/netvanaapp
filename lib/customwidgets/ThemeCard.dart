@@ -38,29 +38,13 @@ class ThemeCard extends StatelessWidget {
         final bool isFavorite = value.Favorites.contains(id);
         return EasyContainer(
           onTap: () async {
-            if (value.bleIsConnected) {
-              int modeValue = 0;
-              modeValue = content[0]['m'];
-              String jsonPayload = jsonEncode({
-                "Mode": [
-                  {
-                    "s": 0,
-                    "e": 15,
-                    "m": modeValue,
-                    "sc": scale,
-                  }
-                ]
-              });
-              SingleBle().sendMain(jsonPayload);
-              lampKey.currentState?.shake();
-              return;
-            }
             if (value.selectedDevice.isOnline) {
               await NetClass().setMode(
                 CacheService.instance.token!,
                 value.selectedDevice.id.toString(),
                 id.toString(),
               );
+              value.setMainCycleMode(id);
               return;
             }
             showCannotSend(value);
