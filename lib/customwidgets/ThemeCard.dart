@@ -1,10 +1,8 @@
 // ignore_for_file: file_names
-import 'dart:convert';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/global.dart';

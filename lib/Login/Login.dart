@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:ui' as ui;
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,12 +7,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
-import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/provMain.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/data/cache_service.dart';
-import 'package:netvana/screens/setup_screen.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
