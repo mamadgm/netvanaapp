@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:netvana/const/figma.dart';
+import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/data/cache_service.dart';
@@ -156,10 +157,29 @@ class _RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
           );
         }
 
-        final provData = Provider.of<ProvData>(context, listen: false);
-        provData.logoutAndReset();
-        Navigator.of(context).pop();
-        return const SizedBox.shrink();
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          final provData = Provider.of<ProvData>(context, listen: false);
+          provData.logoutAndReset();
+          await Future.delayed(const Duration(seconds: 2));
+          Navigator.of(context).pop();
+          await setup(provData);
+        });
+
+        return SafeArea(
+          child: Scaffold(
+            backgroundColor: FIGMA.Back,
+            body: Center(
+              child: Text(
+                'دستگاه با موفقیت ثبت شد',
+                style: TextStyle(
+                  fontFamily: FIGMA.estbo,
+                  color: FIGMA.Wrn,
+                  fontSize: 16.sp,
+                ),
+              ),
+            ),
+          ),
+        );
       },
     );
   }

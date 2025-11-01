@@ -8,12 +8,10 @@ import 'package:netvana/BLE/screens/products/nooran/Nooran.dart';
 import 'package:netvana/Login/Login.dart';
 import 'package:netvana/screens/Effects.dart';
 import 'package:netvana/screens/Netvana.dart';
-import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/screens/profile.dart';
 import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/navbar/TheAppNav.dart';
 import 'package:netvana/const/figma.dart';
-
 import 'package:netvana/screens/setup_screen.dart';
 
 Future<void> main() async {
@@ -44,7 +42,9 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           scaffoldMessengerKey: scaffoldMessengerKey,
           debugShowCheckedModeBanner: false,
-          home: currentPath == '/register' ? const Register() : const AuthWrapper(),
+          home: currentPath == '/register'
+              ? const Register()
+              : const AuthWrapper(),
         );
       },
     );

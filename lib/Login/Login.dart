@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:netvana/Login/Register.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
@@ -182,6 +183,30 @@ class _LoginState extends State<Login> {
                       } catch (e) {
                         value.Show_Snackbar("ورود ناموفق", 1000);
                       }
+                    },
+                  ),
+                  GestureDetector(
+                    child: SizedBox(
+                      height: 68.h,
+                      width: 320.w,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'ثبت نام در نوروانا',
+                          style: TextStyle(
+                            color: FIGMA.Orn,
+                            fontSize: 11.sp,
+                            fontFamily: FIGMA.abreb,
+                          ),
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const Register(),
+                        ),
+                      );
                     },
                   ),
                 ],

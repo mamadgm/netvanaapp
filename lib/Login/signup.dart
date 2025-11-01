@@ -11,6 +11,7 @@ import 'package:netvana/customwidgets/EyeText.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/data/ble/provRegister.dart';
+import 'package:netvana/main.dart';
 import 'package:provider/provider.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
@@ -306,8 +307,12 @@ class SignupState extends State<Signup> {
                       ),
                     ),
                     onTap: () async {
+                      if (formFirst.text.isEmpty || formLast.text.isEmpty) {
+                        value.Show_Snackbar("کمترین اطلاعات نام شماست", 1000,
+                            type: 2);
+                      }
                       try {
-                        var result = await NetClass()
+                        await NetClass()
                             .signUp(
                                 value.token,
                                 formFirst.text,
@@ -317,8 +322,18 @@ class SignupState extends State<Signup> {
                                 formPass1.text,
                                 formPass2.text)
                             .timeout(const Duration(seconds: 10));
-                        value.Show_Snackbar("وارد شدید", 1000, type: 2);
-                        debugPrint(result.toString());
+                        value.Show_Snackbar(
+                            "اکانت شما ثبت شد , با رمز عبور وارد شوید", 2000,
+                            type: 2);
+                        // Wait until snackbar disappears
+                        Future.delayed(const Duration(milliseconds: 2000), () {
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    const AuthWrapper()), // your initial screen
+                            (route) => false,
+                          );
+                        });
                       } catch (e) {
                         value.Show_Snackbar("ثبت ناموفق", 1000, type: 3);
                         debugPrint(e.toString());

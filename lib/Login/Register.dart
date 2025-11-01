@@ -150,7 +150,7 @@ class RegisterState extends State<Register> {
                       try {
                         await NetClass()
                             .sendOtp(formphone.text)
-                            .timeout(const Duration(seconds: 10));
+                            .timeout(const Duration(seconds: 45));
 
                         value.setPhoneNumber(formphone.text);
                         Navigator.of(context).push(
@@ -167,30 +167,8 @@ class RegisterState extends State<Register> {
                   SizedBox(
                     height: 8.h,
                   ),
-                  EasyContainer(
+                  SizedBox(
                     height: 68.h,
-                    width: 320.w,
-                    color: FIGMA.Gray4,
-                    borderWidth: 0,
-                    elevation: 0,
-                    padding: 0,
-                    borderRadius: 17,
-                    child: Text(
-                      'کد را دارم',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.sp,
-                        fontFamily: FIGMA.abreb,
-                      ),
-                    ),
-                    onTap: () async {
-                      value.setPhoneNumber(formphone.text);
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const OtpCheck(),
-                        ),
-                      );
-                    },
                   ),
                 ],
               ),

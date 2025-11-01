@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -118,9 +120,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                     });
                   },
                   icon: Icon(
-                    _controller.torchEnabled
-                        ? Icons.flash_off
-                        : Icons.flash_on,
+                    _controller.torchEnabled ? Icons.flash_off : Icons.flash_on,
                     color: FIGMA.Wrn,
                   ),
                 ),
@@ -136,10 +136,127 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                   ),
                 ),
               ),
+              // Add this inside your Stack in the Scaffold body
+              Positioned(
+                bottom: 20,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: FIGMA.Prn,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.sp),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 24.w, vertical: 12.h),
+                    ),
+                    onPressed: () {
+                      _showManualEntryDialog();
+                    },
+                    child: Text(
+                      "ورود دستی",
+                      style: TextStyle(
+                        color: FIGMA.Wrn,
+                        fontFamily: FIGMA.estbo,
+                        fontSize: 16.sp,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           );
         },
       ),
+    );
+  }
+
+  void _showManualEntryDialog() {
+    final TextEditingController _manualController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: FIGMA.Gray,
+          title: Center(
+            child: Text(
+              "ورود دستی",
+              style: TextStyle(
+                fontFamily: FIGMA.abreb,
+                fontSize: 18.sp,
+                color: FIGMA.Wrn,
+              ),
+            ),
+          ),
+          content: SizedBox(
+            width: 320.w,
+            child: TextField(
+              textAlign: TextAlign.center,
+              controller: _manualController,
+              decoration: InputDecoration(
+                hintText: "کد را وارد کنید",
+                hintStyle: TextStyle(color: FIGMA.Wrn.withOpacity(0.5)),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.sp),
+                  borderSide: const BorderSide(color: FIGMA.Wrn),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.sp),
+                  borderSide: const BorderSide(color: FIGMA.Prn),
+                ),
+              ),
+              style: const TextStyle(color: FIGMA.Wrn),
+            ),
+          ),
+          actions: [
+            SizedBox(
+              width: 320.w,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(
+                        "لغو",
+                        style: TextStyle(
+                            color: FIGMA.Orn,
+                            fontSize: 11.sp,
+                            fontFamily: FIGMA.estsb),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        final code = _manualController.text.trim();
+                        debugPrint(code);
+                        if (code.isNotEmpty) {
+                          Navigator.of(context).pop();
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  RegisterDeviceScreen(qrCode: code),
+                            ),
+                          );
+                        }
+                      },
+                      child: Text(
+                        "ثبت دستگاه",
+                        style: TextStyle(
+                            color: FIGMA.Prn,
+                            fontSize: 11.sp,
+                            fontFamily: FIGMA.estsb),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -131,39 +131,52 @@ class OtpCheckState extends State<OtpCheck> {
                     ),
                   ),
                   EasyContainer(
-                    height: 68.h,
-                    width: 320.w,
-                    color: FIGMA.Prn,
-                    borderWidth: 0,
-                    elevation: 0,
-                    padding: 0,
-                    borderRadius: 17,
-                    child: Text(
-                      'تایید کد',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.sp,
-                        fontFamily: FIGMA.abreb,
+                      height: 68.h,
+                      width: 320.w,
+                      color: FIGMA.Prn,
+                      borderWidth: 0,
+                      elevation: 0,
+                      padding: 0,
+                      borderRadius: 17,
+                      child: Text(
+                        'تایید کد',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.sp,
+                          fontFamily: FIGMA.abreb,
+                        ),
                       ),
-                    ),
-                    onTap: () async {
-                      try {
-                        var result = await NetClass()
-                            .checkOtp(value.phoneNumber, formotp.text)
-                            .timeout(const Duration(seconds: 10));
-                        value.setToken(result!["access_token"]);
-                        value.Show_Snackbar("تایید شد", 500, type: 2);
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const Signup(),
-                          ),
-                        );
-                      } catch (e) {
-                        value.Show_Snackbar("ورود ناموفق", 1000, type: 3);
-                        debugPrint(e.toString());
-                      }
-                    },
-                  ),
+                      onTap: () async {
+                        try {
+                          var result = await NetClass()
+                              .checkOtp(value.phoneNumber, formotp.text)
+                              .timeout(const Duration(seconds: 10));
+
+                          final userInfo = result!["user_info"];
+                          final accessToken = result["access_token"];
+
+                          value.setToken(accessToken);
+
+                          // Check if user is fully registered
+                          if (userInfo["first_name"] != null) {
+                            // Already logged in / existing account
+                            value.Show_Snackbar(
+                                "شما قبلا اکانت داشته اید", 1000,
+                                type: 3);
+                          } else {
+                            // New user, proceed to signup
+                            value.Show_Snackbar("تایید شد", 500, type: 2);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const Signup(),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          value.Show_Snackbar("ورود ناموفق", 1000, type: 3);
+                          debugPrint(e.toString());
+                        }
+                      }),
                 ],
               ),
             ),
