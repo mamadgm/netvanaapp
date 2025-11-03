@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'dart:js_interop';
 import 'dart:ui' as ui;
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,6 +13,7 @@ import 'package:netvana/data/ble/provMain.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/data/cache_service.dart';
+import 'package:netvana/data/errors/error_login.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
@@ -170,7 +172,8 @@ class _LoginState extends State<Login> {
 
                         if (loginResponse == null ||
                             loginResponse['access_token'] == null) {
-                          value.Show_Snackbar("ورود ناموفق", 1000);
+                          value.Show_Snackbar("مشکل نا شناخته رخ داد", 1000,
+                              type: 3);
                           return;
                         }
 
@@ -181,7 +184,8 @@ class _LoginState extends State<Login> {
                         // HERE RESTART
                         value.logoutAndReset();
                       } catch (e) {
-                        value.Show_Snackbar("ورود ناموفق", 1000);
+                        final detail = extractDetailFromException(e);
+                        value.Show_Snackbar(detail!, 1000, type: 3);
                       }
                     },
                   ),

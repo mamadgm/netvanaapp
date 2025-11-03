@@ -301,9 +301,6 @@ class ProvData extends ChangeNotifier {
     Device_SSID = data['ssid'] as String;
     ESPVersion = int.tryParse(data['version'] as String? ?? '0') ?? 0;
 
-    debugPrint("the time we have is $data");
-    debugPrint("the time we have is $timeroffvalue");
-
     notifyListeners();
   }
 
@@ -423,7 +420,7 @@ class ProvData extends ChangeNotifier {
     );
 
     if (matchedTheme == null) {
-      debugPrint('⚠️ No theme found for mode $maincycle_mode');
+      // debugPrint('⚠️ No theme found for mode $maincycle_mode');
       return;
     }
 
@@ -431,7 +428,7 @@ class ProvData extends ChangeNotifier {
     final color = content['c'];
 
     if (color == null) {
-      debugPrint('🎨 Theme mode $maincycle_mode has c: null (no color)');
+      // debugPrint('🎨 Theme mode $maincycle_mode has c: null (no color)');
     } else {
       final basic = themes.firstWhere(
         (t) =>
@@ -448,7 +445,7 @@ class ProvData extends ChangeNotifier {
         basic["id"].toString(),
       );
       await Future.delayed(const Duration(milliseconds: 100));
-      debugPrint('🎨 Theme mode $maincycle_mode has color: $color');
+      // debugPrint('🎨 Theme mode $maincycle_mode has color: $color');
     }
   }
 }

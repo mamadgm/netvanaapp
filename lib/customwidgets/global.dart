@@ -44,7 +44,7 @@ void showWiFiDialog(BuildContext context) {
                         "تنظیم مجدد دستگاه",
                         style: TextStyle(
                             color: FIGMA.Wrn2,
-                            fontSize: 22,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                             fontFamily: FIGMA.abrlb),
                       ),
@@ -53,7 +53,7 @@ void showWiFiDialog(BuildContext context) {
                         "این مرحله فقط زمانی لازم است که:",
                         style: TextStyle(
                             color: FIGMA.Wrn2,
-                            fontSize: 16,
+                            fontSize: 14,
                             fontFamily: FIGMA.estsb),
                       ),
                       const SizedBox(height: 8),
@@ -64,7 +64,7 @@ void showWiFiDialog(BuildContext context) {
                             "• مودم جدید گرفته‌اید",
                             style: TextStyle(
                                 color: FIGMA.Orn,
-                                fontSize: 15,
+                                fontSize: 12,
                                 fontFamily: FIGMA.estsb),
                             textAlign: TextAlign.right,
                           ),
@@ -72,7 +72,7 @@ void showWiFiDialog(BuildContext context) {
                             "• رمز وای‌فای عوض شده است",
                             style: TextStyle(
                                 color: FIGMA.Orn,
-                                fontSize: 15,
+                                fontSize: 12,
                                 fontFamily: FIGMA.estsb),
                             textAlign: TextAlign.right,
                           ),
@@ -80,7 +80,7 @@ void showWiFiDialog(BuildContext context) {
                             "• با دستگاه نیاز به اتصال دوباره دارد",
                             style: TextStyle(
                                 color: FIGMA.Orn,
-                                fontSize: 15,
+                                fontSize: 12,
                                 fontFamily: FIGMA.estsb),
                             textAlign: TextAlign.right,
                           ),
@@ -91,7 +91,7 @@ void showWiFiDialog(BuildContext context) {
                         "نگران نباشید! دستگاه به‌صورت خودکار تلاش می‌کند به مودم قبلی وصل شود. حتی اگر دستگاه ریست شود، دوباره قابل تنظیم خواهد بود.",
                         style: TextStyle(
                             color: FIGMA.Gray4,
-                            fontSize: 14,
+                            fontSize: 12,
                             height: 1.6,
                             fontFamily: FIGMA.estbo),
                         textAlign: TextAlign.center,
@@ -101,7 +101,7 @@ void showWiFiDialog(BuildContext context) {
                         "لطفاً مراحل زیر را انجام دهید:",
                         style: TextStyle(
                             color: FIGMA.Wrn2,
-                            fontSize: 16,
+                            fontSize: 14,
                             fontFamily: FIGMA.estsb),
                       ),
                       const SizedBox(height: 12),
@@ -112,20 +112,20 @@ void showWiFiDialog(BuildContext context) {
                               "1. دوربین گوشی را باز کنید و QR کدی که روی کارت شناسنامه دستگاه هست را اسکن کنید تا به دستگاه وصل شوید.",
                               style: TextStyle(
                                   color: FIGMA.Gray4,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   height: 1.5,
                                   fontFamily: FIGMA.estsb)),
                           Text("2. مطمئن شوید که به دستگاه متصل شدید.",
                               style: TextStyle(
                                   color: FIGMA.Gray4,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   height: 1.5,
                                   fontFamily: FIGMA.estsb)),
                           Text(
                             "3. به این صفحه برگردید (این پاپ‌آپ را نبندید).",
                             style: TextStyle(
                               color: FIGMA.Gray4,
-                              fontSize: 14,
+                              fontSize: 12,
                               height: 1.5,
                               fontFamily: FIGMA.estsb,
                             ),
@@ -134,16 +134,16 @@ void showWiFiDialog(BuildContext context) {
                             "4. روی کلید پایین بزنید تا وارد تنظیمات شوید.",
                             style: TextStyle(
                               color: FIGMA.Gray4,
-                              fontSize: 14,
+                              fontSize: 12,
                               height: 1.5,
                               fontFamily: FIGMA.estsb,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 8),
                       EasyContainer(
-                        height: 68.h,
+                        height: 60.h,
                         width: 320.w,
                         color: FIGMA.Prn,
                         borderWidth: 0,
@@ -154,7 +154,7 @@ void showWiFiDialog(BuildContext context) {
                           "باز کردن صفحه تنظیمات دستگاه",
                           style: TextStyle(
                               color: FIGMA.Wrn,
-                              fontSize: 16,
+                              fontSize: 14,
                               fontFamily: FIGMA.estsb),
                         ),
                         onTap: () async {

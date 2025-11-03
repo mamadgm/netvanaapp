@@ -178,82 +178,91 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: FIGMA.Gray,
-          title: Center(
-            child: Text(
-              "ورود دستی",
-              style: TextStyle(
-                fontFamily: FIGMA.abreb,
-                fontSize: 18.sp,
-                color: FIGMA.Wrn,
-              ),
-            ),
-          ),
-          content: SizedBox(
-            width: 320.w,
-            child: TextField(
-              textAlign: TextAlign.center,
-              controller: _manualController,
-              decoration: InputDecoration(
-                hintText: "کد را وارد کنید",
-                hintStyle: TextStyle(color: FIGMA.Wrn.withOpacity(0.5)),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.sp),
-                  borderSide: const BorderSide(color: FIGMA.Wrn),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.sp),
-                  borderSide: const BorderSide(color: FIGMA.Prn),
-                ),
-              ),
-              style: const TextStyle(color: FIGMA.Wrn),
-            ),
-          ),
-          actions: [
+        return Column(
+          children: [
             SizedBox(
-              width: 320.w,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text(
-                        "لغو",
-                        style: TextStyle(
-                            color: FIGMA.Orn,
-                            fontSize: 11.sp,
-                            fontFamily: FIGMA.estsb),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        final code = _manualController.text.trim();
-                        debugPrint(code);
-                        if (code.isNotEmpty) {
-                          Navigator.of(context).pop();
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  RegisterDeviceScreen(qrCode: code),
-                            ),
-                          );
-                        }
-                      },
-                      child: Text(
-                        "ثبت دستگاه",
-                        style: TextStyle(
-                            color: FIGMA.Prn,
-                            fontSize: 11.sp,
-                            fontFamily: FIGMA.estsb),
-                      ),
-                    ),
-                  ],
+              height: 36.h,
+            ),
+            AlertDialog(
+              backgroundColor: FIGMA.Gray,
+              title: Center(
+                child: Text(
+                  "ورود دستی",
+                  style: TextStyle(
+                    fontFamily: FIGMA.abreb,
+                    fontSize: 18.sp,
+                    color: FIGMA.Wrn,
+                  ),
                 ),
               ),
+              content: SizedBox(
+                width: 320.w,
+                height: 50.h,
+                child: Center(
+                  child: TextField(
+                    textAlign: TextAlign.center,
+                    controller: _manualController,
+                    decoration: InputDecoration(
+                      hintText: "کد را وارد کنید",
+                      hintStyle: TextStyle(color: FIGMA.Wrn.withOpacity(0.5)),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.sp),
+                        borderSide: const BorderSide(color: FIGMA.Wrn),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.sp),
+                        borderSide: const BorderSide(color: FIGMA.Prn),
+                      ),
+                    ),
+                    style: const TextStyle(color: FIGMA.Wrn),
+                  ),
+                ),
+              ),
+              actions: [
+                SizedBox(
+                  width: 320.w,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(
+                          "لغو",
+                          style: TextStyle(
+                              color: FIGMA.Orn,
+                              fontSize: 11.sp,
+                              fontFamily: FIGMA.estsb),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          final code = _manualController.text.trim();
+                          debugPrint(code);
+                          if (code.isNotEmpty) {
+                            Navigator.of(context).pop();
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    RegisterDeviceScreen(qrCode: code),
+                              ),
+                            );
+                          }
+                        },
+                        child: Text(
+                          "ثبت دستگاه",
+                          style: TextStyle(
+                              color: FIGMA.Prn,
+                              fontSize: 11.sp,
+                              fontFamily: FIGMA.estsb),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
+            const Spacer()
           ],
         );
       },

@@ -35,7 +35,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   hugeicons: ^0.0.11
   persian_datetime_picker: ^3.2.0
-
+  flutter_launcher_icons:
 
   hive: any
   responsive_framework: ^1.5.1
@@ -70,3 +70,16 @@ flutter:
     - family: estsb
       fonts:
         - asset: fonts/est/Estedad-SemiBold.ttf   
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  web:
+    generate: true
+  windows:
+    generate: true
+  macos:
+    generate: true
+  linux:
+    generate: true
+  image_path: "assets/icon.png"

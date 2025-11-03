@@ -57,7 +57,7 @@ class NoDevicesScreen extends StatelessWidget {
                       title: "خرید دستگاه",
                       trailingIcon: LucideIcons.shoppingCart,
                       onTap: () async {
-                        final url = Uri.parse('https://site.netvana.ir');
+                        final url = Uri.parse('https://noorvana.ir');
                         if (await canLaunchUrl(url)) {
                           await launchUrl(url);
                         }

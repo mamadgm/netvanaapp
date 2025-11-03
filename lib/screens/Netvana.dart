@@ -3,11 +3,14 @@
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/ButtonIcon.dart';
 import 'package:netvana/customwidgets/Lampwidet.dart';
 import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/provMain.dart';
+import 'package:netvana/data/cache_service.dart';
+import 'package:netvana/data/errors/error_login.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
@@ -61,10 +64,31 @@ class Netvana extends StatelessWidget {
                         onTap: () {
                           if (value.selectedDevice.isOnline) {
                             value.Show_Snackbar("دستگاه شما متصل است", 1000,
-                                type: 1);
+                                type: 2);
                             return;
                           }
                           showWiFiDialog(context);
+                        },
+                      ),
+                      WiFiItem(
+                        leadingIcon: Icons.arrow_back_ios_new_rounded,
+                        title: "قطع دستگاه از مودم",
+                        trailingIcon: Icons.wifi_off_rounded,
+                        onTap: () async {
+                          if (!value.selectedDevice.isOnline) {
+                            value.Show_Snackbar(
+                                "دستگاه شما اکنون قطع میباشد", 1000,
+                                type: 1);
+                            return;
+                          }
+                          try {
+                            await NetClass().setDeviceOffline(
+                                CacheService.instance.token!,
+                                (value.selectedDevice.id).toString());
+                          } catch (e) {
+                            final detail = extractDetailFromException(e);
+                            value.Show_Snackbar(detail!, 1000, type: 3);
+                          }
                         },
                       ),
                       const Spacer(),

@@ -11,6 +11,7 @@ import 'package:netvana/customwidgets/EyeText.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/data/ble/provRegister.dart';
+import 'package:netvana/data/errors/error_login.dart';
 import 'package:netvana/main.dart';
 import 'package:provider/provider.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
@@ -308,8 +309,22 @@ class SignupState extends State<Signup> {
                     ),
                     onTap: () async {
                       if (formFirst.text.isEmpty || formLast.text.isEmpty) {
-                        value.Show_Snackbar("کمترین اطلاعات نام شماست", 1000,
-                            type: 2);
+                        value.Show_Snackbar(
+                            "کمترین اطلاعات نام و فامیل شماست", 1000,
+                            type: 3);
+                        return;
+                      }
+                      final passwordRegex =
+                          RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$');
+
+                      if (!passwordRegex.hasMatch(formPass1.text) &&
+                          !passwordRegex.hasMatch(formPass2.text)) {
+                        value.Show_Snackbar(
+                          "رمز باید شامل حروف بزرگ، کوچک و عدد باشد (حداقل ۸ کاراکتر)",
+                          1000,
+                          type: 3,
+                        );
+                        return;
                       }
                       try {
                         await NetClass()
@@ -335,8 +350,8 @@ class SignupState extends State<Signup> {
                           );
                         });
                       } catch (e) {
-                        value.Show_Snackbar("ثبت ناموفق", 1000, type: 3);
-                        debugPrint(e.toString());
+                        final detail = extractDetailFromException(e);
+                        value.Show_Snackbar(detail!, 1000, type: 3);
                       }
                     },
                   ),

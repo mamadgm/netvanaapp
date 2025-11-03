@@ -83,7 +83,7 @@ void showSleepSetting(context, ProvData value) {
                       color: FIGMA.Wrn),
                 ),
                 onTap: () {
-                  debugPrint(value.sleepBright.toString());
+                  // debugPrint(value.sleepBright.toString());
                   CacheService.instance.saveSleepValue(value.sleepBright);
                   Navigator.of(context).pop();
                 },

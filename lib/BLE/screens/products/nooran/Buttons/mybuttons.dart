@@ -347,7 +347,6 @@ class TimerButton extends StatefulWidget {
 class _NewPopupState2 extends State<TimerButton> {
   @override
   Widget build(BuildContext context) {
-    debugPrint("timer is ${widget.state}");
     return Consumer<ProvData>(builder: (context, value, child) {
       return EasyContainer(
         onTap: () {

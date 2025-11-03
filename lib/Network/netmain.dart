@@ -248,7 +248,7 @@ OR
       final response = await http.post(url, headers: headers, body: body);
 
       if (response.statusCode == 200) {
-        debugPrint("Theme 200");
+        // debugPrint("Theme 200");
       } else {
         debugPrint(
             "Failed to set theme: ${response.statusCode} - ${response.body}");
@@ -289,6 +289,24 @@ OR
       String token, String id, int power) async {
     var response = await http.get(
       Uri.parse('${FIGMA.urlnetwana}/user/theme/$id/power/$power'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to send color: ${response.body}');
+    }
+  }
+  // /user/theme/{device_id}/fap/
+
+  Future<Map<String, dynamic>?> setDeviceOffline(
+      String token, String id) async {
+    var response = await http.get(
+      Uri.parse('${FIGMA.urlnetwana}/user/theme/$id/fap/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
