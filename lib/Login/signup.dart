@@ -81,13 +81,18 @@ class SignupState extends State<Signup> {
                   thickness: 1,
                 ),
                 Expanded(
-                  child: PersianCupertinoDatePicker(
-                    backgroundColor: FIGMA.Gray4, // Background color from FIGMA
-                    initialDateTime: Jalali.now(),
-                    mode: PersianCupertinoDatePickerMode.date,
-                    onDateTimeChanged: (Jalali dateTime) {
-                      tempPickedDate = dateTime;
-                    },
+                  child: Localizations.override(
+                    context: context,
+                    locale: const Locale('fa', 'IR'),
+                    child: PersianCupertinoDatePicker(
+                      backgroundColor:
+                          FIGMA.Gray4, // Background color from FIGMA
+                      initialDateTime: Jalali.now(),
+                      mode: PersianCupertinoDatePickerMode.date,
+                      onDateTimeChanged: (Jalali dateTime) {
+                        tempPickedDate = dateTime;
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -184,10 +189,10 @@ class SignupState extends State<Signup> {
                             margin: 0,
                             borderRadius: 0,
                             child: EyeTextField(
-                              controller: formFirst,
-                              hintText: "نام",
-                              showEye: false,
-                            ),
+                                controller: formFirst,
+                                hintText: "نام",
+                                showEye: false,
+                                hintAuto: AutofillHints.name),
                           ),
                           EasyContainer(
                             height: 68.h,
@@ -202,6 +207,7 @@ class SignupState extends State<Signup> {
                               controller: formLast,
                               hintText: "نام خانوادگی",
                               showEye: false,
+                              hintAuto: AutofillHints.familyName,
                             ),
                           ),
                           SizedBox(
@@ -250,6 +256,7 @@ class SignupState extends State<Signup> {
                               hintText: "نام کاربری",
                               showEye: false,
                               center: true,
+                              hintAuto: AutofillHints.username,
                             ),
                           ),
                           EasyContainer(
@@ -266,6 +273,7 @@ class SignupState extends State<Signup> {
                               hintText: "رمز عبور",
                               showEye: true,
                               center: true,
+                              hintAuto: AutofillHints.password,
                             ),
                           ),
                           EasyContainer(
@@ -282,6 +290,7 @@ class SignupState extends State<Signup> {
                               hintText: "رمز عبور دوباره",
                               showEye: true,
                               center: true,
+                              hintAuto: "confPass",
                             ),
                           ),
                         ],

@@ -1,7 +1,6 @@
 // ignore_for_file: file_names, deprecated_member_use
 
 import 'dart:ui' as ui;
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:netvana/Login/otp_check.dart';
@@ -124,10 +123,11 @@ class RegisterState extends State<Register> {
                     margin: 0,
                     borderRadius: 0,
                     child: EyeTextField(
-                      controller: formphone,
-                      hintText: "شماره تلفن",
-                      showEye: false,
-                    ),
+                        keyboardType: TextInputType.phone,
+                        controller: formphone,
+                        hintText: "شماره تلفن",
+                        showEye: false,
+                        hintAuto: AutofillHints.telephoneNumber),
                   ),
                   EasyContainer(
                     height: 68.h,
@@ -146,7 +146,6 @@ class RegisterState extends State<Register> {
                       ),
                     ),
                     onTap: () async {
-                      debugPrint("Sending...");
                       try {
                         await NetClass()
                             .sendOtp(formphone.text)

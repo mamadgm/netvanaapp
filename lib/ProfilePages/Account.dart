@@ -94,10 +94,10 @@ void showAccount(context, ProvData value) {
               height: 68.h,
               width: 329.w,
               child: EyeTextField(
-                controller: value.UserNameController,
-                showEye: false,
-                hintText: "username",
-              ),
+                  controller: value.UserNameController,
+                  showEye: false,
+                  hintText: "username",
+                  hintAuto: AutofillHints.username),
             ),
             // TODO: Fetch and display user phone number from network
             SizedBox(height: 12.h),

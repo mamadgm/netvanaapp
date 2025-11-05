@@ -132,6 +132,8 @@ class _LoginState extends State<Login> {
                       controller: formphone,
                       hintText: "شماره تلفن",
                       showEye: false,
+                      hintAuto: AutofillHints.telephoneNumber,
+                      keyboardType: TextInputType.phone,
                     ),
                   ),
                   EasyContainer(
@@ -146,6 +148,7 @@ class _LoginState extends State<Login> {
                     child: EyeTextField(
                       controller: formpass,
                       hintText: "رمز عبور",
+                      hintAuto: AutofillHints.password,
                     ),
                   ),
                   EasyContainer(

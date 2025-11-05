@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/Login/Register.dart';
 import 'package:netvana/data/ble/provRegister.dart';
 import 'package:netvana/data/cache_service.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:netvana/BLE/screens/products/nooran/Nooran.dart';
 import 'package:netvana/Login/Login.dart';
@@ -13,8 +14,11 @@ import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/navbar/TheAppNav.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/screens/setup_screen.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 Future<void> main() async {
+  usePathUrlStrategy(); // 🔥 removes # and enables browser back/forward
   WidgetsFlutterBinding.ensureInitialized();
   await CacheService.instance.init();
   runApp(
@@ -40,8 +44,23 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
-          scaffoldMessengerKey: scaffoldMessengerKey,
+          // locale: const Locale("fa", "IR"),
           debugShowCheckedModeBanner: false,
+          supportedLocales: const [Locale("fa", "IR"), Locale("en", "US")],
+          localizationsDelegates: const [
+            PersianMaterialLocalizations.delegate,
+            PersianCupertinoLocalizations.delegate,
+            // DariMaterialLocalizations.delegate, Dari
+            // DariCupertinoLocalizations.delegate,
+            // PashtoMaterialLocalizations.delegate, Pashto
+            // PashtoCupertinoLocalizations.delegate,
+            // SoraniMaterialLocalizations.delegate, Kurdish
+            // SoraniCupertinoLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          scaffoldMessengerKey: scaffoldMessengerKey,
           home: currentPath == '/register'
               ? const Register()
               : const AuthWrapper(),

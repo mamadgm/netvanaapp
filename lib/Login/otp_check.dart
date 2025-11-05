@@ -128,6 +128,8 @@ class OtpCheckState extends State<OtpCheck> {
                       hintText: "کد یکبار مصرف",
                       showEye: false,
                       center: true,
+                      hintAuto: "OTP",
+                      keyboardType: TextInputType.number,
                     ),
                   ),
                   EasyContainer(
