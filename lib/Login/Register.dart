@@ -3,13 +3,14 @@
 import 'dart:ui' as ui;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:netvana/Login/otp_check.dart';
+import 'package:netvana/Login/signup.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/data/ble/provRegister.dart';
+import 'package:netvana/data/errors/error_login.dart';
 import 'package:provider/provider.dart';
 
 class Register extends StatefulWidget {
@@ -82,31 +83,34 @@ class RegisterState extends State<Register> {
                   SizedBox(height: _topPadding),
                   // RTL text
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            "ثبت نام در نوروانا",
-                            style: TextStyle(
-                              fontFamily: FIGMA.abrlb,
-                              fontSize: 24.sp,
-                              color: FIGMA.Wrn,
+                      SizedBox(
+                        width: 320.w,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              "ثبت نام در نوروانا",
+                              style: TextStyle(
+                                fontFamily: FIGMA.abrlb,
+                                fontSize: 24.sp,
+                                color: FIGMA.Wrn,
+                              ),
+                              textAlign: TextAlign.end,
+                              textDirection: TextDirection.rtl,
                             ),
-                            textAlign: TextAlign.end,
-                            textDirection: TextDirection.rtl,
-                          ),
-                          Text(
-                            "شماره تلفن همراه خود را وارد کنید",
-                            style: TextStyle(
-                              fontFamily: FIGMA.estre,
-                              fontSize: 14.sp,
-                              color: FIGMA.Wrn2,
+                            Text(
+                              "شماره تلفن همراه خود را وارد کنید",
+                              style: TextStyle(
+                                fontFamily: FIGMA.estre,
+                                fontSize: 14.sp,
+                                color: FIGMA.Wrn2,
+                              ),
+                              textAlign: TextAlign.end,
                             ),
-                            textAlign: TextAlign.end,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       const SizedBox(
                         width: 20,
@@ -127,7 +131,7 @@ class RegisterState extends State<Register> {
                         controller: formphone,
                         hintText: "شماره تلفن",
                         showEye: false,
-                        hintAuto: AutofillHints.telephoneNumber),
+                        hintAuto: AutofillHints.username),
                   ),
                   EasyContainer(
                     height: 68.h,
@@ -150,16 +154,15 @@ class RegisterState extends State<Register> {
                         await NetClass()
                             .sendOtp(formphone.text)
                             .timeout(const Duration(seconds: 45));
-
                         value.setPhoneNumber(formphone.text);
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const OtpCheck(),
+                            builder: (context) => const Signup(),
                           ),
                         );
                       } catch (e) {
-                        debugPrint("error otp send $e");
-                        value.Show_Snackbar("کد ارسال نشد", 1000, type: 3);
+                        final detail = extractDetailFromException(e);
+                        value.Show_Snackbar(detail!, 1000, type: 3);
                       }
                     },
                   ),

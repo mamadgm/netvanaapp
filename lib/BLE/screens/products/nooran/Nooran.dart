@@ -11,6 +11,7 @@ import 'package:netvana/BLE/screens/products/nooran/Buttons/mybuttons.dart';
 import 'package:netvana/BLE/screens/products/nooran/Spelco/spelco.dart';
 import 'package:netvana/BLE/screens/products/nooran/sliders/sliders.dart';
 import 'package:netvana/Network/netmain.dart';
+import 'package:netvana/Network/ws.dart';
 // import 'package:netvana/ble/logic/esp_ble.dart';
 
 import 'package:netvana/const/figma.dart';
@@ -53,7 +54,7 @@ class _NooranState extends State<Nooran> {
     final value = Provider.of<ProvData>(context, listen: false);
     value.loadFavoritesFromHive();
 
-    SingleBle().init(value);
+    // SingleBle().init(value);
     Sliderwidgets = [
       Speed_slider(
         senddata: (speed) {
@@ -113,6 +114,8 @@ class _NooranState extends State<Nooran> {
         netvana: 1,
       ),
     ];
+    final ws = NetvanaWS();
+    ws.connect(CacheService.instance.token!, value);
   }
 
   @override

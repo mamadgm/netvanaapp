@@ -1,6 +1,5 @@
 // ignore_for_file: file_names
 
-import 'dart:js_interop';
 import 'dart:ui' as ui;
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -132,7 +131,7 @@ class _LoginState extends State<Login> {
                       controller: formphone,
                       hintText: "شماره تلفن",
                       showEye: false,
-                      hintAuto: AutofillHints.telephoneNumber,
+                      hintAuto: AutofillHints.username,
                       keyboardType: TextInputType.phone,
                     ),
                   ),
@@ -171,7 +170,7 @@ class _LoginState extends State<Login> {
                       try {
                         var loginResponse = await NetClass()
                             .login(formphone.text, formpass.text)
-                            .timeout(const Duration(seconds: 5));
+                            .timeout(const Duration(seconds: 45));
 
                         if (loginResponse == null ||
                             loginResponse['access_token'] == null) {

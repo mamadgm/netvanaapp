@@ -29,6 +29,7 @@ class SignupState extends State<Signup> {
   final TextEditingController formUsername = TextEditingController();
   final TextEditingController formPass1 = TextEditingController();
   final TextEditingController formPass2 = TextEditingController();
+  final TextEditingController formOTP = TextEditingController();
   Jalali? pickedDate;
   String? birthLabel;
 
@@ -109,6 +110,8 @@ class SignupState extends State<Signup> {
 
   @override
   Widget build(BuildContext context) {
+    double HEIGHTTEXT = 44;
+    double HEIGHTTEXTPADDING = 4;
     // Check if the keyboard is visinetvana
 
     return Consumer<RegisterProvider>(
@@ -150,7 +153,7 @@ class SignupState extends State<Signup> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 32.h),
+                  SizedBox(height: 16.h),
                   // RTL text
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -160,10 +163,10 @@ class SignupState extends State<Signup> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            "تکمیل اطلاعات",
+                            "ثبت نام",
                             style: TextStyle(
                               fontFamily: FIGMA.abrlb,
-                              fontSize: 24.sp,
+                              fontSize: 16.sp,
                               color: FIGMA.Wrn,
                             ),
                             textAlign: TextAlign.end,
@@ -180,12 +183,12 @@ class SignupState extends State<Signup> {
                             textAlign: TextAlign.end,
                           ),
                           EasyContainer(
-                            height: 68.h,
+                            height: HEIGHTTEXT.h,
                             width: 320.w,
                             color: Colors.black12.withOpacity(0),
                             borderWidth: 0,
                             elevation: 0,
-                            padding: 0,
+                            padding: HEIGHTTEXTPADDING,
                             margin: 0,
                             borderRadius: 0,
                             child: EyeTextField(
@@ -195,12 +198,12 @@ class SignupState extends State<Signup> {
                                 hintAuto: AutofillHints.name),
                           ),
                           EasyContainer(
-                            height: 68.h,
+                            height: HEIGHTTEXT.h,
                             width: 320.w,
                             color: Colors.black12.withOpacity(0),
                             borderWidth: 0,
                             elevation: 0,
-                            padding: 0,
+                            padding: HEIGHTTEXTPADDING,
                             margin: 0,
                             borderRadius: 0,
                             child: EyeTextField(
@@ -210,28 +213,24 @@ class SignupState extends State<Signup> {
                               hintAuto: AutofillHints.familyName,
                             ),
                           ),
-                          SizedBox(
-                            height: 50.h,
-                            width: 320.w,
-                            child: EasyContainer(
-                                height: 50.h,
-                                width: 320.w,
-                                color: FIGMA.Prn,
-                                borderWidth: 0,
-                                elevation: 0,
-                                padding: 0,
-                                borderRadius: 17,
-                                child: Text(
-                                  birthLabel ?? "ورود تاریخ تولد",
-                                  style: TextStyle(
-                                      fontFamily: FIGMA.estbo,
-                                      fontSize: 13.sp,
-                                      color: FIGMA.Wrn),
-                                ),
-                                onTap: () async {
-                                  await getDate();
-                                }),
-                          ),
+                          EasyContainer(
+                              height: HEIGHTTEXT.h,
+                              width: 320.w,
+                              color: FIGMA.Orn,
+                              borderWidth: 0,
+                              elevation: 0,
+                              padding: HEIGHTTEXTPADDING,
+                              borderRadius: 11,
+                              child: Text(
+                                birthLabel ?? "ورود تاریخ تولد",
+                                style: TextStyle(
+                                    fontFamily: FIGMA.estre,
+                                    fontSize: 13.sp,
+                                    color: FIGMA.Wrn),
+                              ),
+                              onTap: () async {
+                                await getDate();
+                              }),
                           SizedBox(height: 24.h),
                           Text(
                             "این اطلاعات یادتون نره",
@@ -243,12 +242,12 @@ class SignupState extends State<Signup> {
                             textAlign: TextAlign.end,
                           ),
                           EasyContainer(
-                            height: 68.h,
+                            height: HEIGHTTEXT.h,
                             width: 320.w,
                             color: Colors.black12.withOpacity(0),
                             borderWidth: 0,
                             elevation: 0,
-                            padding: 0,
+                            padding: HEIGHTTEXTPADDING,
                             margin: 0,
                             borderRadius: 0,
                             child: EyeTextField(
@@ -256,16 +255,16 @@ class SignupState extends State<Signup> {
                               hintText: "نام کاربری",
                               showEye: false,
                               center: true,
-                              hintAuto: AutofillHints.username,
+                              hintAuto: "LOL",
                             ),
                           ),
                           EasyContainer(
-                            height: 68.h,
+                            height: HEIGHTTEXT.h,
                             width: 320.w,
                             color: Colors.black12.withOpacity(0),
                             borderWidth: 0,
                             elevation: 0,
-                            padding: 0,
+                            padding: HEIGHTTEXTPADDING,
                             margin: 0,
                             borderRadius: 0,
                             child: EyeTextField(
@@ -277,12 +276,12 @@ class SignupState extends State<Signup> {
                             ),
                           ),
                           EasyContainer(
-                            height: 68.h,
+                            height: HEIGHTTEXT.h,
                             width: 320.w,
                             color: Colors.black12.withOpacity(0),
                             borderWidth: 0,
                             elevation: 0,
-                            padding: 0,
+                            padding: HEIGHTTEXTPADDING,
                             margin: 0,
                             borderRadius: 0,
                             child: EyeTextField(
@@ -293,6 +292,33 @@ class SignupState extends State<Signup> {
                               hintAuto: "confPass",
                             ),
                           ),
+                          SizedBox(height: 24.h),
+                          Text(
+                            "کد پیامک شده را وارد کنید",
+                            style: TextStyle(
+                              fontFamily: FIGMA.estre,
+                              fontSize: 14.sp,
+                              color: FIGMA.Wrn2,
+                            ),
+                            textAlign: TextAlign.end,
+                          ),
+                          EasyContainer(
+                            height: HEIGHTTEXT.h,
+                            width: 320.w,
+                            color: Colors.black12.withOpacity(0),
+                            borderWidth: 0,
+                            elevation: 0,
+                            padding: HEIGHTTEXTPADDING,
+                            margin: 0,
+                            borderRadius: 0,
+                            child: EyeTextField(
+                              controller: formOTP,
+                              hintText: "کد یکبار مصرف",
+                              showEye: false,
+                              center: true,
+                              hintAuto: "OTP",
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(
@@ -301,38 +327,23 @@ class SignupState extends State<Signup> {
                     ],
                   ),
                   EasyContainer(
-                    height: 68.h,
+                    height: HEIGHTTEXT.h,
                     width: 320.w,
                     color: FIGMA.Prn,
                     borderWidth: 0,
                     elevation: 0,
-                    padding: 0,
-                    borderRadius: 17,
+                    padding: HEIGHTTEXTPADDING,
+                    borderRadius: 11,
                     child: Text(
                       'ثبت نام',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 18.sp,
-                        fontFamily: FIGMA.abreb,
+                        fontSize: 13.sp,
+                        fontFamily: FIGMA.estsb,
                       ),
                     ),
                     onTap: () async {
-                      if (formFirst.text.isEmpty || formLast.text.isEmpty) {
-                        value.Show_Snackbar(
-                            "کمترین اطلاعات نام و فامیل شماست", 1000,
-                            type: 3);
-                        return;
-                      }
-                      final passwordRegex =
-                          RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$');
-
-                      if (!passwordRegex.hasMatch(formPass1.text) &&
-                          !passwordRegex.hasMatch(formPass2.text)) {
-                        value.Show_Snackbar(
-                          "رمز باید شامل حروف بزرگ، کوچک و عدد باشد (حداقل ۸ کاراکتر)",
-                          1000,
-                          type: 3,
-                        );
+                      if (!checkAll(value)) {
                         return;
                       }
                       try {
@@ -344,8 +355,10 @@ class SignupState extends State<Signup> {
                                 _pickedDateToIso(),
                                 formUsername.text,
                                 formPass1.text,
-                                formPass2.text)
-                            .timeout(const Duration(seconds: 10));
+                                formPass2.text,
+                                formOTP.text,
+                                value.phoneNumber)
+                            .timeout(const Duration(seconds: 45));
                         value.Show_Snackbar(
                             "اکانت شما ثبت شد , با رمز عبور وارد شوید", 2000,
                             type: 2);
@@ -391,5 +404,57 @@ class SignupState extends State<Signup> {
       0,
     ).toUtc();
     return dateTime.toIso8601String(); // e.g. 2025-10-20T00:00:00.000Z
+  }
+
+  bool checkAll(RegisterProvider value) {
+    final passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$');
+    final usernameRegex = RegExp(r'^[A-Za-z][A-Za-z0-9]{4,}$');
+
+    if (formFirst.text.isEmpty || formLast.text.isEmpty) {
+      value.Show_Snackbar("کمترین اطلاعات نام و فامیل شماست", 1000, type: 3);
+      return false;
+    }
+
+    if (pickedDate == null) {
+      value.Show_Snackbar("تاریخ تولد خود را وارد کنید", 1000, type: 3);
+      return false;
+    }
+    final g = pickedDate!.toGregorian();
+    final birthDate = DateTime(g.year, g.month, g.day);
+    final now = DateTime.now();
+    final age = now.year -
+        birthDate.year -
+        ((now.month < birthDate.month ||
+                (now.month == birthDate.month && now.day < birthDate.day))
+            ? 1
+            : 0);
+    if (age < 7) {
+      value.Show_Snackbar("سن شما باید بیشتر از ۷ سال باشد", 1000, type: 3);
+      return false;
+    }
+
+    if (!usernameRegex.hasMatch(formUsername.text)) {
+      value.Show_Snackbar(
+          "نام کاربری باید با حروف انگلیسی شروع شود و حداقل ۵ کاراکتر باشد",
+          1500,
+          type: 3);
+      return false;
+    }
+
+    if (!passwordRegex.hasMatch(formPass1.text)) {
+      value.Show_Snackbar(
+        "رمز باید شامل حروف بزرگ، کوچک و عدد باشد",
+        1500,
+        type: 3,
+      );
+      return false;
+    }
+
+    if (formPass1.text != formPass2.text) {
+      value.Show_Snackbar("رمز عبور با تکرار آن همخوانی ندارد", 1500, type: 3);
+      return false;
+    }
+
+    return true;
   }
 }
