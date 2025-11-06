@@ -12,12 +12,16 @@ class NetvanaWS {
     try {
       _channel = WebSocketChannel.connect(uri);
       send({"token": token, "type": "auth"});
-
       _channel!.stream.listen(
         (message) {
-          debugPrint('$message');
+          debugPrint(message);
           final decoded = jsonDecode(message);
-          provData.Set_Screen_Values_From_JSON(decoded);
+          if (!decoded.containsKey('is_online')) {
+            provData.Set_Screen_Values_From_JSON(decoded);
+          } else {
+            provData.selectedDevice.isOnline = (decoded["is_online"] as bool);
+            provData.hand_update();
+          }
         },
         onError: (error) => debugPrint('WebSocket Error: $error'),
         onDone: () => debugPrint('WebSocket closed'),

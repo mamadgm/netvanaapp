@@ -32,17 +32,17 @@ class ThemeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ProvData>(
       builder: (context, value, child) {
-        final bool isSelected = value.maincycle_mode == content[0]['m'];
+        final bool isSelected = value.maincycle_mode == id;
         final bool isFavorite = value.Favorites.contains(id);
         return EasyContainer(
           onTap: () async {
             if (value.selectedDevice.isOnline) {
+              value.setMainCycleMode(id);
               await NetClass().setMode(
                 CacheService.instance.token!,
                 value.selectedDevice.id.toString(),
                 id.toString(),
               );
-              value.setMainCycleMode(id);
               return;
             }
             showCannotSend(value);

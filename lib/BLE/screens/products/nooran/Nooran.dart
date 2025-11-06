@@ -33,11 +33,9 @@ class Nooran extends StatefulWidget {
 dynamic getThemeByMode(ProvData value) {
   int maincycleMode = value.maincycle_mode;
   for (var theme in value.themes) {
-    if (theme['content'] != null && theme['content'].isNotEmpty) {
-      var item = theme['content'][0];
-      if (item['m'] == maincycleMode) {
-        return theme;
-      }
+    var item = theme['id'];
+    if (item == maincycleMode) {
+      return theme;
     }
   }
   return null;
@@ -380,7 +378,7 @@ class _NooranState extends State<Nooran> {
                     borderRadius: BorderRadius.circular(17),
                     image: DecorationImage(
                       image: NetworkImage(
-                          "https://api.netvana.ir${currentTheme != null ? currentTheme['image_url'] : "/media/images/theme/267022d16cad47d0ad087d3d92363d24.png"}"),
+                          "https://api.netvana.ir${currentTheme != null ? currentTheme['image_url'] : "/media/images/theme/2f820dc1eee64ee6b7b21d561f27fad1.png"}"),
                       fit: BoxFit.cover,
                       colorFilter:
                           (value.bleIsConnected | value.selectedDevice.isOnline)

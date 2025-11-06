@@ -64,7 +64,7 @@ class ProvData extends ChangeNotifier {
   int timeroffvalue = 0;
   int Brightness = 0;
   String maincycle_color = "0xFFFFFF00";
-  int maincycle_mode = 0;
+  int maincycle_mode = 1;
   int maincycle_speed = 0;
   int smartdelaysec = 0;
   int smarttimerpos = 0;
@@ -236,45 +236,45 @@ class ProvData extends ChangeNotifier {
   final SingleBle singleble = SingleBle.instance; // Use the singleton instance
 
   void Set_Screen_Values(String input) {
-    // Parse numeric fields (A to L)
-    List<int> result = [];
-    RegExp regExp = RegExp(r'([A-L])(\d+)');
-    Iterable<RegExpMatch> matches = regExp.allMatches(input);
+    // // Parse numeric fields (A to L)
+    // List<int> result = [];
+    // RegExp regExp = RegExp(r'([A-L])(\d+)');
+    // Iterable<RegExpMatch> matches = regExp.allMatches(input);
 
-    for (var match in matches) {
-      String number = match.group(2)!;
-      result.add(int.parse(number));
-    }
+    // for (var match in matches) {
+    //   String number = match.group(2)!;
+    //   result.add(int.parse(number));
+    // }
 
-    // Parse device name (M field)
-    String deviceName = "Unknown";
-    RegExp nameRegExp = RegExp(r'M([A-Za-z0-9_-]+)');
-    var nameMatch = nameRegExp.firstMatch(input);
-    if (nameMatch != null) {
-      deviceName = nameMatch.group(1)!;
-      debugPrint("[B] <- $deviceName");
-    } else {}
+    // // Parse device name (M field)
+    // String deviceName = "Unknown";
+    // RegExp nameRegExp = RegExp(r'M([A-Za-z0-9_-]+)');
+    // var nameMatch = nameRegExp.firstMatch(input);
+    // if (nameMatch != null) {
+    //   deviceName = nameMatch.group(1)!;
+    //   debugPrint("[B] <- $deviceName");
+    // } else {}
 
-    // Assign values
-    TEST_DATA = "";
-    for (var i = 0; i < result.length; i++) {
-      TEST_DATA = "$TEST_DATA $i -> ${result[i]} \n";
-    }
+    // // Assign values
+    // TEST_DATA = "";
+    // for (var i = 0; i < result.length; i++) {
+    //   TEST_DATA = "$TEST_DATA $i -> ${result[i]} \n";
+    // }
 
-    // Ensure result has enough values to avoid index errors
-    isdeviceon = result.isNotEmpty ? result[0] == 1 : false;
-    isnooranNet = result.length > 1 ? result[1] == 1 : false;
-    whereami = result.length > 2 ? result[2] : 0;
-    timeroffvalue = result.length > 3 ? result[3] : 0;
-    Brightness = result.length > 4 ? result[4] : 0;
-    maincycle_color = result.length > 5 ? result[5].toString() : "";
-    maincycle_mode = result.length > 6 ? result[6] : 0;
-    maincycle_speed = result.length > 7 ? result[7] : 0;
-    smartdelaysec = 0; // Not present in JSON, set to default
-    smarttimerpos = 0; // Not present in JSON, set to default
-    smarttimercolor = 0; // Not present in JSON, set to default
-    ESPVersion = result.length > 11 ? result[11] : 0;
-    DeviceBleName = deviceName; // Store the parsed device name
+    // // Ensure result has enough values to avoid index errors
+    // isdeviceon = result.isNotEmpty ? result[0] == 1 : false;
+    // isnooranNet = result.length > 1 ? result[1] == 1 : false;
+    // whereami = result.length > 2 ? result[2] : 0;
+    // timeroffvalue = result.length > 3 ? result[3] : 0;
+    // Brightness = result.length > 4 ? result[4] : 0;
+    // maincycle_color = result.length > 5 ? result[5].toString() : "";
+    // maincycle_mode = result.length > 6 ? result[6] : 0;
+    // maincycle_speed = result.length > 7 ? result[7] : 0;
+    // smartdelaysec = 0; // Not present in JSON, set to default
+    // smarttimerpos = 0; // Not present in JSON, set to default
+    // smarttimercolor = 0; // Not present in JSON, set to default
+    // ESPVersion = result.length > 11 ? result[11] : 0;
+    // DeviceBleName = deviceName; // Store the parsed device name
 
     notifyListeners();
   }
@@ -289,11 +289,7 @@ class ProvData extends ChangeNotifier {
     timeroffvalue = data['timeroff'] as int? ?? 0;
     Brightness = data['bright'] as int? ?? 0;
     maincycle_color = (data['color'] as int? ?? 0).toString();
-    maincycle_mode = data['theme'] != null
-        ? (jsonDecode(data['theme']) as List<dynamic>).isNotEmpty
-            ? jsonDecode(data['theme'])[0]['m'] as int? ?? 0
-            : 0
-        : 0; // Parse theme string and extract 'm'
+    maincycle_mode = (data['theme_id'] as int? ?? 1);
     maincycle_speed = data['speed'] as int? ?? 0;
     smartdelaysec = 0; // Not present in JSON, set to default
     smarttimerpos = 0; // Not present in JSON, set to default
@@ -439,12 +435,13 @@ class ProvData extends ChangeNotifier {
         orElse: () => null,
       );
       Show_Snackbar("تغییر هوشمند تم به اکتیو", 1000, type: 2);
+      setMainCycleMode(basic["id"] as int);
       await NetClass().setMode(
         CacheService.instance.token!,
         selectedDevice.id.toString(),
         basic["id"].toString(),
       );
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 50));
       // debugPrint('🎨 Theme mode $maincycle_mode has color: $color');
     }
   }

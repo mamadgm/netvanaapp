@@ -192,7 +192,7 @@ class NetClass {
 
   Future<List<dynamic>> getThemes(String token) async {
     final response = await http.get(
-      Uri.parse('${FIGMA.urlnetwana}/user/theme/?last_id=0&limit=30'),
+      Uri.parse('${FIGMA.urlnetwana}/user/theme/?last_id=0&limit=100'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
