@@ -56,12 +56,15 @@ flutter:
     - assets/themes/
 
   fonts:
+    - family: abrmd
+      fonts:
+        - asset: fonts/abr/AbarLowFaNum-Medium.ttf
     - family: abrlb
       fonts:
-        - asset: fonts/abr/AbarLow-Black.ttf
+        - asset: fonts/abr/AbarLowFaNum-Black.ttf
     - family: abreb
       fonts:
-        - asset: fonts/abr/AbarLow-ExtraBold.ttf
+        - asset: fonts/abr/AbarLowFaNum-ExtraBold.ttf
     - family: estbo
       fonts:
         - asset: fonts/est/Estedad-Bold.ttf

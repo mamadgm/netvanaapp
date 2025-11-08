@@ -22,9 +22,10 @@ class FIGMA {
   static const Gray4 = Color(0xFF747474);
 
   static const abrlb = 'abrlb';
+  static const abrmd = 'abrmd';
   static const abreb = 'abreb';
-  static const estbo = 'estbo';
   // static const estel = 'estel';
+  static const estbo = 'estbo';
   static const estre = 'estre';
   static const estsb = 'estsb';
 
@@ -41,6 +42,7 @@ class FIGMA {
   // static const ESP32_SERVICE_BVAL = "73398be2-a70a-4455-8560-abb4957666ab";
   // static const ESP32_SERVICE_CVAL = "4ea4edec-d39b-4ea6-9c4e-bd64ccd613a4";
   static const ESP32_SERVICE_Micro = "903ff0ee-4d92-4815-8dae-bcbc9aec61e4";
+
   // static const ESP32_SERVICE_FAVAL = "cede8c92-5dad-4b90-bb88-5300a5566598";
   // static const ESP32_SERVICE_FBVAL = "f1e50997-b8b4-475b-89c3-bc08fa1c4b2e";
   // static const ESP32_SERVICE_FCVAL = "66905ac6-9820-4942-bd40-79bac9c3501c";

@@ -1,5 +1,4 @@
 // ignore_for_file: non_constant_identifier_names
-import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/Network/netmain.dart';
@@ -36,7 +35,20 @@ class Device {
   }
 }
 
+enum WSStatus {
+  connecting,
+  connected,
+  disconnected,
+  error;
+}
+
 class ProvData extends ChangeNotifier {
+  WSStatus wsChannel = WSStatus.disconnected;
+  void setWsChannel(WSStatus value) {
+    wsChannel = value;
+    notifyListeners();
+  }
+
   //App
   String Device_UUID = "null";
   String Device_NAME = "null";

@@ -132,7 +132,7 @@ class _LoginState extends State<Login> {
                       hintText: "شماره تلفن",
                       showEye: false,
                       hintAuto: AutofillHints.username,
-                      keyboardType: TextInputType.phone,
+                      keyboardType: TextInputType.number,
                     ),
                   ),
                   EasyContainer(

@@ -174,6 +174,33 @@ class SignupState extends State<Signup> {
                           ),
                           SizedBox(height: 24.h),
                           Text(
+                            "کد پیامک شده را وارد کنید",
+                            style: TextStyle(
+                              fontFamily: FIGMA.estre,
+                              fontSize: 14.sp,
+                              color: FIGMA.Wrn2,
+                            ),
+                            textAlign: TextAlign.end,
+                          ),
+                          EasyContainer(
+                            height: HEIGHTTEXT.h,
+                            width: 320.w,
+                            color: Colors.black12.withOpacity(0),
+                            borderWidth: 0,
+                            elevation: 0,
+                            padding: HEIGHTTEXTPADDING,
+                            margin: 0,
+                            borderRadius: 0,
+                            child: EyeTextField(
+                                controller: formOTP,
+                                hintText: "کد یکبار مصرف",
+                                showEye: false,
+                                center: true,
+                                hintAuto: "OTP",
+                                keyboardType: TextInputType.number),
+                          ),
+                          SizedBox(height: 24.h),
+                          Text(
                             "شما کی هستید",
                             style: TextStyle(
                               fontFamily: FIGMA.estre,
@@ -224,7 +251,7 @@ class SignupState extends State<Signup> {
                               child: Text(
                                 birthLabel ?? "ورود تاریخ تولد",
                                 style: TextStyle(
-                                    fontFamily: FIGMA.estre,
+                                    fontFamily: FIGMA.abrmd,
                                     fontSize: 13.sp,
                                     color: FIGMA.Wrn),
                               ),
@@ -292,33 +319,6 @@ class SignupState extends State<Signup> {
                               hintAuto: "confPass",
                             ),
                           ),
-                          SizedBox(height: 24.h),
-                          Text(
-                            "کد پیامک شده را وارد کنید",
-                            style: TextStyle(
-                              fontFamily: FIGMA.estre,
-                              fontSize: 14.sp,
-                              color: FIGMA.Wrn2,
-                            ),
-                            textAlign: TextAlign.end,
-                          ),
-                          EasyContainer(
-                            height: HEIGHTTEXT.h,
-                            width: 320.w,
-                            color: Colors.black12.withOpacity(0),
-                            borderWidth: 0,
-                            elevation: 0,
-                            padding: HEIGHTTEXTPADDING,
-                            margin: 0,
-                            borderRadius: 0,
-                            child: EyeTextField(
-                              controller: formOTP,
-                              hintText: "کد یکبار مصرف",
-                              showEye: false,
-                              center: true,
-                              hintAuto: "OTP",
-                            ),
-                          ),
                         ],
                       ),
                       SizedBox(
@@ -377,6 +377,9 @@ class SignupState extends State<Signup> {
                       }
                     },
                   ),
+                  SizedBox(
+                    height: 350.h,
+                  )
                 ],
               ),
             ),

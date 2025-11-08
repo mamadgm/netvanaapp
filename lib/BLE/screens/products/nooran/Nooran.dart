@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/BLE/screens/products/nooran/Buttons/mybuttons.dart';
 import 'package:netvana/BLE/screens/products/nooran/Spelco/spelco.dart';
@@ -42,10 +43,20 @@ dynamic getThemeByMode(ProvData value) {
 }
 
 class _NooranState extends State<Nooran> {
-  // double _loudness = 0;
-  // final Record _record = Record();
-  late List<Widget> Sliderwidgets;
+  Color getWSColor(WSStatus status) {
+    switch (status) {
+      case WSStatus.connected:
+        return Colors.green;
+      case WSStatus.connecting:
+        return Colors.blue;
+      case WSStatus.disconnected:
+        return Colors.red;
+      case WSStatus.error:
+        return Colors.red;
+    }
+  }
 
+  late List<Widget> Sliderwidgets;
   @override
   void initState() {
     super.initState();
@@ -112,12 +123,15 @@ class _NooranState extends State<Nooran> {
         netvana: 1,
       ),
     ];
-    final ws = NetvanaWS();
-    ws.connect(CacheService.instance.token!, value);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final prov = Provider.of<ProvData>(context, listen: false);
+      ws.connect(CacheService.instance.token!, prov);
+    });
   }
 
   @override
   void dispose() {
+    ws.disconnect();
     super.dispose();
   }
 
@@ -286,18 +300,14 @@ class _NooranState extends State<Nooran> {
                                 // setPower
                                 onof: value.isdeviceon,
                                 onDataChange: () {
-                                  if (value.bleIsConnected) {
-                                    String jsonPayload =
-                                        jsonEncode({"Cp": !value.isdeviceon});
-                                    SingleBle().sendMain(jsonPayload);
-
-                                    return;
-                                  }
+                                  int next = !value.isdeviceon == true ? 1 : 0;
+                                  value.setIsDeviceOn(!value.isdeviceon);
                                   if (value.selectedDevice.isOnline) {
                                     NetClass().setPower(
                                         CacheService.instance.token!,
                                         value.selectedDevice.id.toString(),
-                                        !value.isdeviceon == true ? 1 : 0);
+                                        next);
+
                                     return;
                                   }
                                   showCannotSend(value);
@@ -317,37 +327,47 @@ class _NooranState extends State<Nooran> {
                       borderWidth: 1.5.sp,
                       borderColor: FIGMA.Prn,
                       borderRadius: 17,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          LampWidget(
-                            glowIntensity: (value.bleIsConnected |
-                                    value.selectedDevice.isOnline)
-                                ? value.Brightness.toDouble() / 90
-                                : 2,
-                            key: lampKey,
-                            lampColor: (value.bleIsConnected |
-                                    value.selectedDevice.isOnline)
-                                ? colorFromString(value.maincycle_color)
-                                : colorFromString("0xFF555555"),
-                            height: 120.h,
-                            width: 64.w,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Text(
-                              "${value.selectedDevice.categoryName}-${value.selectedDevice.partNumber}",
-                              style: const TextStyle(color: FIGMA.Wrn2),
+                      child: SizedBox(
+                        width: 165.w,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Positioned(
+                                right: 5,
+                                top: 5,
+                                child: Icon(LucideIcons.cloud,
+                                    size: 25,
+                                    color: getWSColor(value.wsChannel))),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                LampWidget(
+                                  glowIntensity: (value.bleIsConnected |
+                                          value.selectedDevice.isOnline)
+                                      ? value.Brightness.toDouble() / 90
+                                      : 2,
+                                  key: lampKey,
+                                  lampColor: (value.bleIsConnected |
+                                          value.selectedDevice.isOnline)
+                                      ? colorFromString(value.maincycle_color)
+                                      : colorFromString("0xFF555555"),
+                                  height: 120.h,
+                                  width: 64.w,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Text(
+                                    "${value.selectedDevice.categoryName}-${value.selectedDevice.partNumber}",
+                                    style: const TextStyle(color: FIGMA.Wrn2),
+                                  ),
+                                )
+                              ],
                             ),
-                          )
-                        ],
+                          ],
+                        ),
                       ),
-                      onTap: () async {
-                        if (value.selectedDevice.isOnline) {
-                          await value.getDetailsFromNet();
-                          return;
-                        }
-                        showCannotSend(value);
+                      onTap: () {
+                        lampKey.currentState?.shake();
                       },
                     ),
                   ],
