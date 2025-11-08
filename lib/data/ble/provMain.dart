@@ -419,19 +419,16 @@ class ProvData extends ChangeNotifier {
   Future<void> checkTheme() async {
     // Find the theme that matches your current mode
     final matchedTheme = themes.firstWhere(
-      (t) =>
-          t['content'] != null &&
-          t['content'] is List &&
-          t['content'].isNotEmpty &&
-          t['content'][0]['m'] == maincycle_mode,
+      (t) {
+        return t['id'] == maincycle_mode;
+      },
       orElse: () => null,
     );
 
     if (matchedTheme == null) {
-      // debugPrint('⚠️ No theme found for mode $maincycle_mode');
+      debugPrint('⚠️ No theme found for mode $maincycle_mode');
       return;
     }
-
     final content = matchedTheme['content'][0];
     final color = content['c'];
 
