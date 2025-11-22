@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/Login/Register.dart';
 import 'package:netvana/data/ble/provRegister.dart';
 import 'package:netvana/data/cache_service.dart';
-import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:netvana/BLE/screens/products/nooran/Nooran.dart';
 import 'package:netvana/Login/Login.dart';
@@ -14,7 +13,6 @@ import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/navbar/TheAppNav.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/screens/setup_screen.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
 Future<void> main() async {
@@ -44,22 +42,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
-          // locale: const Locale("fa", "IR"),
           debugShowCheckedModeBanner: false,
-          supportedLocales: const [Locale("fa", "IR"), Locale("en", "US")],
-          localizationsDelegates: const [
-            PersianMaterialLocalizations.delegate,
-            PersianCupertinoLocalizations.delegate,
-            // DariMaterialLocalizations.delegate, Dari
-            // DariCupertinoLocalizations.delegate,
-            // PashtoMaterialLocalizations.delegate, Pashto
-            // PashtoCupertinoLocalizations.delegate,
-            // SoraniMaterialLocalizations.delegate, Kurdish
-            // SoraniCupertinoLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
           scaffoldMessengerKey: scaffoldMessengerKey,
           home: currentPath == '/register'
               ? const Register()
@@ -77,6 +60,7 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final provData = Provider.of<ProvData>(context);
     final token = CacheService.instance.token;
+    debugPrint("Token $token");
 
     if (token == null || token.isEmpty) {
       return const Login();
@@ -87,12 +71,7 @@ class AuthWrapper extends StatelessWidget {
         backgroundColor: FIGMA.Back,
         body: IndexedStack(
           index: provData.Current_screen,
-          children: const [
-            Nooran(),
-            Effectsscr(),
-            Netvana(),
-            ProfileScr(),
-          ],
+          children: const [Nooran(), Effectsscr(), Netvana(), ProfileScr()],
         ),
         bottomNavigationBar: const Padding(
           padding: EdgeInsets.all(8.0),
@@ -104,4 +83,5 @@ class AuthWrapper extends StatelessWidget {
     return const SetupScreen();
   }
 }
+
 // flutter run -d chrome --web-browser-flag "--disable-web-security" --web-browser-flag "--user-data-dir=/tmp/chrome_dev"

@@ -13,10 +13,7 @@ class NetClass {
   }
 
   Future<Map<String, dynamic>?> login(String email, String password) async {
-    var body = <String, String>{
-      'username': email,
-      'password': password,
-    };
+    var body = <String, String>{'username': email, 'password': password};
 
     var response = await http.post(
       Uri.parse('${FIGMA.urlnetwana}/auth/token'),
@@ -36,9 +33,7 @@ class NetClass {
   Future<Map<String, dynamic>?> sendOtp(String phone) async {
     var response = await http.post(
       Uri.parse('${FIGMA.urlnetwana}/ownership/otp/send/'),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-      },
+      headers: <String, String>{'Content-Type': 'application/json'},
       body: jsonEncode({"phone_number": phone}),
     );
 
@@ -66,15 +61,16 @@ class NetClass {
   // }
 
   Future<Map<String, dynamic>?> signUp(
-      String token,
-      String first,
-      String last,
-      String birth,
-      String user,
-      String pass1,
-      String pass2,
-      String otpcode,
-      String phone) async {
+    String token,
+    String first,
+    String last,
+    String birth,
+    String user,
+    String pass1,
+    String pass2,
+    String otpcode,
+    String phone,
+  ) async {
     //         "birth_dt": "2025-10-20T10:11:14.973Z",
     var response = await http.post(
       Uri.parse('${FIGMA.urlnetwana}/ownership/otp/check/'),
@@ -90,7 +86,7 @@ class NetClass {
         "birth_dt": birth,
         "username": user,
         "password": pass1,
-        "password_conf": pass2
+        "password_conf": pass2,
       }),
     );
 
@@ -102,16 +98,16 @@ class NetClass {
   }
 
   Future<Map<String, dynamic>?> registerDevice(
-      String token, String code) async {
+    String token,
+    String code,
+  ) async {
     var response = await http.post(
       Uri.parse('${FIGMA.urlnetwana}/ownership/set/'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({
-        "transfer_code": code,
-      }),
+      body: jsonEncode({"transfer_code": code}),
     );
 
     if (response.statusCode == 200) {
@@ -139,7 +135,11 @@ class NetClass {
   }
 
   Future<Map<String, dynamic>?> setColor(
-      String token, String id, String color, ProvData value) async {
+    String token,
+    String id,
+    String color,
+    ProvData value,
+  ) async {
     await value.checkTheme();
     var response = await http.get(
       Uri.parse('${FIGMA.urlnetwana}/user/theme/$id/color/$color'),
@@ -157,7 +157,10 @@ class NetClass {
   }
 
   Future<Map<String, dynamic>?> setBright(
-      String token, String id, String bright) async {
+    String token,
+    String id,
+    String bright,
+  ) async {
     var response = await http.get(
       Uri.parse('${FIGMA.urlnetwana}/user/theme/$id/brightness/$bright'),
       headers: <String, String>{
@@ -174,7 +177,10 @@ class NetClass {
   }
 
   Future<Map<String, dynamic>?> setSpeed(
-      String token, String id, String speed) async {
+    String token,
+    String id,
+    String speed,
+  ) async {
     var response = await http.get(
       Uri.parse('${FIGMA.urlnetwana}/user/theme/$id/speed/$speed'),
       headers: <String, String>{
@@ -213,10 +219,7 @@ class NetClass {
       "Authorization": "Bearer $token", // If your API requires auth
     };
 
-    final body = jsonEncode({
-      "theme_id": mode,
-      "device_id": id,
-    });
+    final body = jsonEncode({"theme_id": mode, "device_id": id});
 
     try {
       final response = await http.post(url, headers: headers, body: body);
@@ -225,7 +228,8 @@ class NetClass {
         // debugPrint("Theme 200");
       } else {
         debugPrint(
-            "Failed to set theme: ${response.statusCode} - ${response.body}");
+          "Failed to set theme: ${response.statusCode} - ${response.body}",
+        );
       }
     } catch (e) {
       debugPrint("Error setting theme: $e");
@@ -239,9 +243,7 @@ class NetClass {
       "Authorization": "Bearer $token", // If your API requires auth
     };
 
-    final body = jsonEncode({
-      "username": newusername,
-    });
+    final body = jsonEncode({"username": newusername});
 
     try {
       final response = await http.put(url, headers: headers, body: body);
@@ -250,7 +252,8 @@ class NetClass {
         debugPrint("Data Updated successfully: ${response.body}");
       } else {
         debugPrint(
-            "Failed to update: ${response.statusCode} - ${response.body}");
+          "Failed to update: ${response.statusCode} - ${response.body}",
+        );
         throw Exception();
       }
     } catch (e) {
@@ -260,7 +263,10 @@ class NetClass {
   }
 
   Future<Map<String, dynamic>?> setPower(
-      String token, String id, int power) async {
+    String token,
+    String id,
+    int power,
+  ) async {
     var response = await http.get(
       Uri.parse('${FIGMA.urlnetwana}/user/theme/$id/power/$power'),
       headers: <String, String>{
@@ -278,7 +284,9 @@ class NetClass {
   // /user/theme/{device_id}/fap/
 
   Future<Map<String, dynamic>?> setDeviceOffline(
-      String token, String id) async {
+    String token,
+    String id,
+  ) async {
     var response = await http.get(
       Uri.parse('${FIGMA.urlnetwana}/user/theme/$id/fap/'),
       headers: <String, String>{
@@ -295,7 +303,10 @@ class NetClass {
   }
 
   Future<Map<String, dynamic>?> setTimer(
-      String token, String id, int timer) async {
+    String token,
+    String id,
+    int timer,
+  ) async {
     var response = await http.get(
       Uri.parse('${FIGMA.urlnetwana}/user/theme/$id/power-timer/$timer'),
       headers: <String, String>{
@@ -312,7 +323,9 @@ class NetClass {
   }
 
   Future<Map<String, dynamic>?> getDeviceVariables(
-      String token, String deviceId) async {
+    String token,
+    String deviceId,
+  ) async {
     try {
       var response = await http.get(
         Uri.parse('${FIGMA.urlnetwana}/devices/$deviceId/variables/'),

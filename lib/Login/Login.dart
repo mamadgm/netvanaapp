@@ -59,20 +59,26 @@ class _LoginState extends State<Login> {
                 clipBehavior: Clip.antiAlias,
                 child: BackdropFilter(
                   filter: ui.ImageFilter.blur(
-                      sigmaX: 20.0, sigmaY: 20.0), // Blur effect
+                    sigmaX: 20.0,
+                    sigmaY: 20.0,
+                    tileMode: .clamp,
+                  ), // Blur effect
                   child: Opacity(
-                    opacity: 0.1, // Adjust opacity for subtlety
+                    opacity: 0.18, // Adjust opacity for subtlety
                     child: Transform.scale(
-                      scale: 1,
+                      scale: 1.2,
                       child: RotatedBox(
                         quarterTurns: 90,
                         child: SvgPicture.asset(
-                          'assets/pattern.svg', // Replace with your SVG file path
-                          width:
-                              MediaQuery.of(context).size.width, // Full width
-                          fit: BoxFit.cover, // Maintain aspect ratio
-                          colorFilter: const ColorFilter.mode(Colors.white70,
-                              BlendMode.srcIn), // Lighten the pattern
+                          'pattern.svg', // Replace with your SVG file path
+                          width: MediaQuery.of(
+                            context,
+                          ).size.width, // Full width
+                          fit: .cover, // Maintain aspect ratio
+                          colorFilter: const .mode(
+                            Colors.white70,
+                            .srcIn,
+                          ), // Lighten the pattern
                         ),
                       ),
                     ),
@@ -87,10 +93,10 @@ class _LoginState extends State<Login> {
                   SizedBox(height: _topPadding),
                   // RTL text
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: .end,
                     children: [
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: .end,
                         children: [
                           Text(
                             "خوش آمدید",
@@ -107,15 +113,13 @@ class _LoginState extends State<Login> {
                             style: TextStyle(
                               fontFamily: FIGMA.estre,
                               fontSize: 14.sp,
-                              color: FIGMA.Wrn2,
+                              color: FIGMA.Gray4,
                             ),
                             textAlign: TextAlign.end,
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        width: 20,
-                      ),
+                      const SizedBox(width: 20),
                     ],
                   ),
                   EasyContainer(
@@ -132,7 +136,8 @@ class _LoginState extends State<Login> {
                       hintText: "شماره تلفن",
                       showEye: false,
                       hintAuto: AutofillHints.username,
-                      keyboardType: TextInputType.number,
+                      keyboardType: .number,
+                      transparentBg: true,
                     ),
                   ),
                   EasyContainer(
@@ -148,8 +153,31 @@ class _LoginState extends State<Login> {
                       controller: formpass,
                       hintText: "رمز عبور",
                       hintAuto: AutofillHints.password,
+                      transparentBg: true,
                     ),
                   ),
+                  GestureDetector(
+                    child: SizedBox(
+                      height: 30.h,
+                      width: 320.w,
+                      child: Row(
+                        mainAxisAlignment: .start,
+                        children: [
+                          SizedBox(width: 4.w),
+                          Text(
+                            'فراموشی رمز عبور',
+                            style: TextStyle(
+                              color: FIGMA.Gray4,
+                              fontSize: 11.sp,
+                              fontFamily: FIGMA.estre,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onTap: () {},
+                  ),
+                  SizedBox(height: 6.h),
                   EasyContainer(
                     height: 68.h,
                     width: 320.w,
@@ -159,11 +187,11 @@ class _LoginState extends State<Login> {
                     padding: 0,
                     borderRadius: 17,
                     child: Text(
-                      'ورود به نت وانا',
+                      'ورود',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 18.sp,
-                        fontFamily: FIGMA.abreb,
+                        fontSize: 16.sp,
+                        fontFamily: FIGMA.estbo,
                       ),
                     ),
                     onTap: () async {
@@ -174,8 +202,11 @@ class _LoginState extends State<Login> {
 
                         if (loginResponse == null ||
                             loginResponse['access_token'] == null) {
-                          value.Show_Snackbar("مشکل نا شناخته رخ داد", 1000,
-                              type: 3);
+                          value.Show_Snackbar(
+                            "مشکل نا شناخته رخ داد",
+                            1000,
+                            type: 3,
+                          );
                           return;
                         }
 
@@ -195,16 +226,26 @@ class _LoginState extends State<Login> {
                     child: SizedBox(
                       height: 68.h,
                       width: 320.w,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'ثبت نام در نوروانا',
-                          style: TextStyle(
-                            color: FIGMA.Orn,
-                            fontSize: 11.sp,
-                            fontFamily: FIGMA.abreb,
+                      child: Row(
+                        mainAxisAlignment: .center,
+                        children: [
+                          Text(
+                            'ثبت نام',
+                            style: TextStyle(
+                              color: FIGMA.Prn,
+                              fontSize: 11.sp,
+                              fontFamily: FIGMA.estsb,
+                            ),
                           ),
-                        ),
+                          Text(
+                            '  حساب کاربری ندارید؟',
+                            style: TextStyle(
+                              color: FIGMA.Gray4,
+                              fontSize: 11.sp,
+                              fontFamily: FIGMA.estre,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     onTap: () {

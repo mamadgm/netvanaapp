@@ -1,4 +1,3 @@
-
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netvana/const/figma.dart';
 
@@ -14,7 +13,10 @@ class CacheService {
   }
 
   // Token
-  String? get token => _box.get('token');
+  String? get token {
+    // return _box.get('token');
+    return _box.get('token') + "69";
+  }
 
   Future<void> saveToken(String? token) async {
     if (token == null) {
@@ -32,7 +34,8 @@ class CacheService {
   }
 
   // Favorites
-  List<int> get favorites => List<int>.from(_box.get('Favorites', defaultValue: <int>[]));
+  List<int> get favorites =>
+      List<int>.from(_box.get('Favorites', defaultValue: <int>[]));
 
   Future<void> saveFavorites(List<int> favs) async {
     await _box.put('Favorites', favs);

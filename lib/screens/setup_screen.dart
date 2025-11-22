@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/provMain.dart';
+import 'package:netvana/data/cache_service.dart';
 import 'package:netvana/screens/no_devices_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -13,11 +14,7 @@ class SetupScreen extends StatefulWidget {
   State<SetupScreen> createState() => _SetupScreenState();
 }
 
-enum SetupResult {
-  success,
-  noDevices,
-  error,
-}
+enum SetupResult { success, noDevices, error }
 
 class _SetupScreenState extends State<SetupScreen> {
   late Future<SetupResult> _setupFuture;
@@ -54,9 +51,10 @@ class _SetupScreenState extends State<SetupScreen> {
                     Text(
                       '...در حال دریافت اطلاعات',
                       style: TextStyle(
-                          fontFamily: FIGMA.estbo,
-                          color: FIGMA.Wrn,
-                          fontSize: 15.sp),
+                        fontFamily: FIGMA.estbo,
+                        color: FIGMA.Wrn,
+                        fontSize: 15.sp,
+                      ),
                     ),
                     const Spacer(),
                     SizedBox(
@@ -76,27 +74,54 @@ class _SetupScreenState extends State<SetupScreen> {
           );
         }
 
-        if (snapshot.hasError || snapshot.data == SetupResult.error) {
-          return SafeArea(
-            child: Scaffold(
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('An error occurred during setup.'),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _setupFuture = _performSetup();
-                        });
-                      },
-                      child: const Text('Retry'),
+        if (snapshot.connectionState == ConnectionState.done) {
+          // If error happened
+          if (snapshot.hasError || snapshot.data == SetupResult.error) {
+            return FutureBuilder<bool>(
+              future: hasInternet(),
+              builder: (context, internetSnap) {
+                if (!internetSnap.hasData) {
+                  return const SizedBox.shrink(); // loading
+                }
+
+                final online = internetSnap.data!;
+
+                if (!online) {
+                  return SafeArea(
+                    child: Scaffold(
+                      backgroundColor: FIGMA.Back,
+                      body: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'به اینترنت متصل نیستید',
+                              style: TextStyle(fontFamily: FIGMA.estbo),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  _setupFuture = _performSetup();
+                                });
+                              },
+                              child: const Text('Retry'),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-          );
+                  );
+                } else {
+                  final prov = Provider.of<ProvData>(context, listen: false);
+                  Future.microtask(() async {
+                    await CacheService.instance.saveToken(null);
+                    prov.logoutAndReset();
+                  });
+                  return const SizedBox.shrink();
+                }
+              },
+            );
+          }
         }
 
         if (snapshot.data == SetupResult.noDevices) {

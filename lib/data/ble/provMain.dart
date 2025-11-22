@@ -35,12 +35,7 @@ class Device {
   }
 }
 
-enum WSStatus {
-  connecting,
-  connected,
-  disconnected,
-  error;
-}
+enum WSStatus { connecting, connected, disconnected, error }
 
 class ProvData extends ChangeNotifier {
   WSStatus wsChannel = WSStatus.disconnected;
@@ -315,7 +310,9 @@ class ProvData extends ChangeNotifier {
   Future<void> getDetailsFromNet() async {
     try {
       final result = await NetClass().getDeviceVariables(
-          CacheService.instance.token!, selectedDevice.id.toString());
+        CacheService.instance.token!,
+        selectedDevice.id.toString(),
+      );
 
       if (result!.toString().length < 10) {
         debugPrint("empty device");
@@ -361,9 +358,7 @@ class ProvData extends ChangeNotifier {
         duration: Duration(milliseconds: dur),
         content: _buildSnackBarContent(type, value),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );
   }
@@ -418,12 +413,9 @@ class ProvData extends ChangeNotifier {
 
   Future<void> checkTheme() async {
     // Find the theme that matches your current mode
-    final matchedTheme = themes.firstWhere(
-      (t) {
-        return t['id'] == maincycle_mode;
-      },
-      orElse: () => null,
-    );
+    final matchedTheme = themes.firstWhere((t) {
+      return t['id'] == maincycle_mode;
+    }, orElse: () => null);
 
     if (matchedTheme == null) {
       debugPrint('⚠️ No theme found for mode $maincycle_mode');

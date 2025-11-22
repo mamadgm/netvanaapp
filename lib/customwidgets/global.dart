@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,8 +25,9 @@ void showWiFiDialog(BuildContext context) {
             borderSide: BorderSide.none,
           ),
           backgroundColor: FIGMA.Gray,
-          content: StatefulBuilder(builder: (context, setState) {
-            return EasyContainer(
+          content: StatefulBuilder(
+            builder: (context, setState) {
+              return EasyContainer(
                 width: MediaQuery.of(context).size.width / 1.1,
                 height: MediaQuery.of(context).size.height * 0.70,
                 color: FIGMA.Gray,
@@ -43,18 +45,20 @@ void showWiFiDialog(BuildContext context) {
                       const Text(
                         "تنظیم مجدد دستگاه",
                         style: TextStyle(
-                            color: FIGMA.Wrn2,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: FIGMA.abrlb),
+                          color: FIGMA.Wrn2,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: FIGMA.abrlb,
+                        ),
                       ),
                       const SizedBox(height: 20),
                       const Text(
                         "این مرحله فقط زمانی لازم است که:",
                         style: TextStyle(
-                            color: FIGMA.Wrn2,
-                            fontSize: 14,
-                            fontFamily: FIGMA.estsb),
+                          color: FIGMA.Wrn2,
+                          fontSize: 14,
+                          fontFamily: FIGMA.estsb,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       const Column(
@@ -63,25 +67,28 @@ void showWiFiDialog(BuildContext context) {
                           Text(
                             "• مودم جدید گرفته‌اید",
                             style: TextStyle(
-                                color: FIGMA.Orn,
-                                fontSize: 12,
-                                fontFamily: FIGMA.estsb),
+                              color: FIGMA.Orn,
+                              fontSize: 12,
+                              fontFamily: FIGMA.estsb,
+                            ),
                             textAlign: TextAlign.right,
                           ),
                           Text(
                             "• رمز وای‌فای عوض شده است",
                             style: TextStyle(
-                                color: FIGMA.Orn,
-                                fontSize: 12,
-                                fontFamily: FIGMA.estsb),
+                              color: FIGMA.Orn,
+                              fontSize: 12,
+                              fontFamily: FIGMA.estsb,
+                            ),
                             textAlign: TextAlign.right,
                           ),
                           Text(
                             "• با دستگاه نیاز به اتصال دوباره دارد",
                             style: TextStyle(
-                                color: FIGMA.Orn,
-                                fontSize: 12,
-                                fontFamily: FIGMA.estsb),
+                              color: FIGMA.Orn,
+                              fontSize: 12,
+                              fontFamily: FIGMA.estsb,
+                            ),
                             textAlign: TextAlign.right,
                           ),
                         ],
@@ -90,37 +97,44 @@ void showWiFiDialog(BuildContext context) {
                       const Text(
                         "نگران نباشید! دستگاه به‌صورت خودکار تلاش می‌کند به مودم قبلی وصل شود. حتی اگر دستگاه ریست شود، دوباره قابل تنظیم خواهد بود.",
                         style: TextStyle(
-                            color: FIGMA.Gray4,
-                            fontSize: 12,
-                            height: 1.6,
-                            fontFamily: FIGMA.estbo),
+                          color: FIGMA.Gray4,
+                          fontSize: 12,
+                          height: 1.6,
+                          fontFamily: FIGMA.estbo,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 24),
                       const Text(
                         "لطفاً مراحل زیر را انجام دهید:",
                         style: TextStyle(
-                            color: FIGMA.Wrn2,
-                            fontSize: 14,
-                            fontFamily: FIGMA.estsb),
+                          color: FIGMA.Wrn2,
+                          fontSize: 14,
+                          fontFamily: FIGMA.estsb,
+                        ),
                       ),
                       const SizedBox(height: 12),
                       const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                              "1. دوربین گوشی را باز کنید و QR کدی که روی کارت شناسنامه دستگاه هست را اسکن کنید تا به دستگاه وصل شوید.",
-                              style: TextStyle(
-                                  color: FIGMA.Gray4,
-                                  fontSize: 12,
-                                  height: 1.5,
-                                  fontFamily: FIGMA.estsb)),
-                          Text("2. مطمئن شوید که به دستگاه متصل شدید.",
-                              style: TextStyle(
-                                  color: FIGMA.Gray4,
-                                  fontSize: 12,
-                                  height: 1.5,
-                                  fontFamily: FIGMA.estsb)),
+                            "1. دوربین گوشی را باز کنید و QR کدی که روی کارت شناسنامه دستگاه هست را اسکن کنید تا به دستگاه وصل شوید.",
+                            style: TextStyle(
+                              color: FIGMA.Gray4,
+                              fontSize: 12,
+                              height: 1.5,
+                              fontFamily: FIGMA.estsb,
+                            ),
+                          ),
+                          Text(
+                            "2. مطمئن شوید که به دستگاه متصل شدید.",
+                            style: TextStyle(
+                              color: FIGMA.Gray4,
+                              fontSize: 12,
+                              height: 1.5,
+                              fontFamily: FIGMA.estsb,
+                            ),
+                          ),
                           Text(
                             "3. به این صفحه برگردید (این پاپ‌آپ را نبندید).",
                             style: TextStyle(
@@ -153,9 +167,10 @@ void showWiFiDialog(BuildContext context) {
                         child: const Text(
                           "باز کردن صفحه تنظیمات دستگاه",
                           style: TextStyle(
-                              color: FIGMA.Wrn,
-                              fontSize: 14,
-                              fontFamily: FIGMA.estsb),
+                            color: FIGMA.Wrn,
+                            fontSize: 14,
+                            fontFamily: FIGMA.estsb,
+                          ),
                         ),
                         onTap: () async {
                           final url = Uri.parse('http://192.168.4.1');
@@ -166,8 +181,10 @@ void showWiFiDialog(BuildContext context) {
                       ),
                     ],
                   ),
-                ));
-          }),
+                ),
+              );
+            },
+          ),
         ),
       );
     },
@@ -189,15 +206,17 @@ Future<SetupResult> setup(ProvData funcy) async {
     }
 
     final devices = (userData['devices'] as List)
-        .map((d) => Device(
-              id: d['id'],
-              macAddress: d['mac_address'],
-              partNumber: d['part_number'],
-              isOnline: d['is_online'],
-              assembledAt: DateTime.parse(d['assembled_at']),
-              categoryName: d['category_name'],
-              versionName: d['version_name'],
-            ))
+        .map(
+          (d) => Device(
+            id: d['id'],
+            macAddress: d['mac_address'],
+            partNumber: d['part_number'],
+            isOnline: d['is_online'],
+            assembledAt: DateTime.parse(d['assembled_at']),
+            categoryName: d['category_name'],
+            versionName: d['version_name'],
+          ),
+        )
         .toList();
 
     if (devices.isEmpty) {
@@ -211,8 +230,10 @@ Future<SetupResult> setup(ProvData funcy) async {
     // Load other data
     var sdcardBox = Hive.box(FIGMA.HIVE2);
     for (var i = 0; i < 5; i++) {
-      funcy.Defalult_colors[i] =
-          sdcardBox.get("COLOR$i", defaultValue: 0xFFFFFF);
+      funcy.Defalult_colors[i] = sdcardBox.get(
+        "COLOR$i",
+        defaultValue: 0xFFFFFF,
+      );
     }
     await funcy.getDetailsFromNet();
 
@@ -225,4 +246,11 @@ Future<SetupResult> setup(ProvData funcy) async {
 
 void showCannotSend(ProvData value) {
   value.Show_Snackbar("هیچ اتصالی وجود ندارد", 1000);
+}
+
+Future<bool> hasInternet() async {
+  final result = await Connectivity().checkConnectivity();
+  return result == ConnectivityResult.mobile ||
+      result == ConnectivityResult.wifi ||
+      result == ConnectivityResult.ethernet;
 }
