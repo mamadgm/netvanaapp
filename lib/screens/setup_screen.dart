@@ -113,7 +113,7 @@ class _SetupScreenState extends State<SetupScreen> {
                   );
                 } else {
                   final prov = Provider.of<ProvData>(context, listen: false);
-                  Future.microtask(() async {
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
                     await CacheService.instance.saveToken(null);
                     prov.logoutAndReset();
                   });

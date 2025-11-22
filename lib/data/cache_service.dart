@@ -14,8 +14,8 @@ class CacheService {
 
   // Token
   String? get token {
-    // return _box.get('token');
-    return _box.get('token') + "69";
+    return _box.get('token');
+    // return _box.get('token') + "69";
   }
 
   Future<void> saveToken(String? token) async {

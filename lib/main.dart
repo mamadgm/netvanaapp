@@ -60,7 +60,6 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final provData = Provider.of<ProvData>(context);
     final token = CacheService.instance.token;
-    debugPrint("Token $token");
 
     if (token == null || token.isEmpty) {
       return const Login();

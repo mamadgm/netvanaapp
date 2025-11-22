@@ -30,83 +30,9 @@ class SignupState extends State<Signup> {
   final TextEditingController formPass1 = TextEditingController();
   final TextEditingController formPass2 = TextEditingController();
   final TextEditingController formOTP = TextEditingController();
-  Jalali? pickedDate;
-  String? birthLabel;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  Future<void> getDate() async {
-    pickedDate = await showModalBottomSheet<Jalali>(
-        backgroundColor: FIGMA.Gray4, // Background color from FIGMA
-        context: context,
-        builder: (context) {
-          Jalali? tempPickedDate;
-          return SizedBox(
-            height: 250,
-            child: Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    CupertinoButton(
-                      child: Text(
-                        'لغو',
-                        style: TextStyle(
-                            fontFamily: FIGMA.estbo,
-                            color: FIGMA.Wrn,
-                            fontSize: 9.sp),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    CupertinoButton(
-                      child: Text('تایید',
-                          style: TextStyle(
-                              fontFamily: FIGMA.estbo,
-                              color: FIGMA.Wrn,
-                              fontSize: 9.sp)),
-                      onPressed: () {
-                        debugPrint("date is ${tempPickedDate ?? Jalali.now()}");
-                        Navigator.of(context)
-                            .pop(tempPickedDate ?? Jalali.now());
-                      },
-                    ),
-                  ],
-                ),
-                const Divider(
-                  height: 0,
-                  thickness: 1,
-                ),
-                Expanded(
-                  child: Localizations.override(
-                    context: context,
-                    locale: const Locale('fa', 'IR'),
-                    child: PersianCupertinoDatePicker(
-                      backgroundColor:
-                          FIGMA.Gray4, // Background color from FIGMA
-                      initialDateTime: Jalali.now(),
-                      mode: PersianCupertinoDatePickerMode.date,
-                      onDateTimeChanged: (Jalali dateTime) {
-                        tempPickedDate = dateTime;
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
-
-    setState(() {
-      if (pickedDate != null) {
-        birthLabel = pickedDate!.formatCompactDate();
-      }
-    });
-  }
+  final TextEditingController _yearController = TextEditingController();
+  final TextEditingController _monthController = TextEditingController();
+  final TextEditingController _dayController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +54,9 @@ class SignupState extends State<Signup> {
                 clipBehavior: Clip.antiAlias,
                 child: BackdropFilter(
                   filter: ui.ImageFilter.blur(
-                      sigmaX: 20.0, sigmaY: 20.0), // Blur effect
+                    sigmaX: 20.0,
+                    sigmaY: 20.0,
+                  ), // Blur effect
                   child: Opacity(
                     opacity: 0.1, // Adjust opacity for subtlety
                     child: Transform.scale(
@@ -137,11 +65,14 @@ class SignupState extends State<Signup> {
                         quarterTurns: 90,
                         child: SvgPicture.asset(
                           'assets/pattern.svg', // Replace with your SVG file path
-                          width:
-                              MediaQuery.of(context).size.width, // Full width
+                          width: MediaQuery.of(
+                            context,
+                          ).size.width, // Full width
                           fit: BoxFit.cover, // Maintain aspect ratio
-                          colorFilter: const ColorFilter.mode(Colors.white70,
-                              BlendMode.srcIn), // Lighten the pattern
+                          colorFilter: const ColorFilter.mode(
+                            Colors.white70,
+                            BlendMode.srcIn,
+                          ), // Lighten the pattern
                         ),
                       ),
                     ),
@@ -192,12 +123,13 @@ class SignupState extends State<Signup> {
                             margin: 0,
                             borderRadius: 0,
                             child: EyeTextField(
-                                controller: formOTP,
-                                hintText: "کد یکبار مصرف",
-                                showEye: false,
-                                center: true,
-                                hintAuto: "OTP",
-                                keyboardType: TextInputType.number),
+                              controller: formOTP,
+                              hintText: "کد یکبار مصرف",
+                              showEye: false,
+                              center: true,
+                              hintAuto: "OTP",
+                              keyboardType: TextInputType.number,
+                            ),
                           ),
                           SizedBox(height: 24.h),
                           Text(
@@ -219,10 +151,11 @@ class SignupState extends State<Signup> {
                             margin: 0,
                             borderRadius: 0,
                             child: EyeTextField(
-                                controller: formFirst,
-                                hintText: "نام",
-                                showEye: false,
-                                hintAuto: AutofillHints.name),
+                              controller: formFirst,
+                              hintText: "نام",
+                              showEye: false,
+                              hintAuto: AutofillHints.name,
+                            ),
                           ),
                           EasyContainer(
                             height: HEIGHTTEXT.h,
@@ -240,24 +173,46 @@ class SignupState extends State<Signup> {
                               hintAuto: AutofillHints.familyName,
                             ),
                           ),
-                          EasyContainer(
-                              height: HEIGHTTEXT.h,
-                              width: 320.w,
-                              color: FIGMA.Orn,
-                              borderWidth: 0,
-                              elevation: 0,
-                              padding: HEIGHTTEXTPADDING,
-                              borderRadius: 11,
-                              child: Text(
-                                birthLabel ?? "ورود تاریخ تولد",
-                                style: TextStyle(
-                                    fontFamily: FIGMA.abrmd,
-                                    fontSize: 13.sp,
-                                    color: FIGMA.Wrn),
-                              ),
-                              onTap: () async {
-                                await getDate();
-                              }),
+                          SizedBox(
+                            height: 60.h,
+                            width: 320.w,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: EyeTextField(
+                                    controller: _dayController,
+                                    hintText: "روز",
+                                    showEye: false,
+                                    center: true,
+                                    keyboardType: TextInputType.number,
+                                    hintAuto: "day",
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: EyeTextField(
+                                    controller: _monthController,
+                                    hintText: "ماه",
+                                    showEye: false,
+                                    center: true,
+                                    keyboardType: TextInputType.number,
+                                    hintAuto: "month",
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: EyeTextField(
+                                    controller: _yearController,
+                                    hintText: "سال",
+                                    showEye: false,
+                                    center: true,
+                                    keyboardType: TextInputType.number,
+                                    hintAuto: "year",
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                           SizedBox(height: 24.h),
                           Text(
                             "این اطلاعات یادتون نره",
@@ -321,9 +276,7 @@ class SignupState extends State<Signup> {
                           ),
                         ],
                       ),
-                      SizedBox(
-                        width: 24.w,
-                      ),
+                      SizedBox(width: 24.w),
                     ],
                   ),
                   EasyContainer(
@@ -349,25 +302,28 @@ class SignupState extends State<Signup> {
                       try {
                         await NetClass()
                             .signUp(
-                                value.token,
-                                formFirst.text,
-                                formLast.text,
-                                _pickedDateToIso(),
-                                formUsername.text,
-                                formPass1.text,
-                                formPass2.text,
-                                formOTP.text,
-                                value.phoneNumber)
+                              value.token,
+                              formFirst.text,
+                              formLast.text,
+                              _pickedDateToIso(),
+                              formUsername.text,
+                              formPass1.text,
+                              formPass2.text,
+                              formOTP.text,
+                              value.phoneNumber,
+                            )
                             .timeout(const Duration(seconds: 45));
                         value.Show_Snackbar(
-                            "اکانت شما ثبت شد , با رمز عبور وارد شوید", 2000,
-                            type: 2);
+                          "اکانت شما ثبت شد , با رمز عبور وارد شوید",
+                          2000,
+                          type: 2,
+                        );
                         // Wait until snackbar disappears
                         Future.delayed(const Duration(milliseconds: 2000), () {
                           Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
-                                builder: (_) =>
-                                    const AuthWrapper()), // your initial screen
+                              builder: (_) => const AuthWrapper(),
+                            ), // your initial screen
                             (route) => false,
                           );
                         });
@@ -377,9 +333,7 @@ class SignupState extends State<Signup> {
                       }
                     },
                   ),
-                  SizedBox(
-                    height: 350.h,
-                  )
+                  SizedBox(height: 350.h),
                 ],
               ),
             ),
@@ -391,22 +345,24 @@ class SignupState extends State<Signup> {
   }
 
   String _pickedDateToIso() {
-    if (pickedDate == null) {
-      return DateTime.now().toUtc().toIso8601String();
+    if (_yearController.text.isEmpty ||
+        _monthController.text.isEmpty ||
+        _dayController.text.isEmpty) {
+      return "";
     }
-    // Convert Jalali to Gregorian
-    final g = pickedDate!.toGregorian();
-    final dateTime = DateTime(
-      g.year,
-      g.month,
-      g.day,
-      0,
-      0,
-      0,
-      0,
-      0,
-    ).toUtc();
-    return dateTime.toIso8601String(); // e.g. 2025-10-20T00:00:00.000Z
+    try {
+      final year = int.parse(_yearController.text);
+      final month = int.parse(_monthController.text);
+      final day = int.parse(_dayController.text);
+
+      final jalaliDate = Jalali(year, month, day);
+      final g = jalaliDate.toGregorian();
+      final dateTime = DateTime(g.year, g.month, g.day).toUtc();
+      return dateTime.toIso8601String(); // e.g. 2025-10-20T00:00:00.000Z
+    } catch (e) {
+      // Return empty string if parsing fails, validation will catch it
+      return "";
+    }
   }
 
   bool checkAll(RegisterProvider value) {
@@ -418,29 +374,43 @@ class SignupState extends State<Signup> {
       return false;
     }
 
-    if (pickedDate == null) {
+    if (_yearController.text.isEmpty ||
+        _monthController.text.isEmpty ||
+        _dayController.text.isEmpty) {
       value.Show_Snackbar("تاریخ تولد خود را وارد کنید", 1000, type: 3);
       return false;
     }
-    final g = pickedDate!.toGregorian();
-    final birthDate = DateTime(g.year, g.month, g.day);
-    final now = DateTime.now();
-    final age = now.year -
-        birthDate.year -
-        ((now.month < birthDate.month ||
-                (now.month == birthDate.month && now.day < birthDate.day))
-            ? 1
-            : 0);
-    if (age < 7) {
-      value.Show_Snackbar("سن شما باید بیشتر از ۷ سال باشد", 1000, type: 3);
+
+    try {
+      final year = int.parse(_yearController.text);
+      final month = int.parse(_monthController.text);
+      final day = int.parse(_dayController.text);
+      final pickedDate = Jalali(year, month, day);
+      final g = pickedDate.toGregorian();
+      final birthDate = DateTime(g.year, g.month, g.day);
+      final now = DateTime.now();
+      final age =
+          now.year -
+          birthDate.year -
+          ((now.month < birthDate.month ||
+                  (now.month == birthDate.month && now.day < birthDate.day))
+              ? 1
+              : 0);
+      if (age < 7) {
+        value.Show_Snackbar("سن شما باید بیشتر از ۷ سال باشد", 1000, type: 3);
+        return false;
+      }
+    } catch (e) {
+      value.Show_Snackbar("تاریخ تولد وارد شده معتبر نیست", 1000, type: 3);
       return false;
     }
 
     if (!usernameRegex.hasMatch(formUsername.text)) {
       value.Show_Snackbar(
-          "نام کاربری باید با حروف انگلیسی شروع شود و حداقل ۵ کاراکتر باشد",
-          1500,
-          type: 3);
+        "نام کاربری باید با حروف انگلیسی شروع شود و حداقل ۵ کاراکتر باشد",
+        1500,
+        type: 3,
+      );
       return false;
     }
 

@@ -104,6 +104,9 @@ class ProvData extends ChangeNotifier {
 
   void setIsUserLoggedIn(bool p, {bool update = false}) {
     isUserLoggedIn = p;
+    if (update) {
+      notifyListeners();
+    }
   }
 
   void logoutAndReset() {
