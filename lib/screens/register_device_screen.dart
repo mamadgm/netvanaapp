@@ -11,12 +11,7 @@ import 'package:netvana/data/cache_service.dart';
 import 'package:netvana/data/ble/provMain.dart';
 import 'package:provider/provider.dart';
 
-enum RegisterState {
-  start,
-  loading,
-  error,
-  success,
-}
+enum RegisterState { start, loading, error, success }
 
 class RegisterDeviceScreen extends StatefulWidget {
   const RegisterDeviceScreen({super.key});
@@ -82,6 +77,7 @@ class _RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
         SizedBox(
           width: 320.w,
           child: TextField(
+            keyboardType: .number,
             controller: _codeController,
             textAlign: TextAlign.center,
             decoration: InputDecoration(

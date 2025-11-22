@@ -130,7 +130,7 @@ class RegisterState extends State<Register> {
                     margin: 0,
                     borderRadius: 0,
                     child: EyeTextField(
-                      keyboardType: TextInputType.number,
+                      keyboardType: .number,
                       controller: formphone,
                       hintText: "شماره تلفن",
                       showEye: false,
