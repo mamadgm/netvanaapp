@@ -55,7 +55,9 @@ class RegisterState extends State<Register> {
                 clipBehavior: Clip.antiAlias,
                 child: BackdropFilter(
                   filter: ui.ImageFilter.blur(
-                      sigmaX: 20.0, sigmaY: 20.0), // Blur effect
+                    sigmaX: 20.0,
+                    sigmaY: 20.0,
+                  ), // Blur effect
                   child: Opacity(
                     opacity: 0.1, // Adjust opacity for subtlety
                     child: Transform.scale(
@@ -64,11 +66,14 @@ class RegisterState extends State<Register> {
                         quarterTurns: 90,
                         child: SvgPicture.asset(
                           'assets/pattern.svg', // Replace with your SVG file path
-                          width:
-                              MediaQuery.of(context).size.width, // Full width
+                          width: MediaQuery.of(
+                            context,
+                          ).size.width, // Full width
                           fit: BoxFit.cover, // Maintain aspect ratio
-                          colorFilter: const ColorFilter.mode(Colors.white70,
-                              BlendMode.srcIn), // Lighten the pattern
+                          colorFilter: const ColorFilter.mode(
+                            Colors.white70,
+                            BlendMode.srcIn,
+                          ), // Lighten the pattern
                         ),
                       ),
                     ),
@@ -112,9 +117,7 @@ class RegisterState extends State<Register> {
                           ],
                         ),
                       ),
-                      const SizedBox(
-                        width: 20,
-                      ),
+                      const SizedBox(width: 20),
                     ],
                   ),
                   EasyContainer(
@@ -127,11 +130,13 @@ class RegisterState extends State<Register> {
                     margin: 0,
                     borderRadius: 0,
                     child: EyeTextField(
-                        keyboardType: TextInputType.number,
-                        controller: formphone,
-                        hintText: "شماره تلفن",
-                        showEye: false,
-                        hintAuto: AutofillHints.username),
+                      keyboardType: TextInputType.number,
+                      controller: formphone,
+                      hintText: "شماره تلفن",
+                      showEye: false,
+                      hintAuto: AutofillHints.username,
+                      transparentBg: true,
+                    ),
                   ),
                   EasyContainer(
                     height: 68.h,
@@ -166,12 +171,8 @@ class RegisterState extends State<Register> {
                       }
                     },
                   ),
-                  SizedBox(
-                    height: 8.h,
-                  ),
-                  SizedBox(
-                    height: 68.h,
-                  ),
+                  SizedBox(height: 8.h),
+                  SizedBox(height: 68.h),
                 ],
               ),
             ),

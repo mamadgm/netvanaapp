@@ -88,178 +88,180 @@ class _LoginState extends State<Login> {
             ),
             // Existing content in a SingleChildScrollView
             SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: _topPadding),
-                  // RTL text
-                  Row(
-                    mainAxisAlignment: .end,
-                    children: [
-                      Column(
-                        crossAxisAlignment: .end,
-                        children: [
-                          Text(
-                            "خوش آمدید",
-                            style: TextStyle(
-                              fontFamily: FIGMA.abrlb,
-                              fontSize: 24.sp,
-                              color: FIGMA.Wrn,
+              child: AutofillGroup(
+                child: Column(
+                  children: [
+                    SizedBox(height: _topPadding),
+                    // RTL text
+                    Row(
+                      mainAxisAlignment: .end,
+                      children: [
+                        Column(
+                          crossAxisAlignment: .end,
+                          children: [
+                            Text(
+                              "خوش آمدید",
+                              style: TextStyle(
+                                fontFamily: FIGMA.abrlb,
+                                fontSize: 24.sp,
+                                color: FIGMA.Wrn,
+                              ),
+                              textAlign: TextAlign.end,
+                              textDirection: TextDirection.rtl,
                             ),
-                            textAlign: TextAlign.end,
-                            textDirection: TextDirection.rtl,
-                          ),
-                          Text(
-                            "برای ورود به اپلیکیشن رمز عبور\n و شماره خود را وارد کنید",
-                            style: TextStyle(
-                              fontFamily: FIGMA.estre,
-                              fontSize: 14.sp,
-                              color: FIGMA.Gray4,
+                            Text(
+                              "برای ورود به اپلیکیشن رمز عبور\n و شماره خود را وارد کنید",
+                              style: TextStyle(
+                                fontFamily: FIGMA.estre,
+                                fontSize: 14.sp,
+                                color: FIGMA.Gray4,
+                              ),
+                              textAlign: TextAlign.end,
                             ),
-                            textAlign: TextAlign.end,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 20),
-                    ],
-                  ),
-                  EasyContainer(
-                    height: 68.h,
-                    width: 320.w,
-                    color: Colors.black12.withOpacity(0),
-                    borderWidth: 0,
-                    elevation: 0,
-                    padding: 0,
-                    margin: 0,
-                    borderRadius: 0,
-                    child: EyeTextField(
-                      controller: formphone,
-                      hintText: "شماره تلفن",
-                      showEye: false,
-                      hintAuto: AutofillHints.username,
-                      keyboardType: .number,
-                      transparentBg: true,
+                          ],
+                        ),
+                        const SizedBox(width: 20),
+                      ],
                     ),
-                  ),
-                  EasyContainer(
-                    height: 68.h,
-                    width: 320.w,
-                    color: Colors.black12.withOpacity(0),
-                    borderWidth: 0,
-                    elevation: 0,
-                    padding: 0,
-                    margin: 0,
-                    borderRadius: 0,
-                    child: EyeTextField(
-                      controller: formpass,
-                      hintText: "رمز عبور",
-                      hintAuto: AutofillHints.password,
-                      transparentBg: true,
-                    ),
-                  ),
-                  GestureDetector(
-                    child: SizedBox(
-                      height: 30.h,
-                      width: 320.w,
-                      child: Row(
-                        mainAxisAlignment: .start,
-                        children: [
-                          SizedBox(width: 4.w),
-                          Text(
-                            'فراموشی رمز عبور',
-                            style: TextStyle(
-                              color: FIGMA.Gray4,
-                              fontSize: 11.sp,
-                              fontFamily: FIGMA.estre,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    onTap: () {},
-                  ),
-                  SizedBox(height: 6.h),
-                  EasyContainer(
-                    height: 68.h,
-                    width: 320.w,
-                    color: FIGMA.Prn,
-                    borderWidth: 0,
-                    elevation: 0,
-                    padding: 0,
-                    borderRadius: 17,
-                    child: Text(
-                      'ورود',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontFamily: FIGMA.estbo,
-                      ),
-                    ),
-                    onTap: () async {
-                      try {
-                        var loginResponse = await NetClass()
-                            .login(formphone.text, formpass.text)
-                            .timeout(const Duration(seconds: 45));
-
-                        if (loginResponse == null ||
-                            loginResponse['access_token'] == null) {
-                          value.Show_Snackbar(
-                            "مشکل نا شناخته رخ داد",
-                            1000,
-                            type: 3,
-                          );
-                          return;
-                        }
-
-                        final token = loginResponse['access_token'];
-
-                        await CacheService.instance.saveToken(token);
-
-                        // HERE RESTART
-                        value.logoutAndReset();
-                      } catch (e) {
-                        final detail = extractDetailFromException(e);
-                        value.Show_Snackbar(detail!, 1000, type: 3);
-                      }
-                    },
-                  ),
-                  GestureDetector(
-                    child: SizedBox(
+                    EasyContainer(
                       height: 68.h,
                       width: 320.w,
-                      child: Row(
-                        mainAxisAlignment: .center,
-                        children: [
-                          Text(
-                            'ثبت نام',
-                            style: TextStyle(
-                              color: FIGMA.Prn,
-                              fontSize: 11.sp,
-                              fontFamily: FIGMA.estsb,
-                            ),
-                          ),
-                          Text(
-                            '  حساب کاربری ندارید؟',
-                            style: TextStyle(
-                              color: FIGMA.Gray4,
-                              fontSize: 11.sp,
-                              fontFamily: FIGMA.estre,
-                            ),
-                          ),
-                        ],
+                      color: Colors.black12.withOpacity(0),
+                      borderWidth: 0,
+                      elevation: 0,
+                      padding: 0,
+                      margin: 0,
+                      borderRadius: 0,
+                      child: EyeTextField(
+                        controller: formphone,
+                        hintText: "شماره تلفن",
+                        showEye: false,
+                        hintAuto: AutofillHints.telephoneNumber,
+                        keyboardType: .number,
+                        transparentBg: true,
                       ),
                     ),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const Register(),
+                    EasyContainer(
+                      height: 68.h,
+                      width: 320.w,
+                      color: Colors.black12.withOpacity(0),
+                      borderWidth: 0,
+                      elevation: 0,
+                      padding: 0,
+                      margin: 0,
+                      borderRadius: 0,
+                      child: EyeTextField(
+                        controller: formpass,
+                        hintText: "رمز عبور",
+                        hintAuto: AutofillHints.password,
+                        transparentBg: true,
+                      ),
+                    ),
+                    GestureDetector(
+                      child: SizedBox(
+                        height: 30.h,
+                        width: 320.w,
+                        child: Row(
+                          mainAxisAlignment: .start,
+                          children: [
+                            SizedBox(width: 4.w),
+                            Text(
+                              'فراموشی رمز عبور',
+                              style: TextStyle(
+                                color: FIGMA.Gray4,
+                                fontSize: 11.sp,
+                                fontFamily: FIGMA.estre,
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
-                ],
+                      ),
+                      onTap: () {},
+                    ),
+                    SizedBox(height: 6.h),
+                    EasyContainer(
+                      height: 68.h,
+                      width: 320.w,
+                      color: FIGMA.Prn,
+                      borderWidth: 0,
+                      elevation: 0,
+                      padding: 0,
+                      borderRadius: 17,
+                      child: Text(
+                        'ورود',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontFamily: FIGMA.estbo,
+                        ),
+                      ),
+                      onTap: () async {
+                        try {
+                          var loginResponse = await NetClass()
+                              .login(formphone.text, formpass.text)
+                              .timeout(const Duration(seconds: 45));
+
+                          if (loginResponse == null ||
+                              loginResponse['access_token'] == null) {
+                            value.Show_Snackbar(
+                              "مشکل نا شناخته رخ داد",
+                              1000,
+                              type: 3,
+                            );
+                            return;
+                          }
+
+                          final token = loginResponse['access_token'];
+
+                          await CacheService.instance.saveToken(token);
+
+                          // HERE RESTART
+                          value.logoutAndReset();
+                        } catch (e) {
+                          final detail = extractDetailFromException(e);
+                          value.Show_Snackbar(detail!, 1000, type: 3);
+                        }
+                      },
+                    ),
+                    GestureDetector(
+                      child: SizedBox(
+                        height: 68.h,
+                        width: 320.w,
+                        child: Row(
+                          mainAxisAlignment: .center,
+                          children: [
+                            Text(
+                              'ثبت نام',
+                              style: TextStyle(
+                                color: FIGMA.Prn,
+                                fontSize: 11.sp,
+                                fontFamily: FIGMA.estsb,
+                              ),
+                            ),
+                            Text(
+                              '  حساب کاربری ندارید؟',
+                              style: TextStyle(
+                                color: FIGMA.Gray4,
+                                fontSize: 11.sp,
+                                fontFamily: FIGMA.estre,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const Register(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
+              // SVG pattern layer
             ),
-            // SVG pattern layer
           ],
         ),
       ),

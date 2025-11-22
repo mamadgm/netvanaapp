@@ -1,38 +1,74 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+  <head>
+    <base href="/" />
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <meta name="description" content="A new Flutter project." />
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+    <!-- iOS meta tags & icons -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="netvana" />
+    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="/">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png" />
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+    <title>netvana</title>
+    <link rel="manifest" href="manifest.json" />
 
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="netvana">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+    <style>
+      /* Fullscreen splash */
+      #splash {
+        position: fixed;
+        inset: 0;
+        background: #0d0d0d; /* your color */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #00a594; /* text color */
+        font-family: sans-serif;
+        transition: opacity 0.5s ease;
+        z-index: 9999;
+      }
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+      .loader {
+        width: 48px;
+        height: 48px;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #00a594;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
 
-  <title>netvana</title>
-  <link rel="manifest" href="manifest.json">
-</head>
-<body>
-  <script src="flutter_bootstrap.js" async></script>
-</body>
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Visible immediately, before Flutter loads -->
+    <div id="splash">
+      <div class="loader"></div>
+      <div>...در حال بارگزاری</div>
+    </div>
+
+    <!-- Flutter engine -->
+    <script src="flutter_bootstrap.js" async></script>
+
+    <!-- Remove splash when Flutter finishes -->
+    <script>
+      window.addEventListener("flutter-first-frame", function () {
+        const splash = document.getElementById("splash");
+        splash.style.opacity = 0;
+        setTimeout(() => splash.remove(), 500);
+      });
+    </script>
+  </body>
 </html>

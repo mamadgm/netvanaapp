@@ -82,262 +82,276 @@ class SignupState extends State<Signup> {
             ),
             // Existing content in a SingleChildScrollView
             SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: 16.h),
-                  // RTL text
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "ثبت نام",
-                            style: TextStyle(
-                              fontFamily: FIGMA.abrlb,
-                              fontSize: 16.sp,
-                              color: FIGMA.Wrn,
+              child: AutofillGroup(
+                child: Column(
+                  children: [
+                    SizedBox(height: 16.h),
+                    // RTL text
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "ثبت نام",
+                              style: TextStyle(
+                                fontFamily: FIGMA.abrlb,
+                                fontSize: 16.sp,
+                                color: FIGMA.Wrn,
+                              ),
+                              textAlign: TextAlign.end,
+                              textDirection: TextDirection.rtl,
                             ),
-                            textAlign: TextAlign.end,
-                            textDirection: TextDirection.rtl,
-                          ),
-                          SizedBox(height: 24.h),
-                          Text(
-                            "کد پیامک شده را وارد کنید",
-                            style: TextStyle(
-                              fontFamily: FIGMA.estre,
-                              fontSize: 14.sp,
-                              color: FIGMA.Wrn2,
+                            SizedBox(height: 24.h),
+                            Text(
+                              "کد پیامک شده را وارد کنید",
+                              style: TextStyle(
+                                fontFamily: FIGMA.estre,
+                                fontSize: 14.sp,
+                                color: FIGMA.Wrn2,
+                              ),
+                              textAlign: TextAlign.end,
                             ),
-                            textAlign: TextAlign.end,
-                          ),
-                          EasyContainer(
-                            height: HEIGHTTEXT.h,
-                            width: 320.w,
-                            color: Colors.black12.withOpacity(0),
-                            borderWidth: 0,
-                            elevation: 0,
-                            padding: HEIGHTTEXTPADDING,
-                            margin: 0,
-                            borderRadius: 0,
-                            child: EyeTextField(
-                              controller: formOTP,
-                              hintText: "کد یکبار مصرف",
-                              showEye: false,
-                              center: true,
-                              hintAuto: "OTP",
-                              keyboardType: TextInputType.number,
+                            EasyContainer(
+                              height: HEIGHTTEXT.h,
+                              width: 320.w,
+                              color: Colors.black12.withOpacity(0),
+                              borderWidth: 0,
+                              elevation: 0,
+                              padding: HEIGHTTEXTPADDING,
+                              margin: 0,
+                              borderRadius: 0,
+                              child: EyeTextField(
+                                controller: formOTP,
+                                hintText: "کد یکبار مصرف",
+                                showEye: false,
+                                center: true,
+                                hintAuto: AutofillHints.oneTimeCode,
+                                keyboardType: TextInputType.number,
+                                transparentBg: true,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 24.h),
-                          Text(
-                            "شما کی هستید",
-                            style: TextStyle(
-                              fontFamily: FIGMA.estre,
-                              fontSize: 14.sp,
-                              color: FIGMA.Wrn2,
+                            SizedBox(height: 24.h),
+                            Text(
+                              "شما کی هستید",
+                              style: TextStyle(
+                                fontFamily: FIGMA.estre,
+                                fontSize: 14.sp,
+                                color: FIGMA.Wrn2,
+                              ),
+                              textAlign: TextAlign.end,
                             ),
-                            textAlign: TextAlign.end,
-                          ),
-                          EasyContainer(
-                            height: HEIGHTTEXT.h,
-                            width: 320.w,
-                            color: Colors.black12.withOpacity(0),
-                            borderWidth: 0,
-                            elevation: 0,
-                            padding: HEIGHTTEXTPADDING,
-                            margin: 0,
-                            borderRadius: 0,
-                            child: EyeTextField(
-                              controller: formFirst,
-                              hintText: "نام",
-                              showEye: false,
-                              hintAuto: AutofillHints.name,
+                            EasyContainer(
+                              height: HEIGHTTEXT.h,
+                              width: 320.w,
+                              color: Colors.black12.withOpacity(0),
+                              borderWidth: 0,
+                              elevation: 0,
+                              padding: HEIGHTTEXTPADDING,
+                              margin: 0,
+                              borderRadius: 0,
+                              child: EyeTextField(
+                                controller: formFirst,
+                                hintText: "نام",
+                                showEye: false,
+                                hintAuto: AutofillHints.name,
+                                transparentBg: true,
+                              ),
                             ),
-                          ),
-                          EasyContainer(
-                            height: HEIGHTTEXT.h,
-                            width: 320.w,
-                            color: Colors.black12.withOpacity(0),
-                            borderWidth: 0,
-                            elevation: 0,
-                            padding: HEIGHTTEXTPADDING,
-                            margin: 0,
-                            borderRadius: 0,
-                            child: EyeTextField(
-                              controller: formLast,
-                              hintText: "نام خانوادگی",
-                              showEye: false,
-                              hintAuto: AutofillHints.familyName,
+                            EasyContainer(
+                              height: HEIGHTTEXT.h,
+                              width: 320.w,
+                              color: Colors.black12.withOpacity(0),
+                              borderWidth: 0,
+                              elevation: 0,
+                              padding: HEIGHTTEXTPADDING,
+                              margin: 0,
+                              borderRadius: 0,
+                              child: EyeTextField(
+                                controller: formLast,
+                                hintText: "نام خانوادگی",
+                                showEye: false,
+                                hintAuto: AutofillHints.familyName,
+                                transparentBg: true,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 60.h,
-                            width: 320.w,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: EyeTextField(
-                                    controller: _dayController,
-                                    hintText: "روز",
-                                    showEye: false,
-                                    center: true,
-                                    keyboardType: TextInputType.number,
-                                    hintAuto: "day",
+                            SizedBox(
+                              height: 60.h,
+                              width: 320.w,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: EyeTextField(
+                                      controller: _dayController,
+                                      hintText: "روز",
+                                      showEye: false,
+                                      center: true,
+                                      keyboardType: TextInputType.number,
+                                      hintAuto: AutofillHints.birthdayDay,
+                                      transparentBg: true,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: EyeTextField(
-                                    controller: _monthController,
-                                    hintText: "ماه",
-                                    showEye: false,
-                                    center: true,
-                                    keyboardType: TextInputType.number,
-                                    hintAuto: "month",
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: EyeTextField(
+                                      controller: _monthController,
+                                      hintText: "ماه",
+                                      showEye: false,
+                                      center: true,
+                                      keyboardType: TextInputType.number,
+                                      hintAuto: AutofillHints.birthdayMonth,
+                                      transparentBg: true,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: EyeTextField(
-                                    controller: _yearController,
-                                    hintText: "سال",
-                                    showEye: false,
-                                    center: true,
-                                    keyboardType: TextInputType.number,
-                                    hintAuto: "year",
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: EyeTextField(
+                                      controller: _yearController,
+                                      hintText: "سال",
+                                      showEye: false,
+                                      center: true,
+                                      keyboardType: TextInputType.number,
+                                      hintAuto: AutofillHints.birthdayYear,
+                                      transparentBg: true,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 24.h),
-                          Text(
-                            "این اطلاعات یادتون نره",
-                            style: TextStyle(
-                              fontFamily: FIGMA.estre,
-                              fontSize: 14.sp,
-                              color: FIGMA.Wrn2,
+                            SizedBox(height: 24.h),
+                            Text(
+                              "این اطلاعات یادتون نره",
+                              style: TextStyle(
+                                fontFamily: FIGMA.estre,
+                                fontSize: 14.sp,
+                                color: FIGMA.Wrn2,
+                              ),
+                              textAlign: TextAlign.end,
                             ),
-                            textAlign: TextAlign.end,
-                          ),
-                          EasyContainer(
-                            height: HEIGHTTEXT.h,
-                            width: 320.w,
-                            color: Colors.black12.withOpacity(0),
-                            borderWidth: 0,
-                            elevation: 0,
-                            padding: HEIGHTTEXTPADDING,
-                            margin: 0,
-                            borderRadius: 0,
-                            child: EyeTextField(
-                              controller: formUsername,
-                              hintText: "نام کاربری",
-                              showEye: false,
-                              center: true,
-                              hintAuto: "LOL",
+                            EasyContainer(
+                              height: HEIGHTTEXT.h,
+                              width: 320.w,
+                              color: Colors.black12.withOpacity(0),
+                              borderWidth: 0,
+                              elevation: 0,
+                              padding: HEIGHTTEXTPADDING,
+                              margin: 0,
+                              borderRadius: 0,
+                              child: EyeTextField(
+                                controller: formUsername,
+                                hintText: "نام کاربری",
+                                showEye: false,
+                                center: true,
+                                hintAuto: AutofillHints.newUsername,
+                                transparentBg: true,
+                              ),
                             ),
-                          ),
-                          EasyContainer(
-                            height: HEIGHTTEXT.h,
-                            width: 320.w,
-                            color: Colors.black12.withOpacity(0),
-                            borderWidth: 0,
-                            elevation: 0,
-                            padding: HEIGHTTEXTPADDING,
-                            margin: 0,
-                            borderRadius: 0,
-                            child: EyeTextField(
-                              controller: formPass1,
-                              hintText: "رمز عبور",
-                              showEye: true,
-                              center: true,
-                              hintAuto: AutofillHints.password,
+                            EasyContainer(
+                              height: HEIGHTTEXT.h,
+                              width: 320.w,
+                              color: Colors.black12.withOpacity(0),
+                              borderWidth: 0,
+                              elevation: 0,
+                              padding: HEIGHTTEXTPADDING,
+                              margin: 0,
+                              borderRadius: 0,
+                              child: EyeTextField(
+                                controller: formPass1,
+                                hintText: "رمز عبور",
+                                showEye: true,
+                                center: true,
+                                hintAuto: AutofillHints.newPassword,
+                                transparentBg: true,
+                              ),
                             ),
-                          ),
-                          EasyContainer(
-                            height: HEIGHTTEXT.h,
-                            width: 320.w,
-                            color: Colors.black12.withOpacity(0),
-                            borderWidth: 0,
-                            elevation: 0,
-                            padding: HEIGHTTEXTPADDING,
-                            margin: 0,
-                            borderRadius: 0,
-                            child: EyeTextField(
-                              controller: formPass2,
-                              hintText: "رمز عبور دوباره",
-                              showEye: true,
-                              center: true,
-                              hintAuto: "confPass",
+                            EasyContainer(
+                              height: HEIGHTTEXT.h,
+                              width: 320.w,
+                              color: Colors.black12.withOpacity(0),
+                              borderWidth: 0,
+                              elevation: 0,
+                              padding: HEIGHTTEXTPADDING,
+                              margin: 0,
+                              borderRadius: 0,
+                              child: EyeTextField(
+                                controller: formPass2,
+                                hintText: "رمز عبور دوباره",
+                                showEye: true,
+                                center: true,
+                                hintAuto: AutofillHints.newPassword,
+                                transparentBg: true,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(width: 24.w),
-                    ],
-                  ),
-                  EasyContainer(
-                    height: HEIGHTTEXT.h,
-                    width: 320.w,
-                    color: FIGMA.Prn,
-                    borderWidth: 0,
-                    elevation: 0,
-                    padding: HEIGHTTEXTPADDING,
-                    borderRadius: 11,
-                    child: Text(
-                      'ثبت نام',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 13.sp,
-                        fontFamily: FIGMA.estsb,
-                      ),
+                          ],
+                        ),
+                        SizedBox(width: 24.w),
+                      ],
                     ),
-                    onTap: () async {
-                      if (!checkAll(value)) {
-                        return;
-                      }
-                      try {
-                        await NetClass()
-                            .signUp(
-                              value.token,
-                              formFirst.text,
-                              formLast.text,
-                              _pickedDateToIso(),
-                              formUsername.text,
-                              formPass1.text,
-                              formPass2.text,
-                              formOTP.text,
-                              value.phoneNumber,
-                            )
-                            .timeout(const Duration(seconds: 45));
-                        value.Show_Snackbar(
-                          "اکانت شما ثبت شد , با رمز عبور وارد شوید",
-                          2000,
-                          type: 2,
-                        );
-                        // Wait until snackbar disappears
-                        Future.delayed(const Duration(milliseconds: 2000), () {
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                              builder: (_) => const AuthWrapper(),
-                            ), // your initial screen
-                            (route) => false,
+                    EasyContainer(
+                      height: HEIGHTTEXT.h,
+                      width: 320.w,
+                      color: FIGMA.Prn,
+                      borderWidth: 0,
+                      elevation: 0,
+                      padding: HEIGHTTEXTPADDING,
+                      borderRadius: 11,
+                      child: Text(
+                        'ثبت نام',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 13.sp,
+                          fontFamily: FIGMA.estsb,
+                        ),
+                      ),
+                      onTap: () async {
+                        if (!checkAll(value)) {
+                          return;
+                        }
+                        try {
+                          await NetClass()
+                              .signUp(
+                                value.token,
+                                formFirst.text,
+                                formLast.text,
+                                _pickedDateToIso(),
+                                formUsername.text,
+                                formPass1.text,
+                                formPass2.text,
+                                formOTP.text,
+                                value.phoneNumber,
+                              )
+                              .timeout(const Duration(seconds: 45));
+                          value.Show_Snackbar(
+                            "اکانت شما ثبت شد , با رمز عبور وارد شوید",
+                            2000,
+                            type: 2,
                           );
-                        });
-                      } catch (e) {
-                        final detail = extractDetailFromException(e);
-                        value.Show_Snackbar(detail!, 1000, type: 3);
-                      }
-                    },
-                  ),
-                  SizedBox(height: 350.h),
-                ],
+                          // Wait until snackbar disappears
+                          Future.delayed(
+                            const Duration(milliseconds: 2000),
+                            () {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (_) => const AuthWrapper(),
+                                ), // your initial screen
+                                (route) => false,
+                              );
+                            },
+                          );
+                        } catch (e) {
+                          final detail = extractDetailFromException(e);
+                          value.Show_Snackbar(detail!, 1000, type: 3);
+                        }
+                      },
+                    ),
+                    SizedBox(height: 350.h),
+                  ],
+                ),
               ),
+              // SVG pattern layer
             ),
-            // SVG pattern layer
           ],
         ),
       ),
