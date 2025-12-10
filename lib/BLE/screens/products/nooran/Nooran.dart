@@ -67,12 +67,6 @@ class _NooranState extends State<Nooran> {
     Sliderwidgets = [
       Speed_slider(
         senddata: (speed) {
-          if (value.bleIsConnected) {
-            String jsonPayload = jsonEncode({"Ls": speed});
-            SingleBle().sendMain(jsonPayload);
-            value.setMainCycleSpeed(int.parse(speed));
-            return;
-          }
           if (value.selectedDevice.isOnline) {
             NetClass().setSpeed(
               CacheService.instance.token!,
@@ -87,13 +81,6 @@ class _NooranState extends State<Nooran> {
       ),
       Bright_slider(
         senddata: (bright) {
-          if (value.bleIsConnected) {
-            String jsonPayload = jsonEncode({"Lb": bright});
-            SingleBle().sendMain(jsonPayload);
-
-            value.setBrightness(int.parse(bright));
-            return;
-          }
           if (value.selectedDevice.isOnline) {
             NetClass().setBright(
               CacheService.instance.token!,
@@ -110,14 +97,6 @@ class _NooranState extends State<Nooran> {
       ),
       Color_Picker_HSV(
         senddata: (p0) async {
-          // await checkModeColors(value);
-
-          if (value.bleIsConnected) {
-            String jsonPayload = jsonEncode({"Lc": p0});
-            SingleBle().sendMain(jsonPayload);
-            value.setMainCycleColor(p0);
-            return;
-          }
           if (value.selectedDevice.isOnline) {
             NetClass().setColor(
               CacheService.instance.token!,

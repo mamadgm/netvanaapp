@@ -71,7 +71,7 @@ class NetClass {
     String otpcode,
     String phone,
   ) async {
-    //         "birth_dt": "2025-10-20T10:11:14.973Z",
+    //"birth_dt": "2025-10-20T10:11:14.973Z",
     var response = await http.post(
       Uri.parse('${FIGMA.urlnetwana}/ownership/otp/check/'),
       headers: <String, String>{

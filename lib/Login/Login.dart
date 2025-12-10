@@ -61,7 +61,7 @@ class _LoginState extends State<Login> {
                   filter: ui.ImageFilter.blur(
                     sigmaX: 20.0,
                     sigmaY: 20.0,
-                    tileMode: .clamp,
+                    tileMode: TileMode.clamp,
                   ), // Blur effect
                   child: Opacity(
                     opacity: 0.18, // Adjust opacity for subtlety
@@ -74,10 +74,10 @@ class _LoginState extends State<Login> {
                           width: MediaQuery.of(
                             context,
                           ).size.width, // Full width
-                          fit: .cover, // Maintain aspect ratio
-                          colorFilter: const .mode(
+                          fit: BoxFit.cover, // Maintain aspect ratio
+                          colorFilter: const ColorFilter.mode(
                             Colors.white70,
-                            .srcIn,
+                            BlendMode.srcIn,
                           ), // Lighten the pattern
                         ),
                       ),
@@ -94,10 +94,10 @@ class _LoginState extends State<Login> {
                     SizedBox(height: _topPadding),
                     // RTL text
                     Row(
-                      mainAxisAlignment: .end,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Column(
-                          crossAxisAlignment: .end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
                               "خوش آمدید",
@@ -137,7 +137,7 @@ class _LoginState extends State<Login> {
                         hintText: "شماره تلفن",
                         showEye: false,
                         hintAuto: AutofillHints.telephoneNumber,
-                        keyboardType: .number,
+                        keyboardType: TextInputType.number,
                         transparentBg: true,
                       ),
                     ),
@@ -162,7 +162,7 @@ class _LoginState extends State<Login> {
                         height: 30.h,
                         width: 320.w,
                         child: Row(
-                          mainAxisAlignment: .start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(width: 4.w),
                             Text(
@@ -228,7 +228,7 @@ class _LoginState extends State<Login> {
                         height: 68.h,
                         width: 320.w,
                         child: Row(
-                          mainAxisAlignment: .center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               'ثبت نام',

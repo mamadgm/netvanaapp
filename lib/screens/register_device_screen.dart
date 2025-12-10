@@ -77,7 +77,7 @@ class _RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
         SizedBox(
           width: 320.w,
           child: TextField(
-            keyboardType: .number,
+            keyboardType: TextInputType.number,
             controller: _codeController,
             textAlign: TextAlign.center,
             decoration: InputDecoration(
