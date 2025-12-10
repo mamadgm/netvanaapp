@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 
-import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:easy_container/easy_container.dart';
@@ -16,9 +15,11 @@ import 'package:provider/provider.dart';
 class Color_Picker_HSV extends StatefulWidget {
   final int netvana;
   final Function(String) senddata;
-  const Color_Picker_HSV(
-      {Key? key, required this.netvana, required this.senddata})
-      : super(key: key);
+  const Color_Picker_HSV({
+    Key? key,
+    required this.netvana,
+    required this.senddata,
+  }) : super(key: key);
 
   @override
   State<Color_Picker_HSV> createState() => _Color_Picker_HSVState();
@@ -27,72 +28,80 @@ class Color_Picker_HSV extends StatefulWidget {
 class _Color_Picker_HSVState extends State<Color_Picker_HSV> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProvData>(builder: (context, value, _) {
-      String colorStr = value.maincycle_color;
-      int colorInt;
+    return Consumer<ProvData>(
+      builder: (context, value, _) {
+        String colorStr = value.maincycle_color;
+        int colorInt;
 
-      colorStr = colorStr.replaceFirst('Color(', '').replaceFirst(')', '');
+        colorStr = colorStr.replaceFirst('Color(', '').replaceFirst(')', '');
 
-      if (colorStr.startsWith('0x')) {
-        colorStr = colorStr.replaceFirst('0x', '');
-        colorInt = int.parse(colorStr, radix: 16);
-      } else {
-        colorInt = int.parse(colorStr);
-      }
+        if (colorStr.startsWith('0x')) {
+          colorStr = colorStr.replaceFirst('0x', '');
+          colorInt = int.parse(colorStr, radix: 16);
+        } else {
+          colorInt = int.parse(colorStr);
+        }
 
-      // Ensure the color has full opacity
-      Color maincolor = Color(colorInt).withOpacity(1.0);
-      return LayoutBuilder(builder: (context, constsize) {
-        return EasyContainer(
-          color: FIGMA.Gray2,
-          borderWidth: 0,
-          elevation: 0,
-          padding: 8,
-          margin: 0,
-          borderRadius: 20,
-          child: Container(
-            height: constsize.maxHeight,
-            width: constsize.maxWidth,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: const LinearGradient(
-                  end: Alignment.centerRight,
-                  begin: Alignment.centerLeft,
-                  colors: [
-                    Color.fromARGB(255, 255, 0, 0),
-                    Color.fromARGB(255, 255, 255, 0),
-                    Color.fromARGB(255, 0, 255, 0),
-                    Color.fromARGB(255, 0, 255, 255),
-                    Color.fromARGB(255, 0, 0, 255),
-                    Color.fromARGB(255, 255, 0, 255),
-                    Color.fromARGB(255, 255, 0, 0),
-                  ]),
-            ),
-            child: HuePicker(
-              thumbShape: const HueSliderThumbShape(
-                  radius: 28, color: FIGMA.Wrn, borderColor: FIGMA.Wrn),
-              trackHeight: 10,
-              initialColor: HSVColor.fromColor(maincolor),
-              onChanged: (color) {},
-              onChangeEnd: (color) async {
-                //Changing The Mode
+        // Ensure the color has full opacity
+        Color maincolor = Color(colorInt).withOpacity(1.0);
+        return LayoutBuilder(
+          builder: (context, constsize) {
+            return EasyContainer(
+              color: FIGMA.Gray2,
+              borderWidth: 0,
+              elevation: 0,
+              padding: 8,
+              margin: 0,
+              borderRadius: 20,
+              child: Container(
+                height: constsize.maxHeight,
+                width: constsize.maxWidth,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: const LinearGradient(
+                    end: Alignment.centerRight,
+                    begin: Alignment.centerLeft,
+                    colors: [
+                      Color.fromARGB(255, 255, 0, 0),
+                      Color.fromARGB(255, 255, 255, 0),
+                      Color.fromARGB(255, 0, 255, 0),
+                      Color.fromARGB(255, 0, 255, 255),
+                      Color.fromARGB(255, 0, 0, 255),
+                      Color.fromARGB(255, 255, 0, 255),
+                      Color.fromARGB(255, 255, 0, 0),
+                    ],
+                  ),
+                ),
+                child: HuePicker(
+                  thumbShape: const HueSliderThumbShape(
+                    radius: 28,
+                    color: FIGMA.Wrn,
+                    borderColor: FIGMA.Wrn,
+                  ),
+                  trackHeight: 10,
+                  initialColor: HSVColor.fromColor(maincolor),
+                  onChanged: (color) {},
+                  onChangeEnd: (color) async {
+                    //Changing The Mode
 
-                color = color.withAlpha(1.0);
-                color = color.withSaturation(1.0);
-                int red = color.toColor().red;
-                int grn = color.toColor().green;
-                int blu = color.toColor().blue;
+                    color = color.withAlpha(1.0);
+                    color = color.withSaturation(1.0);
+                    int red = color.toColor().red;
+                    int grn = color.toColor().green;
+                    int blu = color.toColor().blue;
 
-                // Convert RGB to decimal string
-                String colorStr =
-                    ((red * 65536) + (grn * 256) + blu).toString();
-                widget.senddata(colorStr);
-              },
-            ),
-          ),
+                    // Convert RGB to decimal string
+                    String colorStr = ((red * 65536) + (grn * 256) + blu)
+                        .toString();
+                    widget.senddata(colorStr);
+                  },
+                ),
+              ),
+            );
+          },
         );
-      });
-    });
+      },
+    );
   }
 }
 
@@ -201,44 +210,53 @@ class Speed_sliderState extends State<Speed_slider> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constsize) {
-      return Consumer<ProvData>(builder: (context, value, child) {
-        return EasyContainer(
-          color: FIGMA.Gray2,
-          borderWidth: 0,
-          elevation: 0,
-          margin: 0,
-          padding: 8,
-          borderRadius: 17,
-          child: FillingSlider(
-            initialValue:
-                mapIntTodouble(value.maincycle_speed, 2500, 100, 1.0, 0.0),
-            width: constsize.maxWidth,
-            height: constsize.maxHeight,
-            direction: FillingSliderDirection.horizontal,
-            color: (value.bleIsConnected | value.selectedDevice.isOnline)
-                ? FIGMA.Orn
-                : Colors.grey,
-            fillColor: FIGMA.Gray2,
-            onFinish: (value) async {
-              int finalspeed = mapdoubleToInt(value, 1.0, 0.0, 2500, 100);
-              widget.senddata(finalspeed.toString());
-            },
-          ),
+    return LayoutBuilder(
+      builder: (context, constsize) {
+        return Consumer<ProvData>(
+          builder: (context, value, child) {
+            return EasyContainer(
+              color: FIGMA.Gray2,
+              borderWidth: 0,
+              elevation: 0,
+              margin: 0,
+              padding: 8,
+              borderRadius: 17,
+              child: FillingSlider(
+                initialValue: mapIntTodouble(
+                  value.maincycle_speed,
+                  2500,
+                  100,
+                  1.0,
+                  0.0,
+                ),
+                width: constsize.maxWidth,
+                height: constsize.maxHeight,
+                direction: FillingSliderDirection.horizontal,
+                color: (value.bleIsConnected | value.selectedDevice.isOnline)
+                    ? FIGMA.Orn
+                    : Colors.grey,
+                fillColor: FIGMA.Gray2,
+                onFinish: (value) async {
+                  int finalspeed = mapdoubleToInt(value, 1.0, 0.0, 2500, 100);
+                  widget.senddata(finalspeed.toString());
+                },
+              ),
+            );
+          },
         );
-      });
-    });
+      },
+    );
   }
 }
 
 /////////////////////
 class Bright_slider extends StatefulWidget {
-  const Bright_slider(
-      {Key? key,
-      required this.brightness,
-      required this.netvana,
-      required this.senddata})
-      : super(key: key);
+  const Bright_slider({
+    Key? key,
+    required this.brightness,
+    required this.netvana,
+    required this.senddata,
+  }) : super(key: key);
   final Function(String) senddata;
   final int brightness;
   final int netvana;
@@ -253,34 +271,38 @@ class _Bright_sliderState extends State<Bright_slider> {
   double brightd = 0.5;
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constsize) {
-      return Consumer<ProvData>(builder: (context, value, child) {
-        brightd = mapIntTodouble(value.Brightness, 1, 255, 1.0, 0.0);
-        return EasyContainer(
-          color: FIGMA.Gray2,
-          borderWidth: 0,
-          elevation: 0,
-          margin: 0,
-          padding: 8,
-          borderRadius: 17,
-          child: FillingSlider(
-            initialValue: brightd,
-            width: constsize.maxWidth,
-            height: constsize.maxHeight,
-            direction: FillingSliderDirection.horizontal,
-            color: (value.bleIsConnected | value.selectedDevice.isOnline)
-                ? FIGMA.Orn
-                : Colors.grey,
-            fillColor: FIGMA.Gray2,
-            onChange: (val1, val2) {},
-            onFinish: (value) async {
-              int finallight = mapdoubleToInt(value, 1.0, 0.0, 1, 255);
-              widget.senddata(finallight.toString());
-            },
-          ),
+    return LayoutBuilder(
+      builder: (context, constsize) {
+        return Consumer<ProvData>(
+          builder: (context, value, child) {
+            brightd = mapIntTodouble(value.Brightness, 1, 255, 1.0, 0.0);
+            return EasyContainer(
+              color: FIGMA.Gray2,
+              borderWidth: 0,
+              elevation: 0,
+              margin: 0,
+              padding: 8,
+              borderRadius: 17,
+              child: FillingSlider(
+                initialValue: brightd,
+                width: constsize.maxWidth,
+                height: constsize.maxHeight,
+                direction: FillingSliderDirection.horizontal,
+                color: (value.bleIsConnected | value.selectedDevice.isOnline)
+                    ? FIGMA.Orn
+                    : Colors.grey,
+                fillColor: FIGMA.Gray2,
+                onChange: (val1, val2) {},
+                onFinish: (value) async {
+                  int finallight = mapdoubleToInt(value, 1.0, 0.0, 1, 255);
+                  widget.senddata(finallight.toString());
+                },
+              ),
+            );
+          },
         );
-      });
-    });
+      },
+    );
   }
 }
 
@@ -293,14 +315,24 @@ class _Bright_sliderState extends State<Bright_slider> {
 //   (context as Element).visitChildren(rebuild);
 // }
 
-double mapIntTodouble(int value, int inputStart, int inputEnd,
-    double outputStart, double outputEnd) {
+double mapIntTodouble(
+  int value,
+  int inputStart,
+  int inputEnd,
+  double outputStart,
+  double outputEnd,
+) {
   double slope = (outputEnd - outputStart) / (inputEnd - inputStart);
   return outputStart + slope * (value - inputStart);
 }
 
-int mapdoubleToInt(double value, double inputStart, double inputEnd,
-    double outputStart, double outputEnd) {
+int mapdoubleToInt(
+  double value,
+  double inputStart,
+  double inputEnd,
+  double outputStart,
+  double outputEnd,
+) {
   double inputRange = inputEnd - inputStart;
   double outputRange = outputEnd - outputStart;
   return (((value - inputStart) * outputRange) / inputRange + outputStart)

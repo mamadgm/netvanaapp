@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:netvana/data/ble/provMain.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as ws_status;
-import 'dart:js' as js;
 
 class NetvanaWS {
   // --- Singleton setup ---
@@ -26,8 +25,6 @@ class NetvanaWS {
 
   // --- Connect (entry point) ---
   void connect(String token, ProvData provData) {
-    _closeExistingBrowserWebSockets(); // 👈 Add this line first
-
     _token = token;
     _provData = provData;
 
@@ -130,25 +127,6 @@ class NetvanaWS {
     _channel?.sink.close(ws_status.normalClosure);
     _channel = null;
     _isConnecting = false;
-  }
-
-  void _closeExistingBrowserWebSockets() {
-    try {
-      js.context.callMethod('eval', [
-        """
-      (function() {
-        if (!window._nv_ws_list) window._nv_ws_list = [];
-        for (let ws of window._nv_ws_list) {
-          try { ws.close(); } catch (e) {}
-        }
-        window._nv_ws_list = [];
-        console.log('[NetvanaWS] Existing WebSockets closed');
-      })();
-    """
-      ]);
-    } catch (e) {
-      debugPrint('JS WebSocket cleanup failed: $e');
-    }
   }
 }
 

@@ -1,11 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:flutter/material.dart';
 import 'package:netvana/data/cache_service.dart';
-import 'package:universal_ble/universal_ble.dart';
 
 enum ThemeFilter { liked, single, multiple, none }
 
@@ -59,7 +57,6 @@ class ProvData extends ChangeNotifier {
 
   int current_sync_pos = 0;
   int current_selected_slider = 0;
-  List<BleDevice> mynetvanaDevices = <BleDevice>[];
   int appsync = FIGMA.FLUTTER_ESSENTIALS;
   //Setting Screen
   TextEditingController r_ssid_netvana = TextEditingController();
@@ -206,11 +203,6 @@ class ProvData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void update_mynetvanadevice() {
-    mynetvanaDevices = mynetvanaDevices;
-    notifyListeners();
-  }
-
   void change_slider(int input) {
     current_selected_slider = input;
     notifyListeners();
@@ -242,8 +234,6 @@ class ProvData extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  final SingleBle singleble = SingleBle.instance; // Use the singleton instance
 
   void Set_Screen_Values(String input) {
     // // Parse numeric fields (A to L)
@@ -317,7 +307,7 @@ class ProvData extends ChangeNotifier {
         selectedDevice.id.toString(),
       );
 
-      if (result!.toString().length < 10) {
+      if (result!.toString().length < 15) {
         debugPrint("empty device");
         hand_update();
         return;

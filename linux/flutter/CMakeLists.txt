@@ -10,7 +10,7 @@ include(${EPHEMERAL_DIR}/generated_config.cmake)
 # https://github.com/flutter/flutter/issues/57146.
 
 # Serves the same purpose as list(TRANSFORM ... PREPEND ...),
-# which isn't availanetvana in 3.10.
+# which isn't available in 3.10.
 function(list_prepend LIST_NAME PREFIX)
     set(NEW_LIST "")
     foreach(element ${${LIST_NAME}})
@@ -67,7 +67,7 @@ target_link_libraries(flutter INTERFACE
   PkgConfig::GLIB
   PkgConfig::GIO
 )
-add_dependencies(flutter flutter_assemnetvana)
+add_dependencies(flutter flutter_assemble)
 
 # === Flutter tool backend ===
 # _phony_ is a non-existent file to force this command to run every time,
@@ -82,7 +82,7 @@ add_custom_command(
       ${FLUTTER_TARGET_PLATFORM} ${CMAKE_BUILD_TYPE}
   VERBATIM
 )
-add_custom_target(flutter_assemnetvana DEPENDS
+add_custom_target(flutter_assemble DEPENDS
   "${FLUTTER_LIBRARY}"
   ${FLUTTER_LIBRARY_HEADERS}
 )

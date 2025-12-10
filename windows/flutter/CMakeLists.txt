@@ -37,7 +37,7 @@ target_include_directories(flutter INTERFACE
   "${EPHEMERAL_DIR}"
 )
 target_link_libraries(flutter INTERFACE "${FLUTTER_LIBRARY}.lib")
-add_dependencies(flutter flutter_assemnetvana)
+add_dependencies(flutter flutter_assemble)
 
 # === Wrapper ===
 list(APPEND CPP_WRAPPER_SOURCES_CORE
@@ -69,7 +69,7 @@ target_link_libraries(flutter_wrapper_plugin PUBLIC flutter)
 target_include_directories(flutter_wrapper_plugin PUBLIC
   "${WRAPPER_ROOT}/include"
 )
-add_dependencies(flutter_wrapper_plugin flutter_assemnetvana)
+add_dependencies(flutter_wrapper_plugin flutter_assemble)
 
 # Wrapper sources needed for the runner.
 add_library(flutter_wrapper_app STATIC
@@ -81,7 +81,7 @@ target_link_libraries(flutter_wrapper_app PUBLIC flutter)
 target_include_directories(flutter_wrapper_app PUBLIC
   "${WRAPPER_ROOT}/include"
 )
-add_dependencies(flutter_wrapper_app flutter_assemnetvana)
+add_dependencies(flutter_wrapper_app flutter_assemble)
 
 # === Flutter tool backend ===
 # _phony_ is a non-existent file to force this command to run every time,
@@ -100,7 +100,7 @@ add_custom_command(
       ${FLUTTER_TARGET_PLATFORM} $<CONFIG>
   VERBATIM
 )
-add_custom_target(flutter_assemnetvana DEPENDS
+add_custom_target(flutter_assemble DEPENDS
   "${FLUTTER_LIBRARY}"
   ${FLUTTER_LIBRARY_HEADERS}
   ${CPP_WRAPPER_SOURCES_CORE}

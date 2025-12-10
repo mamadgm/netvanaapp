@@ -1,13 +1,11 @@
-// ignore_for_file: non_constant_identifier_names, deprecated_member_use
+// ignore_for_file: non_constant_identifier_names, deprecated_member_use, file_names
 
 import 'dart:async';
-import 'dart:convert';
-// import 'dart:ffi';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:netvana/BLE/logic/SingleBle.dart';
 import 'package:netvana/BLE/screens/products/nooran/Buttons/mybuttons.dart';
 import 'package:netvana/BLE/screens/products/nooran/Spelco/spelco.dart';
 import 'package:netvana/BLE/screens/products/nooran/sliders/sliders.dart';
@@ -269,13 +267,6 @@ class _NooranState extends State<Nooran> {
                                       if (value.Brightness ==
                                           value.sleepBright) {
                                         Bright = 255;
-                                      }
-                                      if (value.bleIsConnected) {
-                                        String jsonPayload = jsonEncode({
-                                          "Lb": Bright,
-                                        });
-                                        SingleBle().sendMain(jsonPayload);
-                                        return;
                                       }
                                       if (value.selectedDevice.isOnline) {
                                         NetClass().setBright(
@@ -566,12 +557,7 @@ class _NooranState extends State<Nooran> {
                               onDataChange: (String f) {
                                 value.set_Defalult_colors(int.parse(f), index);
                                 sdcard.put("COLOR$index", int.parse(f));
-                                if (value.bleIsConnected) {
-                                  String jsonPayload = jsonEncode({"Lc": f});
-                                  SingleBle().sendMain(jsonPayload);
-                                  value.setMainCycleColor(f);
-                                  return;
-                                }
+
                                 if (value.selectedDevice.isOnline) {
                                   NetClass().setColor(
                                     CacheService.instance.token!,
@@ -608,14 +594,6 @@ class ShortTimer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void TimerSend(int s, ProvData value) {
-      if (value.bleIsConnected) {
-        String jsonPayload = jsonEncode({"Tf": s.toString()});
-        SingleBle().sendMain(jsonPayload);
-        calculateTimeStore(s);
-        FocusScope.of(context).unfocus();
-        Navigator.of(context).pop();
-        return;
-      }
       if (value.selectedDevice.isOnline) {
         NetClass().setTimer(
           CacheService.instance.token!,

@@ -7,7 +7,7 @@
 
 namespace {
 
-/// Window attribute that enanetvanas dark mode window decorations.
+/// Window attribute that enables dark mode window decorations.
 ///
 /// Redefined in case the developer's machine has a Windows SDK older than
 /// version 10.0.22000.0.
@@ -29,7 +29,7 @@ constexpr const wchar_t kGetPreferredBrightnessRegValue[] = L"AppsUseLightTheme"
 // The number of Win32Window objects that currently exist.
 static int g_active_window_count = 0;
 
-using EnanetvanaNonClientDpiScaling = BOOL __stdcall(HWND hwnd);
+using EnableNonClientDpiScaling = BOOL __stdcall(HWND hwnd);
 
 // Scale helper to convert logical scaler values to physical using passed in
 // scale factor
@@ -37,18 +37,18 @@ int Scale(int source, double scale_factor) {
   return static_cast<int>(source * scale_factor);
 }
 
-// Dynamically loads the |EnanetvanaNonClientDpiScaling| from the User32 module.
+// Dynamically loads the |EnableNonClientDpiScaling| from the User32 module.
 // This API is only needed for PerMonitor V1 awareness mode.
-void EnanetvanaFullDpiSupportIfAvailanetvana(HWND hwnd) {
+void EnableFullDpiSupportIfAvailable(HWND hwnd) {
   HMODULE user32_module = LoadLibraryA("User32.dll");
   if (!user32_module) {
     return;
   }
-  auto enanetvana_non_client_dpi_scaling =
-      reinterpret_cast<EnanetvanaNonClientDpiScaling*>(
-          GetProcAddress(user32_module, "EnanetvanaNonClientDpiScaling"));
-  if (enanetvana_non_client_dpi_scaling != nullptr) {
-    enanetvana_non_client_dpi_scaling(hwnd);
+  auto enable_non_client_dpi_scaling =
+      reinterpret_cast<EnableNonClientDpiScaling*>(
+          GetProcAddress(user32_module, "EnableNonClientDpiScaling"));
+  if (enable_non_client_dpi_scaling != nullptr) {
+    enable_non_client_dpi_scaling(hwnd);
   }
   FreeLibrary(user32_module);
 }
@@ -164,7 +164,7 @@ LRESULT CALLBACK Win32Window::WndProc(HWND const window,
                      reinterpret_cast<LONG_PTR>(window_struct->lpCreateParams));
 
     auto that = static_cast<Win32Window*>(window_struct->lpCreateParams);
-    EnanetvanaFullDpiSupportIfAvailanetvana(window);
+    EnableFullDpiSupportIfAvailable(window);
     that->window_handle_ = window;
   } else if (Win32Window* that = GetThisFromHandle(window)) {
     return that->MessageHandler(window, message, wparam, lparam);
@@ -281,8 +281,8 @@ void Win32Window::UpdateTheme(HWND const window) {
                                &light_mode_size);
 
   if (result == ERROR_SUCCESS) {
-    BOOL enanetvana_dark_mode = light_mode == 0;
+    BOOL enable_dark_mode = light_mode == 0;
     DwmSetWindowAttribute(window, DWMWA_USE_IMMERSIVE_DARK_MODE,
-                          &enanetvana_dark_mode, sizeof(enanetvana_dark_mode));
+                          &enable_dark_mode, sizeof(enable_dark_mode));
   }
 }

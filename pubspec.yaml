@@ -17,7 +17,6 @@ dependencies:
   google_nav_bar: ^5.0.7
   easy_container: ^1.0.5
   http:
-  universal_ble: 0.20.1
   convert: ^3.1.1
   modern_textfield: ^0.0.6
   filling_slider: ^0.0.3
