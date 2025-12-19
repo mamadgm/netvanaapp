@@ -54,10 +54,7 @@ class FIGMA {
 // }
 
 Widget FASELE({required int value}) {
-  return Expanded(
-    flex: value,
-    child: SizedBox(),
-  );
+  return Expanded(flex: value, child: SizedBox());
 }
 
 Color colorFromString(String colorStr) {

@@ -48,15 +48,13 @@ class Choose_Product extends StatelessWidget {
                   width: mywidth * 0.90,
                   height: myheight * 0.60,
                   child: Container(
-                      child: selectedWdiget == 3
-                          ? Image.asset(
-                              "assets/icon.png",
-                              fit: BoxFit.cover,
-                            )
-                          : Icon(
-                              Icons.bluetooth_disabled_rounded,
-                              size: mywidth * 0.40,
-                            )),
+                    child: selectedWdiget == 3
+                        ? Image.asset("assets/icon.png", fit: BoxFit.cover)
+                        : Icon(
+                            Icons.bluetooth_disabled_rounded,
+                            size: mywidth * 0.40,
+                          ),
+                  ),
                 ),
                 Row(
                   children: [
@@ -65,8 +63,10 @@ class Choose_Product extends StatelessWidget {
                       height: myheight * 0.30,
                       child: Text(
                         "اتصال به دستگاه",
-                        style:
-                            TextStyle(fontFamily: FIGMA.abrlb, fontSize: 12.sp),
+                        style: TextStyle(
+                          fontFamily: FIGMA.abrlb,
+                          fontSize: 12.sp,
+                        ),
                       ),
                       onTap: () {
                         onTrytoconnect();
@@ -77,17 +77,20 @@ class Choose_Product extends StatelessWidget {
                       height: myheight * 0.30,
                       child: Text(
                         "حذف دستگاه",
-                        style:
-                            TextStyle(fontFamily: FIGMA.abrlb, fontSize: 12.sp),
+                        style: TextStyle(
+                          fontFamily: FIGMA.abrlb,
+                          fontSize: 12.sp,
+                        ),
                       ),
                       onTap: () {
                         ondelete();
                       },
                     ),
                   ],
-                )
+                ),
               ],
-            ))
+            ),
+          )
         : const SizedBox();
   }
 }

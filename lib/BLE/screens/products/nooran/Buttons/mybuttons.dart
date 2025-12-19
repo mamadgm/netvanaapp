@@ -105,12 +105,12 @@ class NewPopup extends StatefulWidget {
   final List<Widget> innerwidgets;
   final List<Widget> Templete;
   final Color TempleteColor;
-  const NewPopup(
-      {Key? key,
-      required this.TempleteColor,
-      required this.innerwidgets,
-      required this.Templete})
-      : super(key: key);
+  const NewPopup({
+    Key? key,
+    required this.TempleteColor,
+    required this.innerwidgets,
+    required this.Templete,
+  }) : super(key: key);
 
   @override
   State<NewPopup> createState() => _NewPopupState();
@@ -119,44 +119,49 @@ class NewPopup extends StatefulWidget {
 class _NewPopupState extends State<NewPopup> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProvData>(builder: (context, value, child) {
-      return EasyContainer(
-        onTap: () {
-          // debugPrint('Timer Button Clicked');
-          showGeneralDialog(
-            context: context,
-            pageBuilder: (context, animation1, animation) {
-              return AlertDialog(
-                scrollable: true,
-                shape:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
-                backgroundColor: FIGMA.Gray,
-                content: EasyContainer(
-                  width: MediaQuery.of(context).size.width / 1.1,
-                  height: MediaQuery.of(context).size.height / 1.5,
-                  color: FIGMA.Gray.withAlpha(128),
-                  borderWidth: 0,
-                  elevation: 0,
-                  margin: 0,
-                  padding: 0,
-                  borderRadius: 30,
-                  child: Column(
+    return Consumer<ProvData>(
+      builder: (context, value, child) {
+        return EasyContainer(
+          onTap: () {
+            // debugPrint('Timer Button Clicked');
+            showGeneralDialog(
+              context: context,
+              pageBuilder: (context, animation1, animation) {
+                return AlertDialog(
+                  scrollable: true,
+                  shape: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  backgroundColor: FIGMA.Gray,
+                  content: EasyContainer(
+                    width: MediaQuery.of(context).size.width / 1.1,
+                    height: MediaQuery.of(context).size.height / 1.5,
+                    color: FIGMA.Gray.withAlpha(128),
+                    borderWidth: 0,
+                    elevation: 0,
+                    margin: 0,
+                    padding: 0,
+                    borderRadius: 30,
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: widget.innerwidgets),
-                ),
-              );
-            },
-          );
-        },
-        margin: 0,
-        padding: 0,
-        borderRadius: 17,
-        color: widget.TempleteColor,
-        child: Column(
+                      children: widget.innerwidgets,
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+          margin: 0,
+          padding: 0,
+          borderRadius: 17,
+          color: widget.TempleteColor,
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: widget.Templete),
-      );
-    });
+            children: widget.Templete,
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -195,7 +200,10 @@ class _TimerMinutesState extends State<TimerMinutes> {
               widget.Time == "999" ? "" : "دقیقه",
               textAlign: TextAlign.end,
               style: TextStyle(
-                  fontFamily: FIGMA.estsb, fontSize: 13.sp, color: FIGMA.Wrn),
+                fontFamily: FIGMA.estsb,
+                fontSize: 13.sp,
+                color: FIGMA.Wrn,
+              ),
             ),
             Text(
               " ",
@@ -206,7 +214,10 @@ class _TimerMinutesState extends State<TimerMinutes> {
               widget.Time == "999" ? "غیر فعال سازی" : widget.Time,
               textAlign: TextAlign.end,
               style: TextStyle(
-                  fontFamily: FIGMA.abrlb, fontSize: 13.sp, color: FIGMA.Wrn),
+                fontFamily: FIGMA.abrlb,
+                fontSize: 13.sp,
+                color: FIGMA.Wrn,
+              ),
             ),
             Text(
               "    ",
@@ -238,11 +249,8 @@ class Circlecolor extends StatefulWidget {
   final int color; // Accept color as a simple int number
   final Function(String) onDataChange;
 
-  const Circlecolor({
-    required this.color,
-    required this.onDataChange,
-    Key? key,
-  }) : super(key: key);
+  const Circlecolor({required this.color, required this.onDataChange, Key? key})
+    : super(key: key);
 
   @override
   State<Circlecolor> createState() => _CirclecolorState();
@@ -285,7 +293,10 @@ class _CirclecolorState extends State<Circlecolor> {
             child: Text(
               "رنگ دلخواه",
               style: TextStyle(
-                  fontFamily: FIGMA.abreb, fontSize: 19.sp, color: FIGMA.Wrn),
+                fontFamily: FIGMA.abreb,
+                fontSize: 19.sp,
+                color: FIGMA.Wrn,
+              ),
             ),
           ),
           content: SingleChildScrollView(
@@ -312,13 +323,18 @@ class _CirclecolorState extends State<Circlecolor> {
               child: Text(
                 "ذخیره رنگ",
                 style: TextStyle(
-                    fontFamily: FIGMA.estbo, fontSize: 19.sp, color: FIGMA.Wrn),
+                  fontFamily: FIGMA.estbo,
+                  fontSize: 19.sp,
+                  color: FIGMA.Wrn,
+                ),
               ),
               onTap: () {
-                widget.onDataChange(((pickerColor.red * 65536) +
-                        (pickerColor.green * 256) +
-                        pickerColor.blue)
-                    .toString());
+                widget.onDataChange(
+                  ((pickerColor.red * 65536) +
+                          (pickerColor.green * 256) +
+                          pickerColor.blue)
+                      .toString(),
+                );
                 Navigator.of(context).pop();
               },
             ),
@@ -333,12 +349,12 @@ class TimerButton extends StatefulWidget {
   final List<Widget> innerwidgets;
   final List<Widget> Templete;
   final bool state;
-  const TimerButton(
-      {Key? key,
-      required this.state,
-      required this.innerwidgets,
-      required this.Templete})
-      : super(key: key);
+  const TimerButton({
+    Key? key,
+    required this.state,
+    required this.innerwidgets,
+    required this.Templete,
+  }) : super(key: key);
 
   @override
   State<TimerButton> createState() => _NewPopupState2();
@@ -347,51 +363,56 @@ class TimerButton extends StatefulWidget {
 class _NewPopupState2 extends State<TimerButton> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProvData>(builder: (context, value, child) {
-      return EasyContainer(
-        onTap: () {
-          if (!(value.bleIsConnected | value.selectedDevice.isOnline)) {
-            showCannotSend(value);
-            return;
-          }
+    return Consumer<ProvData>(
+      builder: (context, value, child) {
+        return EasyContainer(
+          onTap: () {
+            if (!(value.bleIsConnected | value.selectedDevice.isOnline)) {
+              showCannotSend(value);
+              return;
+            }
 
-          // debugPrint('Timer Button Clicked');
-          showGeneralDialog(
-            context: context,
-            pageBuilder: (context, animation1, animation) {
-              return AlertDialog(
-                scrollable: true,
-                shape:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
-                backgroundColor: FIGMA.Back,
-                content: EasyContainer(
-                  width: MediaQuery.of(context).size.width / 1.1,
-                  height: MediaQuery.of(context).size.height / 1.5,
-                  color: FIGMA.Back.withAlpha(128),
-                  borderWidth: 0,
-                  elevation: 0,
-                  margin: 0,
-                  padding: 0,
-                  borderRadius: 30,
-                  child: Column(
+            // debugPrint('Timer Button Clicked');
+            showGeneralDialog(
+              context: context,
+              pageBuilder: (context, animation1, animation) {
+                return AlertDialog(
+                  scrollable: true,
+                  shape: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  backgroundColor: FIGMA.Back,
+                  content: EasyContainer(
+                    width: MediaQuery.of(context).size.width / 1.1,
+                    height: MediaQuery.of(context).size.height / 1.5,
+                    color: FIGMA.Back.withAlpha(128),
+                    borderWidth: 0,
+                    elevation: 0,
+                    margin: 0,
+                    padding: 0,
+                    borderRadius: 30,
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: widget.innerwidgets),
-                ),
-              );
-            },
-          );
-        },
-        margin: 0,
-        padding: 0,
-        borderWidth: 1.5.sp,
-        showBorder: widget.state,
-        borderColor: FIGMA.Prn,
-        borderRadius: 17,
-        color: widget.state ? FIGMA.Grn : FIGMA.Gray2,
-        child: Column(
+                      children: widget.innerwidgets,
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+          margin: 0,
+          padding: 0,
+          borderWidth: 1.5.sp,
+          showBorder: widget.state,
+          borderColor: FIGMA.Prn,
+          borderRadius: 17,
+          color: widget.state ? FIGMA.Grn : FIGMA.Gray2,
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: widget.Templete),
-      );
-    });
+            children: widget.Templete,
+          ),
+        );
+      },
+    );
   }
 }

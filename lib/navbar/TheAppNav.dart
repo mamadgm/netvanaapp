@@ -31,16 +31,10 @@ class _TheAppNavState extends State<TheAppNav> {
                 tabBackgroundColor: FIGMA.Gray,
                 selectedIndex:
                     value.Isdevicefound == true && value.Current_screen == 3
-                        ? 2
-                        : value.Current_screen,
-                tabActiveBorder: Border.all(
-                  color: FIGMA.Gray2,
-                  width: 1.5.sp,
-                ),
-                tabBorder: Border.all(
-                  color: FIGMA.Gray2,
-                  width: 1.5.sp,
-                ),
+                    ? 2
+                    : value.Current_screen,
+                tabActiveBorder: Border.all(color: FIGMA.Gray2, width: 1.5.sp),
+                tabBorder: Border.all(color: FIGMA.Gray2, width: 1.5.sp),
                 tabMargin: const EdgeInsets.only(right: 2, left: 2),
                 tabBorderRadius: 20,
                 // tabBorder: ,
@@ -49,16 +43,19 @@ class _TheAppNavState extends State<TheAppNav> {
                 activeColor: FIGMA.Prn2,
                 // Remove tabBackgroundColor to avoid conflicts
                 gap: 8,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 24,
+                ),
                 tabs: [
                   GButton(
                     iconSize: iconSize,
                     icon: Icons.home_rounded,
                     leading: SvgPicture.asset(
                       "assets/Home.svg",
-                      color:
-                          value.Current_screen == 0 ? FIGMA.Prn2 : FIGMA.Gray3,
+                      color: value.Current_screen == 0
+                          ? FIGMA.Prn2
+                          : FIGMA.Gray3,
                     ),
                     text: "خانه",
                     textStyle: TextStyle(
@@ -72,8 +69,9 @@ class _TheAppNavState extends State<TheAppNav> {
                     icon: LucideIcons.box,
                     leading: SvgPicture.asset(
                       "assets/Effects.svg",
-                      color:
-                          value.Current_screen == 1 ? FIGMA.Prn2 : FIGMA.Gray3,
+                      color: value.Current_screen == 1
+                          ? FIGMA.Prn2
+                          : FIGMA.Gray3,
                     ),
                     text: "افکت ها",
                     textStyle: TextStyle(
@@ -87,8 +85,9 @@ class _TheAppNavState extends State<TheAppNav> {
                     icon: Icons.wifi_rounded,
                     leading: SvgPicture.asset(
                       "assets/Netvana.svg",
-                      color:
-                          value.Current_screen == 2 ? FIGMA.Prn2 : FIGMA.Gray3,
+                      color: value.Current_screen == 2
+                          ? FIGMA.Prn2
+                          : FIGMA.Gray3,
                     ),
                     text: "نت وانا",
                     textStyle: TextStyle(
@@ -102,8 +101,9 @@ class _TheAppNavState extends State<TheAppNav> {
                     icon: Icons.settings_rounded,
                     leading: SvgPicture.asset(
                       "assets/Setting.svg",
-                      color:
-                          value.Current_screen == 3 ? FIGMA.Prn2 : FIGMA.Gray3,
+                      color: value.Current_screen == 3
+                          ? FIGMA.Prn2
+                          : FIGMA.Gray3,
                     ),
                     text: "تنظیمات",
                     textStyle: TextStyle(

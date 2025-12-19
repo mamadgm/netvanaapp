@@ -166,6 +166,9 @@ class OtpCheckState extends State<OtpCheck> {
                           final token = loginResponse!['access_token'];
                           await CacheService.instance.saveToken(token);
                           value.logoutAndReset();
+                          Navigator.of(
+                            context,
+                          ).popUntil((route) => route.isFirst);
                         } catch (e) {
                           final detail = extractDetailFromException(e);
                           value.Show_Snackbar(detail!, 1000, type: 3);

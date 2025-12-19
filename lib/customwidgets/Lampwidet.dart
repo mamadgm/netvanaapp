@@ -82,8 +82,9 @@ class LampWidgetState extends State<LampWidget>
                 Expanded(
                   flex: 4,
                   child: Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: widget.width * 0.12),
+                    margin: EdgeInsets.symmetric(
+                      horizontal: widget.width * 0.12,
+                    ),
                     decoration: BoxDecoration(
                       color: widget.lampColor,
                       boxShadow: [

@@ -26,9 +26,16 @@ class _SetupScreenState extends State<SetupScreen> {
   }
 
   Future<SetupResult> _performSetup() async {
+    // debugPrint(CacheService.instance.)
+
     try {
       final provData = Provider.of<ProvData>(context, listen: false);
       final result = await setup(provData);
+      debugPrint(provData.firstName);
+      debugPrint(provData.lastName);
+      debugPrint(provData.username);
+      debugPrint(provData.phone);
+
       return result;
     } catch (e) {
       return SetupResult.error;
@@ -130,6 +137,15 @@ class _SetupScreenState extends State<SetupScreen> {
 
         // If setup is successful, the main app will be shown by the AuthWrapper
         // so we can just show an empty container here.
+        final prov = Provider.of<ProvData>(context, listen: false);
+        print('###########################################');
+        print('###########################################');
+        print('First Name: ${prov.firstName}');
+        print('Last Name: ${prov.lastName}');
+        print('Phone: ${prov.phone}');
+        print('Username: ${prov.username}');
+        print('###########################################');
+        print('###########################################');
         return const SizedBox.shrink();
       },
     );

@@ -23,9 +23,7 @@ class RegisterProvider extends ChangeNotifier {
         duration: Duration(milliseconds: dur),
         content: _buildSnackBarContent(type, value),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );
   }

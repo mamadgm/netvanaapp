@@ -18,18 +18,22 @@ void showUpdate(context, ProvData value) {
               Text(
                 "شما به روز هستید",
                 style: TextStyle(
-                    fontFamily: FIGMA.abreb, fontSize: 16.sp, color: FIGMA.Wrn),
+                  fontFamily: FIGMA.abreb,
+                  fontSize: 16.sp,
+                  color: FIGMA.Wrn,
+                ),
               ),
               Text(
                 "در حال حاضر از آخرین نسخه نوروانا استفاده می‌کنید",
                 textAlign: TextAlign.right,
                 textDirection: TextDirection.rtl,
                 style: TextStyle(
-                    fontFamily: FIGMA.estre,
-                    fontSize: 12.sp,
-                    color: FIGMA.Gray4),
+                  fontFamily: FIGMA.estre,
+                  fontSize: 12.sp,
+                  color: FIGMA.Gray4,
+                ),
               ),
-              SizedBox(height: 36.h)
+              SizedBox(height: 36.h),
             ],
           ),
         ),
@@ -49,9 +53,10 @@ void showUpdate(context, ProvData value) {
                 child: Text(
                   "برگشت",
                   style: TextStyle(
-                      fontFamily: FIGMA.estbo,
-                      fontSize: 14.sp,
-                      color: FIGMA.Wrn),
+                    fontFamily: FIGMA.estbo,
+                    fontSize: 14.sp,
+                    color: FIGMA.Wrn,
+                  ),
                 ),
                 onTap: () {
                   Navigator.of(context).pop();

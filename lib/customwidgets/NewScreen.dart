@@ -6,11 +6,12 @@ class CustomScreen extends StatelessWidget {
   final Widget body;
   final Widget header;
 
-  const CustomScreen(
-      {super.key,
-      required this.title,
-      required this.body,
-      required this.header});
+  const CustomScreen({
+    super.key,
+    required this.title,
+    required this.body,
+    required this.header,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +21,10 @@ class CustomScreen extends StatelessWidget {
         child: Column(
           children: [
             Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: header),
-            Expanded(
-              child: body,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: header,
             ),
+            Expanded(child: body),
           ],
         ),
       ),

@@ -40,7 +40,10 @@ void showAccount(context, ProvData value) {
             Text(
               "حساب کاربری",
               style: TextStyle(
-                  fontSize: 16.sp, fontFamily: FIGMA.abrlb, color: FIGMA.Wrn2),
+                fontSize: 16.sp,
+                fontFamily: FIGMA.abrlb,
+                color: FIGMA.Wrn2,
+              ),
             ),
             EasyContainer(
               height: 64.h,
@@ -53,15 +56,13 @@ void showAccount(context, ProvData value) {
               elevation: 0,
               margin: 0,
               padding: 0,
-              child: Icon(
-                Icons.edit_rounded,
-                size: 20.sp,
-                color: FIGMA.Gray4,
-              ),
+              child: Icon(Icons.edit_rounded, size: 20.sp, color: FIGMA.Gray4),
               onTap: () async {
                 try {
-                  await NetClass().editUserName(CacheService.instance.token!,
-                      value.UserNameController.text);
+                  await NetClass().editUserName(
+                    CacheService.instance.token!,
+                    value.username,
+                  );
                   value.Show_Snackbar("اطلاعات ویرایش شد", 1000, type: 2);
                 } catch (e) {
                   value.Show_Snackbar("مشکلی پیش آمد", 1000, type: 3);
@@ -83,9 +84,10 @@ void showAccount(context, ProvData value) {
                 child: Text(
                   "نام کاربری",
                   style: TextStyle(
-                      fontFamily: FIGMA.estsb,
-                      fontSize: 12.sp,
-                      color: FIGMA.Gray4),
+                    fontFamily: FIGMA.estsb,
+                    fontSize: 12.sp,
+                    color: FIGMA.Gray4,
+                  ),
                 ),
               ),
             ),
@@ -94,99 +96,116 @@ void showAccount(context, ProvData value) {
               height: 68.h,
               width: 329.w,
               child: EyeTextField(
-                  controller: value.UserNameController,
-                  showEye: false,
-                  hintText: "username",
-                  hintAuto: AutofillHints.username),
+                controller: TextEditingController(text: value.username)
+                  ..addListener(() {
+                    value.setUsername(
+                      TextEditingController(text: value.username).text,
+                    );
+                  }),
+                showEye: false,
+                hintText: "username",
+                hintAuto: AutofillHints.username,
+              ),
             ),
             // TODO: Fetch and display user phone number from network
             SizedBox(height: 12.h),
             EasyContainer(
-                height: 190.h,
-                width: 329.w,
-                color: FIGMA.Gray2,
-                borderRadius: 20,
-                elevation: 0,
-                margin: 0,
-                padding: 0,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SizedBox(
-                      height: 34.h,
-                      width: 293.w,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          "لیست دستگاه های خریداری شده",
-                          style: TextStyle(
-                              fontSize: 12.sp,
-                              color: FIGMA.Gray4,
-                              fontFamily: FIGMA.estre),
+              height: 190.h,
+              width: 329.w,
+              color: FIGMA.Gray2,
+              borderRadius: 20,
+              elevation: 0,
+              margin: 0,
+              padding: 0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    height: 34.h,
+                    width: 293.w,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        "لیست دستگاه های خریداری شده",
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: FIGMA.Gray4,
+                          fontFamily: FIGMA.estre,
                         ),
                       ),
                     ),
-                    EasyContainer(
-                        height: 130.h,
-                        width: 293.w,
-                        color: FIGMA.Back,
-                        borderRadius: 20,
-                        elevation: 0,
-                        margin: 0,
-                        padding: 4,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(12.sp),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  SizedBox(height: 16.h),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text('نوران',
-                                        style: TextStyle(
-                                            fontSize: 14.sp,
-                                            color: FIGMA.Wrn,
-                                            fontFamily: FIGMA.estsb)),
+                  ),
+                  EasyContainer(
+                    height: 130.h,
+                    width: 293.w,
+                    color: FIGMA.Back,
+                    borderRadius: 20,
+                    elevation: 0,
+                    margin: 0,
+                    padding: 4,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(12.sp),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              SizedBox(height: 16.h),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  'نوران',
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: FIGMA.Wrn,
+                                    fontFamily: FIGMA.estsb,
                                   ),
-                                  Text(
-                                      "${value.selectedDevice.categoryName}-${value.selectedDevice.partNumber} :نام دستگاه",
-                                      style: TextStyle(
-                                          fontSize: 11.sp,
-                                          color: FIGMA.Gray4,
-                                          fontFamily: FIGMA.estre)),
-                                  const Spacer(),
-                                  Text(
-                                      "${value.selectedDevice.macAddress} :سریال نامبر",
-                                      style: TextStyle(
-                                          fontSize: 11.sp,
-                                          color: FIGMA.Gray4,
-                                          fontFamily: FIGMA.estre)),
-                                  SizedBox(height: 16.h),
-                                ],
+                                ),
                               ),
-                            ),
-                            EasyContainer(
-                                height: 110.h,
-                                width: 100.w,
-                                color: FIGMA.Gray2,
-                                borderRadius: 20,
-                                elevation: 0,
-                                margin: 0,
-                                padding: 4,
-                                child: SizedBox(
-                                    height: 70.h,
-                                    width: 40.w,
-                                    child: const LampWidget(
-                                        lampColor: FIGMA.Prn))),
-                            SizedBox(width: 6.w),
-                          ],
-                        ))
-                  ],
-                ))
+                              Text(
+                                "${value.selectedDevice.categoryName}-${value.selectedDevice.partNumber} :نام دستگاه",
+                                style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: FIGMA.Gray4,
+                                  fontFamily: FIGMA.estre,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                "${value.selectedDevice.macAddress} :سریال نامبر",
+                                style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: FIGMA.Gray4,
+                                  fontFamily: FIGMA.estre,
+                                ),
+                              ),
+                              SizedBox(height: 16.h),
+                            ],
+                          ),
+                        ),
+                        EasyContainer(
+                          height: 110.h,
+                          width: 100.w,
+                          color: FIGMA.Gray2,
+                          borderRadius: 20,
+                          elevation: 0,
+                          margin: 0,
+                          padding: 4,
+                          child: SizedBox(
+                            height: 70.h,
+                            width: 40.w,
+                            child: const LampWidget(lampColor: FIGMA.Prn),
+                          ),
+                        ),
+                        SizedBox(width: 6.w),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

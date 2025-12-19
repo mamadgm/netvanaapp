@@ -133,8 +133,11 @@ class ThemeCard extends StatelessWidget {
 
 Widget buildFilters(BuildContext context) {
   final prov = Provider.of<ProvData>(context);
-  TextStyle enabled =
-      TextStyle(color: FIGMA.Wrn, fontFamily: FIGMA.estsb, fontSize: 12.sp);
+  TextStyle enabled = TextStyle(
+    color: FIGMA.Wrn,
+    fontFamily: FIGMA.estsb,
+    fontSize: 12.sp,
+  );
   TextStyle disabled = enabled;
   return Padding(
     padding: const EdgeInsets.all(12),
@@ -158,8 +161,9 @@ Widget buildFilters(BuildContext context) {
           selectedColor: FIGMA.Grn,
           label: Text(
             "مورد علاقه",
-            style:
-                prov.selectedFilter == ThemeFilter.liked ? enabled : disabled,
+            style: prov.selectedFilter == ThemeFilter.liked
+                ? enabled
+                : disabled,
           ),
           selected: prov.selectedFilter == ThemeFilter.liked,
           onSelected: (_) => prov.toggleFilter(ThemeFilter.liked),
@@ -173,16 +177,18 @@ Widget buildFilters(BuildContext context) {
             borderRadius: BorderRadius.circular(15),
           ),
           side: BorderSide(
-              color: prov.selectedFilter == ThemeFilter.single
-                  ? FIGMA.Prn
-                  : FIGMA.Gray2,
-              width: prov.selectedFilter == ThemeFilter.single ? 1.sp : 0),
+            color: prov.selectedFilter == ThemeFilter.single
+                ? FIGMA.Prn
+                : FIGMA.Gray2,
+            width: prov.selectedFilter == ThemeFilter.single ? 1.sp : 0,
+          ),
           disabledColor: FIGMA.Gray2,
           selectedColor: FIGMA.Grn,
           label: Text(
             "اکتیو",
-            style:
-                prov.selectedFilter == ThemeFilter.single ? enabled : disabled,
+            style: prov.selectedFilter == ThemeFilter.single
+                ? enabled
+                : disabled,
           ),
           selected: prov.selectedFilter == ThemeFilter.single,
           onSelected: (_) => prov.toggleFilter(ThemeFilter.single),

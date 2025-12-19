@@ -6,11 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class NewTab extends StatelessWidget {
-  const NewTab({
-    super.key,
-    required this.appbartext,
-    required this.childrens,
-  });
+  const NewTab({super.key, required this.appbartext, required this.childrens});
 
   final List<Widget> childrens;
   final String appbartext;
@@ -39,7 +35,10 @@ class NewTab extends StatelessWidget {
             child: Text(
               appbartext,
               style: TextStyle(
-                  fontFamily: FIGMA.abrlb, fontSize: 16.sp, color: FIGMA.Orn),
+                fontFamily: FIGMA.abrlb,
+                fontSize: 16.sp,
+                color: FIGMA.Orn,
+              ),
             ),
           ),
         ),
@@ -50,10 +49,7 @@ class NewTab extends StatelessWidget {
           padding: 0,
           borderRadius: 15,
           color: FIGMA.Back,
-          child: ListView(
-            scrollDirection: Axis.vertical,
-            children: childrens,
-          ),
+          child: ListView(scrollDirection: Axis.vertical, children: childrens),
         ),
       ),
     );

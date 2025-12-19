@@ -16,9 +16,12 @@ void showAboutUs(context, ProvData value) {
               Text(
                 "نوروانا چیست؟",
                 style: TextStyle(
-                    fontFamily: FIGMA.abreb, fontSize: 16.sp, color: FIGMA.Wrn),
+                  fontFamily: FIGMA.abreb,
+                  fontSize: 16.sp,
+                  color: FIGMA.Wrn,
+                ),
               ),
-              SizedBox(height: 12.h)
+              SizedBox(height: 12.h),
             ],
           ),
         ),
@@ -31,7 +34,10 @@ void showAboutUs(context, ProvData value) {
               textAlign: TextAlign.right,
               textDirection: TextDirection.rtl,
               style: TextStyle(
-                  fontSize: 12.sp, color: FIGMA.Wrn2, fontFamily: FIGMA.estre),
+                fontSize: 12.sp,
+                color: FIGMA.Wrn2,
+                fontFamily: FIGMA.estre,
+              ),
             ),
           ),
         ),
@@ -51,9 +57,10 @@ void showAboutUs(context, ProvData value) {
                 child: Text(
                   "برگشت",
                   style: TextStyle(
-                      fontFamily: FIGMA.estbo,
-                      fontSize: 14.sp,
-                      color: FIGMA.Wrn),
+                    fontFamily: FIGMA.estbo,
+                    fontSize: 14.sp,
+                    color: FIGMA.Wrn,
+                  ),
                 ),
                 onTap: () {
                   Navigator.of(context).pop();

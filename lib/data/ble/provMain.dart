@@ -90,7 +90,30 @@ class ProvData extends ChangeNotifier {
 
   bool isUserLoggedIn = false;
 
-  TextEditingController UserNameController = TextEditingController();
+  String firstName = '';
+  String lastName = '';
+  String phone = '';
+  String username = '';
+
+  void setFirstName(String name) {
+    firstName = name;
+    notifyListeners();
+  }
+
+  void setLastName(String name) {
+    lastName = name;
+    notifyListeners();
+  }
+
+  void setPhone(String name) {
+    phone = name;
+    notifyListeners();
+  }
+
+  void setUsername(String name) {
+    username = name;
+    notifyListeners();
+  }
 
   late List<Device> devices;
   late Device selectedDevice;

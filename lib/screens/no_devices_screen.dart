@@ -57,11 +57,7 @@ class _NoDevicesScreenState extends State<NoDevicesScreen> {
                 ),
               ),
               const Spacer(),
-              Icon(
-                LucideIcons.searchX,
-                color: FIGMA.Orn,
-                size: 48.sp,
-              ),
+              Icon(LucideIcons.searchX, color: FIGMA.Orn, size: 48.sp),
               const Spacer(),
               Column(
                 children: [

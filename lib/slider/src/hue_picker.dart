@@ -50,9 +50,11 @@ class HuePicker extends StatefulWidget {
     this.onChangeEnd,
     this.thumbShape = const HueSliderThumbShape(),
     this.thumbOverlayColor,
-  })  : assert((initialColor != null) ^ (controller != null),
-            "Either initialColor or controller must be set, but not both."),
-        super(key: key);
+  }) : assert(
+         (initialColor != null) ^ (controller != null),
+         "Either initialColor or controller must be set, but not both.",
+       ),
+       super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -91,8 +93,9 @@ class _HuePickerState extends State<HuePicker> {
     return Container(
       height: widget.trackHeight,
       decoration: BoxDecoration(
-          gradient: LinearGradient(colors: hueColors),
-          borderRadius: BorderRadius.circular(80)),
+        gradient: LinearGradient(colors: hueColors),
+        borderRadius: BorderRadius.circular(80),
+      ),
       child: SliderTheme(
         data: SliderThemeData(
           trackShape: HueTrackShape(),
@@ -130,12 +133,14 @@ class HueTrackShape extends RoundedRectSliderTrackShape {
     bool isDiscrete = false,
   }) {
     final double trackHeight = sliderTheme.trackHeight!;
-    final double trackLeft = offset.dx +
+    final double trackLeft =
+        offset.dx +
         sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width /
             2;
     final double trackTop =
         offset.dy + (parentBox.size.height - trackHeight) / 2;
-    final double trackWidth = parentBox.size.width -
+    final double trackWidth =
+        parentBox.size.width -
         sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width;
     return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
@@ -226,7 +231,10 @@ class HueSliderThumbShape extends RoundSliderThumbShape {
 
     // draw main thumb circle
     canvas.drawCircle(
-        center, showBorder ? radius - borderWidth : radius, circlePaint);
+      center,
+      showBorder ? radius - borderWidth : radius,
+      circlePaint,
+    );
 
     if (showBorder) {
       // if border should be shown, draw it around existing circle

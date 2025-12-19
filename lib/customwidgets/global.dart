@@ -205,6 +205,11 @@ Future<SetupResult> setup(ProvData funcy) async {
       return SetupResult.error;
     }
 
+    funcy.setFirstName(userData['first_name']?.toString() ?? '');
+    funcy.setLastName(userData['last_name']?.toString() ?? '');
+    funcy.setPhone(userData['phone']?.toString() ?? '');
+    funcy.setUsername(userData['username']?.toString() ?? '');
+
     final devices = (userData['devices'] as List)
         .map(
           (d) => Device(
