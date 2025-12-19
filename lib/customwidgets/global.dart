@@ -214,6 +214,7 @@ Future<SetupResult> setup(ProvData funcy) async {
             isOnline: d['is_online'],
             assembledAt: DateTime.parse(d['assembled_at']),
             categoryName: d['category_name'],
+            categoryId: d['category_name'] == "nt" ? 1 : 2,
             versionName: d['version_name'],
           ),
         )

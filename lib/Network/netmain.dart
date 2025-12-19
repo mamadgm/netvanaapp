@@ -12,27 +12,9 @@ class NetClass {
     return _instance;
   }
 
-  Future<Map<String, dynamic>?> login(String email, String password) async {
-    var body = <String, String>{'username': email, 'password': password};
-
-    var response = await http.post(
-      Uri.parse('${FIGMA.urlnetwana}/auth/token'),
-      headers: <String, String>{
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: body, // DO NOT jsonEncode this
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception(response.body);
-    }
-  }
-
   Future<Map<String, dynamic>?> sendOtp(String phone) async {
     var response = await http.post(
-      Uri.parse('${FIGMA.urlnetwana}/ownership/otp/send/'),
+      Uri.parse('${FIGMA.urlnetwana}/auth/otp/send/'),
       headers: <String, String>{'Content-Type': 'application/json'},
       body: jsonEncode({"phone_number": phone}),
     );
@@ -44,32 +26,26 @@ class NetClass {
     }
   }
 
-  // Future<Map<String, dynamic>?> checkOtp(String phone, String otp) async {
-  //   var response = await http.post(
-  //     Uri.parse('${FIGMA.urlnetwana}/ownership/otp/check/'),
-  //     headers: <String, String>{
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: jsonEncode({"phone_number": phone, "otp_code": otp}),
-  //   );
+  Future<Map<String, dynamic>?> validateOtp(String phone, String otp) async {
+    var response = await http.post(
+      Uri.parse('${FIGMA.urlnetwana}/ownership/otp/check/'),
+      headers: <String, String>{'Content-Type': 'application/json'},
+      body: jsonEncode({"phone_number": phone, "otp_code": otp}),
+    );
 
-  //   if (response.statusCode == 200) {
-  //     return jsonDecode(response.body);
-  //   } else {
-  //     throw Exception(response.body);
-  //   }
-  // }
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception(response.body);
+    }
+  }
 
   Future<Map<String, dynamic>?> signUp(
     String token,
-    String first,
-    String last,
-    String birth,
-    String user,
-    String pass1,
-    String pass2,
-    String otpcode,
-    String phone,
+    String firstName,
+    String lastName,
+    DateTime birthDt,
+    String username,
   ) async {
     //"birth_dt": "2025-10-20T10:11:14.973Z",
     var response = await http.post(
@@ -79,14 +55,10 @@ class NetClass {
         'Authorization': 'Bearer $token',
       },
       body: jsonEncode({
-        "otp_code": otpcode,
-        "phone_number": phone,
-        "first_name": first,
-        "last_name": last,
-        "birth_dt": birth,
-        "username": user,
-        "password": pass1,
-        "password_conf": pass2,
+        "first_name": firstName,
+        "last_name": lastName,
+        "birth_dt": birthDt,
+        "username": username,
       }),
     );
 

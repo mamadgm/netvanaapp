@@ -14,6 +14,7 @@ class Device {
   bool isOnline;
   DateTime assembledAt;
   String categoryName;
+  int categoryId;
   String? weatherCity;
   String versionName;
   Device({
@@ -23,13 +24,14 @@ class Device {
     required this.isOnline,
     required this.assembledAt,
     required this.categoryName,
+    required this.categoryId,
     this.weatherCity,
     required this.versionName,
   });
 
   @override
   String toString() {
-    return 'Device(id: $id, name: $partNumber, type: $categoryName , online: $isOnline)';
+    return 'Device(id: $id, name: $partNumber, type: $categoryName , cat_id: $categoryId , online: $isOnline)';
   }
 }
 
@@ -405,7 +407,6 @@ class ProvData extends ChangeNotifier {
   }
 
   Future<void> checkTheme() async {
-    // Find the theme that matches your current mode
     final matchedTheme = themes.firstWhere((t) {
       return t['id'] == maincycle_mode;
     }, orElse: () => null);

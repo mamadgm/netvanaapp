@@ -2,7 +2,6 @@
 
 import 'dart:ui' as ui;
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:netvana/Network/netmain.dart';
@@ -27,9 +26,6 @@ class SignupState extends State<Signup> {
   final TextEditingController formFirst = TextEditingController();
   final TextEditingController formLast = TextEditingController();
   final TextEditingController formUsername = TextEditingController();
-  final TextEditingController formPass1 = TextEditingController();
-  final TextEditingController formPass2 = TextEditingController();
-  final TextEditingController formOTP = TextEditingController();
   final TextEditingController _yearController = TextEditingController();
   final TextEditingController _monthController = TextEditingController();
   final TextEditingController _dayController = TextEditingController();
@@ -114,26 +110,7 @@ class SignupState extends State<Signup> {
                               ),
                               textAlign: TextAlign.end,
                             ),
-                            EasyContainer(
-                              height: HEIGHTTEXT.h,
-                              width: 320.w,
-                              color: Colors.black12.withOpacity(0),
-                              borderWidth: 0,
-                              elevation: 0,
-                              padding: HEIGHTTEXTPADDING,
-                              margin: 0,
-                              borderRadius: 0,
-                              child: EyeTextField(
-                                controller: formOTP,
-                                hintText: "کد یکبار مصرف",
-                                showEye: false,
-                                center: true,
-                                hintAuto: AutofillHints.oneTimeCode,
-                                keyboardType: TextInputType.number,
-                                transparentBg: true,
-                              ),
-                            ),
-                            SizedBox(height: 24.h),
+
                             Text(
                               "شما کی هستید",
                               style: TextStyle(
@@ -143,39 +120,21 @@ class SignupState extends State<Signup> {
                               ),
                               textAlign: TextAlign.end,
                             ),
-                            EasyContainer(
+                            EyeTextField(
                               height: HEIGHTTEXT.h,
                               width: 320.w,
-                              color: Colors.black12.withOpacity(0),
-                              borderWidth: 0,
-                              elevation: 0,
-                              padding: HEIGHTTEXTPADDING,
-                              margin: 0,
-                              borderRadius: 0,
-                              child: EyeTextField(
-                                controller: formFirst,
-                                hintText: "نام",
-                                showEye: false,
-                                hintAuto: AutofillHints.name,
-                                transparentBg: true,
-                              ),
+                              controller: formFirst,
+                              hintText: "نام",
+                              showEye: false,
+                              hintAuto: AutofillHints.name,
                             ),
-                            EasyContainer(
+                            EyeTextField(
                               height: HEIGHTTEXT.h,
                               width: 320.w,
-                              color: Colors.black12.withOpacity(0),
-                              borderWidth: 0,
-                              elevation: 0,
-                              padding: HEIGHTTEXTPADDING,
-                              margin: 0,
-                              borderRadius: 0,
-                              child: EyeTextField(
-                                controller: formLast,
-                                hintText: "نام خانوادگی",
-                                showEye: false,
-                                hintAuto: AutofillHints.familyName,
-                                transparentBg: true,
-                              ),
+                              controller: formLast,
+                              hintText: "نام خانوادگی",
+                              showEye: false,
+                              hintAuto: AutofillHints.familyName,
                             ),
                             SizedBox(
                               height: 60.h,
@@ -190,7 +149,6 @@ class SignupState extends State<Signup> {
                                       center: true,
                                       keyboardType: TextInputType.number,
                                       hintAuto: AutofillHints.birthdayDay,
-                                      transparentBg: true,
                                     ),
                                   ),
                                   const SizedBox(width: 8),
@@ -202,7 +160,6 @@ class SignupState extends State<Signup> {
                                       center: true,
                                       keyboardType: TextInputType.number,
                                       hintAuto: AutofillHints.birthdayMonth,
-                                      transparentBg: true,
                                     ),
                                   ),
                                   const SizedBox(width: 8),
@@ -214,7 +171,6 @@ class SignupState extends State<Signup> {
                                       center: true,
                                       keyboardType: TextInputType.number,
                                       hintAuto: AutofillHints.birthdayYear,
-                                      transparentBg: true,
                                     ),
                                   ),
                                 ],
@@ -230,59 +186,14 @@ class SignupState extends State<Signup> {
                               ),
                               textAlign: TextAlign.end,
                             ),
-                            EasyContainer(
+                            EyeTextField(
                               height: HEIGHTTEXT.h,
                               width: 320.w,
-                              color: Colors.black12.withOpacity(0),
-                              borderWidth: 0,
-                              elevation: 0,
-                              padding: HEIGHTTEXTPADDING,
-                              margin: 0,
-                              borderRadius: 0,
-                              child: EyeTextField(
-                                controller: formUsername,
-                                hintText: "نام کاربری",
-                                showEye: false,
-                                center: true,
-                                hintAuto: AutofillHints.newUsername,
-                                transparentBg: true,
-                              ),
-                            ),
-                            EasyContainer(
-                              height: HEIGHTTEXT.h,
-                              width: 320.w,
-                              color: Colors.black12.withOpacity(0),
-                              borderWidth: 0,
-                              elevation: 0,
-                              padding: HEIGHTTEXTPADDING,
-                              margin: 0,
-                              borderRadius: 0,
-                              child: EyeTextField(
-                                controller: formPass1,
-                                hintText: "رمز عبور",
-                                showEye: true,
-                                center: true,
-                                hintAuto: AutofillHints.newPassword,
-                                transparentBg: true,
-                              ),
-                            ),
-                            EasyContainer(
-                              height: HEIGHTTEXT.h,
-                              width: 320.w,
-                              color: Colors.black12.withOpacity(0),
-                              borderWidth: 0,
-                              elevation: 0,
-                              padding: HEIGHTTEXTPADDING,
-                              margin: 0,
-                              borderRadius: 0,
-                              child: EyeTextField(
-                                controller: formPass2,
-                                hintText: "رمز عبور دوباره",
-                                showEye: true,
-                                center: true,
-                                hintAuto: AutofillHints.newPassword,
-                                transparentBg: true,
-                              ),
+                              controller: formUsername,
+                              hintText: "نام کاربری",
+                              showEye: false,
+                              center: true,
+                              hintAuto: AutofillHints.newUsername,
                             ),
                           ],
                         ),
@@ -315,12 +226,8 @@ class SignupState extends State<Signup> {
                                 value.token,
                                 formFirst.text,
                                 formLast.text,
-                                _pickedDateToIso(),
+                                _pickedDateToIso()!,
                                 formUsername.text,
-                                formPass1.text,
-                                formPass2.text,
-                                formOTP.text,
-                                value.phoneNumber,
                               )
                               .timeout(const Duration(seconds: 45));
                           value.Show_Snackbar(
@@ -358,11 +265,11 @@ class SignupState extends State<Signup> {
     );
   }
 
-  String _pickedDateToIso() {
+  DateTime? _pickedDateToIso() {
     if (_yearController.text.isEmpty ||
         _monthController.text.isEmpty ||
         _dayController.text.isEmpty) {
-      return "";
+      return null;
     }
     try {
       final year = int.parse(_yearController.text);
@@ -372,19 +279,18 @@ class SignupState extends State<Signup> {
       final jalaliDate = Jalali(year, month, day);
       final g = jalaliDate.toGregorian();
       final dateTime = DateTime(g.year, g.month, g.day).toUtc();
-      return dateTime.toIso8601String(); // e.g. 2025-10-20T00:00:00.000Z
+      return dateTime;
     } catch (e) {
       // Return empty string if parsing fails, validation will catch it
-      return "";
+      return null;
     }
   }
 
   bool checkAll(RegisterProvider value) {
-    final passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$');
     final usernameRegex = RegExp(r'^[A-Za-z][A-Za-z0-9]{4,}$');
 
     if (formFirst.text.isEmpty || formLast.text.isEmpty) {
-      value.Show_Snackbar("کمترین اطلاعات نام و فامیل شماست", 1000, type: 3);
+      value.Show_Snackbar("نام و نام خانوادگی خود را وار کنید", 1000, type: 3);
       return false;
     }
 
@@ -411,7 +317,7 @@ class SignupState extends State<Signup> {
               ? 1
               : 0);
       if (age < 7) {
-        value.Show_Snackbar("سن شما باید بیشتر از ۷ سال باشد", 1000, type: 3);
+        value.Show_Snackbar("سن شما باید بیشتر از 3 سال باشد", 1000, type: 3);
         return false;
       }
     } catch (e) {
@@ -421,24 +327,10 @@ class SignupState extends State<Signup> {
 
     if (!usernameRegex.hasMatch(formUsername.text)) {
       value.Show_Snackbar(
-        "نام کاربری باید با حروف انگلیسی شروع شود و حداقل ۵ کاراکتر باشد",
+        "نام کاربری باید با حروف انگلیسی شروع شود و حداقل 3 کاراکتر باشد",
         1500,
         type: 3,
       );
-      return false;
-    }
-
-    if (!passwordRegex.hasMatch(formPass1.text)) {
-      value.Show_Snackbar(
-        "رمز باید شامل حروف بزرگ، کوچک و عدد باشد",
-        1500,
-        type: 3,
-      );
-      return false;
-    }
-
-    if (formPass1.text != formPass2.text) {
-      value.Show_Snackbar("رمز عبور با تکرار آن همخوانی ندارد", 1500, type: 3);
       return false;
     }
 

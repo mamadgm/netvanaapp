@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:netvana/Login/Register.dart';
 import 'package:netvana/data/ble/provRegister.dart';
 import 'package:netvana/data/cache_service.dart';
 import 'package:provider/provider.dart';
@@ -35,18 +34,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String currentPath = Uri.base.path;
     return ScreenUtilInit(
-      designSize: const Size(360, 667),
+      designSize: const Size(375, 667),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           scaffoldMessengerKey: scaffoldMessengerKey,
-          home: currentPath == '/register'
-              ? const Register()
-              : const AuthWrapper(),
+          home: const AuthWrapper(),
         );
       },
     );

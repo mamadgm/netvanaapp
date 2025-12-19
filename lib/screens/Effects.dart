@@ -30,7 +30,11 @@ class _EffectsscrState extends State<Effectsscr> {
     return Consumer<ProvData>(
       builder: (context, value, child) {
         final themes = value.themes.isNotEmpty
-            ? getFilteredAndSortedThemes(value, value.themes)
+            ? getFilteredAndSortedThemes(
+                value,
+                value.themes,
+                value.devices.first.categoryId,
+              )
             : null;
         return SafeArea(
           child: Padding(
@@ -53,9 +57,10 @@ class _EffectsscrState extends State<Effectsscr> {
                           child: Text(
                             "افکت های اختصاصی",
                             style: TextStyle(
-                                fontFamily: FIGMA.abrlb,
-                                fontSize: 18.sp,
-                                color: FIGMA.Wrn),
+                              fontFamily: FIGMA.abrlb,
+                              fontSize: 18.sp,
+                              color: FIGMA.Wrn,
+                            ),
                           ),
                         ),
                       ),
@@ -70,7 +75,8 @@ class _EffectsscrState extends State<Effectsscr> {
                     mainAxisSpacing: 16,
                     crossAxisSpacing: 8,
                     childAspectRatio: 3 / 4,
-                    children: themes?.map((theme) {
+                    children:
+                        themes?.map((theme) {
                           return ThemeCard(
                             id: theme['id'],
                             picUrl:
@@ -96,29 +102,37 @@ class _EffectsscrState extends State<Effectsscr> {
 }
 
 List<dynamic> getFilteredAndSortedThemes(
-    ProvData prov, List<dynamic> allThemes) {
+  ProvData prov,
+  List<dynamic> allThemes,
+  int deviceCategory,
+) {
   List<dynamic> filtered = [];
+
+  List<dynamic> categoryFiltered = allThemes
+      .where((t) => t['category']?['id'] == deviceCategory)
+      .toList();
 
   switch (prov.selectedFilter) {
     case ThemeFilter.liked:
-      filtered =
-          allThemes.where((t) => prov.Favorites.contains(t['id'])).toList();
+      filtered = categoryFiltered
+          .where((t) => prov.Favorites.contains(t['id']))
+          .toList();
       break;
 
     case ThemeFilter.single:
-      filtered = allThemes
+      filtered = categoryFiltered
           .where((t) => t['content'].every((item) => item['c'] == null))
           .toList();
       break;
 
     case ThemeFilter.multiple:
-      filtered = allThemes
+      filtered = categoryFiltered
           .where((t) => t['content'].any((item) => item['c'] != null))
           .toList();
       break;
 
     case ThemeFilter.none:
-      filtered = [...allThemes];
+      filtered = [...categoryFiltered];
       break;
   }
 

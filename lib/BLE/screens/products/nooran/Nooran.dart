@@ -210,6 +210,11 @@ class _NooranState extends State<Nooran> {
                                                     ),
                                                     categoryName:
                                                         d['category_name'],
+                                                    categoryId:
+                                                        d['category_name'] ==
+                                                            "nt"
+                                                        ? 1
+                                                        : 2,
                                                     versionName:
                                                         d['version_name'],
                                                   ),
