@@ -26,143 +26,137 @@ class _ProfileScrState extends State<ProfileScr> {
     return Consumer<ProvData>(
       builder: (context, value, child) {
         return SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+          child: Stack(
             children: [
-              SizedBox(height: 10.h),
-              Center(
-                child: SizedBox(
-                  height: 200.h,
-                  width: 95.w,
-                  child: LampWidget(
-                    glowIntensity: 1,
-                    lampColor:
-                        (value.selectedDevice.isOnline | value.bleIsConnected)
-                        ? colorFromString(value.maincycle_color)
-                        : colorFromString("0xFF555555"),
-                    height: 150.h,
-                    width: 80.w,
+              Column(
+                children: [
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: SizedBox(
+                        height: 300.h,
+                        width: 140.w,
+                        child: Center(
+                          child: LampWidget(
+                            glowIntensity: 1,
+                            lampColor:
+                                (value.selectedDevice.isOnline |
+                                    value.bleIsConnected)
+                                ? colorFromString(value.maincycle_color)
+                                : colorFromString("0xFF555555"),
+                            height: 300.h,
+                            width: 160.w,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-              EasyContainer(
-                height: 400.h,
-                borderRadius: 40,
-                elevation: 0,
-                margin: 0,
-                padding: 8,
-                color: FIGMA.Back,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    WiFiItem(
-                      leadingIcon: Icons.arrow_back_ios_new_rounded,
-                      title: "حساب کاربری",
-                      trailingIcon: LucideIcons.user,
-                      onTap: () {
-                        showAccount(context, value);
-                      },
-                    ),
-                    WiFiItem(
-                      leadingIcon: Icons.arrow_back_ios_new_rounded,
-                      title: "حالت خواب",
-                      trailingIcon: LucideIcons.moon,
-                      onTap: () {
-                        showSleepSetting(context, value);
-                      },
-                    ),
-                    WiFiItem(
-                      leadingIcon: Icons.arrow_back_ios_new_rounded,
-                      title: "بروزرسانی",
-                      trailingIcon: LucideIcons.downloadCloud,
-                      onTap: () {
-                        showUpdate(context, value);
-                        // value.Show_Snackbar("محصول شما آخرین نسخه است", 1000);
-                      },
-                    ),
-                    WiFiItem(
-                      leadingIcon: Icons.arrow_back_ios_new_rounded,
-                      title: "درباره ما",
-                      trailingIcon: LucideIcons.info,
-                      onTap: () {
-                        showAboutUs(context, value);
-                      },
-                    ),
-                    const Spacer(),
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Center(
-                          child: SizedBox(
-                            height: 70.h,
-                            width: 180.w,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "نوروانا",
-                                      style: TextStyle(
-                                        fontFamily: FIGMA.abrlb,
-                                        fontSize: 12.sp,
-                                        color: FIGMA.Wrn,
-                                      ),
+              Positioned(
+                top: 200.h,
+                child: EasyContainer(
+                  height: 400.h,
+                  borderRadius: 40,
+                  elevation: 0,
+                  margin: 0,
+                  padding: 8,
+                  color: FIGMA.Back,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SettingItem(
+                        leadingIcon: Icons.arrow_back_ios_new_rounded,
+                        title: "حساب کاربری",
+                        trailingIcon: LucideIcons.user,
+                        onTap: () {
+                          showAccount(context, value);
+                        },
+                      ),
+                      dev(),
+                      SettingItem(
+                        leadingIcon: Icons.arrow_back_ios_new_rounded,
+                        title: "حالت خواب",
+                        trailingIcon: LucideIcons.moon,
+                        onTap: () {
+                          showSleepSetting(context, value);
+                        },
+                      ),
+                      dev(),
+                      SettingItem(
+                        leadingIcon: Icons.arrow_back_ios_new_rounded,
+                        title: "درباره ما",
+                        trailingIcon: LucideIcons.info,
+                        onTap: () {
+                          showAboutUs(context, value);
+                        },
+                      ),
+                      dev(),
+                      SettingItem(
+                        leadingIcon: Icons.arrow_back_ios_new_rounded,
+                        title: "خروج",
+                        trailingIcon: LucideIcons.arrowBigRight,
+                        onTap: () {
+                          showUpdate(context, value);
+                        },
+                      ),
+                      dev(),
+                      Center(
+                        child: SizedBox(
+                          height: 105.h,
+                          width: 375.w,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "نوروانا",
+                                    style: TextStyle(
+                                      fontFamily: FIGMA.abrlb,
+                                      fontSize: 12.sp,
+                                      color: FIGMA.Wrn,
                                     ),
-                                    Text(
-                                      "نسخه‌ی ۱.۱.۲ (۷۰۴۰۳۰)",
-                                      style: TextStyle(
-                                        fontFamily: FIGMA.estre,
-                                        fontSize: 9.sp,
-                                        color: FIGMA.Gray4,
-                                      ),
+                                  ),
+                                  Text(
+                                    "نسخه‌ی ۱.۱.۲ (۷۰۴۰۳۱)",
+                                    style: TextStyle(
+                                      fontFamily: FIGMA.estre,
+                                      fontSize: 9.sp,
+                                      color: FIGMA.Gray4,
                                     ),
-                                  ],
-                                ),
-                                SizedBox(width: 3.sp),
-                                SvgPicture.asset(
-                                  "assets/Logo.svg",
-                                  height: 36.h,
-                                  width: 36.w,
-                                ),
-                              ],
-                            ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 3.sp),
+                              SvgPicture.asset(
+                                "assets/Logo.svg",
+                                height: 36.h,
+                                width: 36.w,
+                              ),
+                            ],
                           ),
                         ),
-                        Positioned(
-                          left: 16.w,
-                          child: EasyContainer(
-                            height: 64.h,
-                            width: 64.w,
-                            color: FIGMA.Back,
-                            showBorder: true,
-                            borderWidth: 1.sp,
-                            borderColor: FIGMA.Gray2,
-                            borderRadius: 20,
-                            elevation: 0,
-                            margin: 0,
-                            padding: 0,
-                            child: Icon(
-                              Icons.arrow_back_ios_rounded,
-                              color: FIGMA.Gray3,
-                              size: 24.sp,
-                            ),
-                            onTap: () {
-                              value.Change_current_screen(0);
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget dev() {
+    return Column(
+      children: [
+        Container(height: 0.5.h, color: Colors.transparent, width: 290.w),
+        Container(height: 0.5.h, color: FIGMA.Gray3, width: 290.w),
+      ],
     );
   }
 }

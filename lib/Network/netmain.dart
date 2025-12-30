@@ -44,12 +44,11 @@ class NetClass {
     String token,
     String firstName,
     String lastName,
-    DateTime birthDt,
+    String birthDt,
     String username,
   ) async {
-    //"birth_dt": "2025-10-20T10:11:14.973Z",
     var response = await http.post(
-      Uri.parse('${FIGMA.urlnetwana}/ownership/otp/check/'),
+      Uri.parse('${FIGMA.urlnetwana}/ownership/data/completing/'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

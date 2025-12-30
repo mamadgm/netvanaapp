@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:netvana/Login/signup.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/provMain.dart';
@@ -31,10 +32,14 @@ class _SetupScreenState extends State<SetupScreen> {
     try {
       final provData = Provider.of<ProvData>(context, listen: false);
       final result = await setup(provData);
-      debugPrint(provData.firstName);
-      debugPrint(provData.lastName);
-      debugPrint(provData.username);
-      debugPrint(provData.phone);
+
+      if (provData.firstName.isEmpty || provData.lastName.isEmpty) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const Signup()),
+          );
+        });
+      }
 
       return result;
     } catch (e) {
@@ -82,6 +87,7 @@ class _SetupScreenState extends State<SetupScreen> {
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
+          final prov = Provider.of<ProvData>(context, listen: false);
           // If error happened
           if (snapshot.hasError || snapshot.data == SetupResult.error) {
             return FutureBuilder<bool>(
@@ -119,7 +125,6 @@ class _SetupScreenState extends State<SetupScreen> {
                     ),
                   );
                 } else {
-                  final prov = Provider.of<ProvData>(context, listen: false);
                   WidgetsBinding.instance.addPostFrameCallback((_) async {
                     await CacheService.instance.saveToken(null);
                     prov.logoutAndReset();
@@ -135,17 +140,6 @@ class _SetupScreenState extends State<SetupScreen> {
           return const NoDevicesScreen();
         }
 
-        // If setup is successful, the main app will be shown by the AuthWrapper
-        // so we can just show an empty container here.
-        final prov = Provider.of<ProvData>(context, listen: false);
-        print('###########################################');
-        print('###########################################');
-        print('First Name: ${prov.firstName}');
-        print('Last Name: ${prov.lastName}');
-        print('Phone: ${prov.phone}');
-        print('Username: ${prov.username}');
-        print('###########################################');
-        print('###########################################');
         return const SizedBox.shrink();
       },
     );

@@ -14,6 +14,8 @@ import 'package:netvana/const/figma.dart';
 import 'package:netvana/screens/setup_screen.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
+// TODO: Timer Button
+
 Future<void> main() async {
   usePathUrlStrategy(); // 🔥 removes # and enables browser back/forward
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +42,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
+          color: FIGMA.Back,
           debugShowCheckedModeBanner: false,
           scaffoldMessengerKey: scaffoldMessengerKey,
           home: const AuthWrapper(),
@@ -59,6 +62,8 @@ class AuthWrapper extends StatelessWidget {
 
     if (token == null || token.isEmpty) {
       return const Login();
+    } else {
+      debugPrint(token);
     }
 
     if (provData.isUserLoggedIn) {
@@ -68,10 +73,7 @@ class AuthWrapper extends StatelessWidget {
           index: provData.Current_screen,
           children: const [Nooran(), Effectsscr(), Netvana(), ProfileScr()],
         ),
-        bottomNavigationBar: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: TheAppNav(),
-        ),
+        bottomNavigationBar: const TheAppNav(),
       );
     }
 

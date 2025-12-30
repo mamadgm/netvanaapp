@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
+import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/provMain.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +70,7 @@ class OtpCheckState extends State<OtpCheck> {
                       child: RotatedBox(
                         quarterTurns: 90,
                         child: SvgPicture.asset(
-                          'pattern.svg', // Replace with your SVG file path
+                          'assets/pattern.svg', // Replace with your SVG file path
                           width: MediaQuery.of(
                             context,
                           ).size.width, // Full width
@@ -158,6 +159,8 @@ class OtpCheckState extends State<OtpCheck> {
                           value.Show_Snackbar("رمز کوتاه است", 1000, type: 3);
                           return;
                         }
+                        showLoading(context);
+
                         try {
                           final loginResponse = await NetClass()
                               .validateOtp(widget.phoneNumber, formOtp.text)
@@ -166,10 +169,12 @@ class OtpCheckState extends State<OtpCheck> {
                           final token = loginResponse!['access_token'];
                           await CacheService.instance.saveToken(token);
                           value.logoutAndReset();
+                          hideLoading(context);
                           Navigator.of(
                             context,
                           ).popUntil((route) => route.isFirst);
                         } catch (e) {
+                          hideLoading(context);
                           final detail = extractDetailFromException(e);
                           value.Show_Snackbar(detail!, 1000, type: 3);
                         }

@@ -9,7 +9,9 @@ import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
+import 'package:netvana/data/ble/provMain.dart';
 import 'package:netvana/data/ble/provRegister.dart';
+import 'package:netvana/data/cache_service.dart';
 import 'package:netvana/data/errors/error_login.dart';
 import 'package:netvana/main.dart';
 import 'package:provider/provider.dart';
@@ -25,15 +27,23 @@ class Signup extends StatefulWidget {
 class SignupState extends State<Signup> {
   final TextEditingController formFirst = TextEditingController();
   final TextEditingController formLast = TextEditingController();
-  final TextEditingController formUsername = TextEditingController();
   final TextEditingController _yearController = TextEditingController();
   final TextEditingController _monthController = TextEditingController();
   final TextEditingController _dayController = TextEditingController();
+  double _topPadding = 300;
 
   @override
   Widget build(BuildContext context) {
-    double HEIGHTTEXT = 44;
-    double HEIGHTTEXTPADDING = 4;
+    bool isKeyboardVisinetvana = MediaQuery.of(context).viewInsets.bottom != 0;
+
+    if (isKeyboardVisinetvana) {
+      _topPadding = 100.h;
+    } else {
+      _topPadding = 169.h;
+    }
+
+    // ignore: non_constant_identifier_names
+    double HEIGHTTEXT = 60;
     // Check if the keyboard is visinetvana
 
     return Consumer<RegisterProvider>(
@@ -79,182 +89,211 @@ class SignupState extends State<Signup> {
             // Existing content in a SingleChildScrollView
             SingleChildScrollView(
               child: AutofillGroup(
-                child: Column(
-                  children: [
-                    SizedBox(height: 16.h),
-                    // RTL text
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.start,
+                child: Center(
+                  child: Column(
+                    children: [
+                      SizedBox(height: _topPadding),
+                      // RTL text
+                      SizedBox(
+                        width: 302.w,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text(
-                              "ثبت نام",
-                              style: TextStyle(
-                                fontFamily: FIGMA.abrlb,
-                                fontSize: 16.sp,
-                                color: FIGMA.Wrn,
-                              ),
-                              textAlign: TextAlign.end,
-                              textDirection: TextDirection.rtl,
-                            ),
-                            SizedBox(height: 24.h),
-                            Text(
-                              "کد پیامک شده را وارد کنید",
-                              style: TextStyle(
-                                fontFamily: FIGMA.estre,
-                                fontSize: 14.sp,
-                                color: FIGMA.Wrn2,
-                              ),
-                              textAlign: TextAlign.end,
-                            ),
-
-                            Text(
-                              "شما کی هستید",
-                              style: TextStyle(
-                                fontFamily: FIGMA.estre,
-                                fontSize: 14.sp,
-                                color: FIGMA.Wrn2,
-                              ),
-                              textAlign: TextAlign.end,
-                            ),
-                            EyeTextField(
-                              height: HEIGHTTEXT.h,
-                              width: 320.w,
-                              controller: formFirst,
-                              hintText: "نام",
-                              showEye: false,
-                              hintAuto: AutofillHints.name,
-                            ),
-                            EyeTextField(
-                              height: HEIGHTTEXT.h,
-                              width: 320.w,
-                              controller: formLast,
-                              hintText: "نام خانوادگی",
-                              showEye: false,
-                              hintAuto: AutofillHints.familyName,
-                            ),
-                            SizedBox(
-                              height: 60.h,
-                              width: 320.w,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: EyeTextField(
-                                      controller: _dayController,
-                                      hintText: "روز",
-                                      showEye: false,
-                                      center: true,
-                                      keyboardType: TextInputType.number,
-                                      hintAuto: AutofillHints.birthdayDay,
-                                    ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "مشخصات فردی",
+                                  style: TextStyle(
+                                    fontFamily: FIGMA.abrlb,
+                                    fontSize: 20.sp,
+                                    color: FIGMA.Wrn,
                                   ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: EyeTextField(
-                                      controller: _monthController,
-                                      hintText: "ماه",
-                                      showEye: false,
-                                      center: true,
-                                      keyboardType: TextInputType.number,
-                                      hintAuto: AutofillHints.birthdayMonth,
-                                    ),
+                                  textAlign: TextAlign.end,
+                                  textDirection: TextDirection.rtl,
+                                ),
+                                Text(
+                                  "نام و تاریخ تولد خود را برای تکمیل پروفایل وارد کنید",
+                                  style: TextStyle(
+                                    fontFamily: FIGMA.estre,
+                                    fontSize: 14.sp,
+                                    color: FIGMA.Gray4,
                                   ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: EyeTextField(
-                                      controller: _yearController,
-                                      hintText: "سال",
-                                      showEye: false,
-                                      center: true,
-                                      keyboardType: TextInputType.number,
-                                      hintAuto: AutofillHints.birthdayYear,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 24.h),
-                            Text(
-                              "این اطلاعات یادتون نره",
-                              style: TextStyle(
-                                fontFamily: FIGMA.estre,
-                                fontSize: 14.sp,
-                                color: FIGMA.Wrn2,
-                              ),
-                              textAlign: TextAlign.end,
-                            ),
-                            EyeTextField(
-                              height: HEIGHTTEXT.h,
-                              width: 320.w,
-                              controller: formUsername,
-                              hintText: "نام کاربری",
-                              showEye: false,
-                              center: true,
-                              hintAuto: AutofillHints.newUsername,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        SizedBox(width: 24.w),
-                      ],
-                    ),
-                    EasyContainer(
-                      height: HEIGHTTEXT.h,
-                      width: 320.w,
-                      color: FIGMA.Prn,
-                      borderWidth: 0,
-                      elevation: 0,
-                      padding: HEIGHTTEXTPADDING,
-                      borderRadius: 11,
-                      child: Text(
-                        'ثبت نام',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13.sp,
-                          fontFamily: FIGMA.estsb,
+                      ),
+                      SizedBox(height: 13.h),
+                      EyeTextField(
+                        height: HEIGHTTEXT.h,
+                        width: 302.w,
+                        controller: formFirst,
+                        hintText: "نام",
+                        showEye: false,
+                        hintAuto: AutofillHints.name,
+                      ),
+                      SizedBox(height: 7.h),
+                      EyeTextField(
+                        height: HEIGHTTEXT.h,
+                        width: 302.w,
+                        controller: formLast,
+                        hintText: "نام خانوادگی",
+                        showEye: false,
+                        hintAuto: AutofillHints.familyName,
+                      ),
+
+                      // SizedBox(height: 7.h),
+                      // EyeTextField(
+                      //   height: HEIGHTTEXT.h,
+                      //   width: 302.w,
+                      //   controller: formUsername,
+                      //   hintText: "(Amin123 مثلا) نام کاربری",
+                      //   showEye: false,
+                      //   hintAuto: AutofillHints.newUsername,
+                      // ),
+                      SizedBox(
+                        height: 60.h,
+                        width: 302.w,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: EyeTextField(
+                                controller: _yearController,
+                                hintText: "سال تولد",
+                                showEye: false,
+                                center: true,
+                                keyboardType: TextInputType.number,
+                                hintAuto: AutofillHints.birthdayYear,
+                              ),
+                            ),
+                            SizedBox(width: 4.sp),
+                            Expanded(
+                              child: EyeTextField(
+                                controller: _monthController,
+                                hintText: "ماه تولد",
+                                showEye: false,
+                                center: true,
+                                keyboardType: TextInputType.number,
+                                hintAuto: AutofillHints.birthdayMonth,
+                              ),
+                            ),
+                            SizedBox(width: 4.sp),
+                            Expanded(
+                              child: EyeTextField(
+                                controller: _dayController,
+                                hintText: "روز تولد",
+                                showEye: false,
+                                center: true,
+                                keyboardType: TextInputType.number,
+                                hintAuto: AutofillHints.birthdayDay,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      onTap: () async {
-                        if (!checkAll(value)) {
-                          return;
-                        }
-                        try {
-                          await NetClass()
-                              .signUp(
-                                value.token,
-                                formFirst.text,
-                                formLast.text,
-                                _pickedDateToIso()!,
-                                formUsername.text,
-                              )
-                              .timeout(const Duration(seconds: 45));
-                          value.Show_Snackbar(
-                            "اکانت شما ثبت شد , با رمز عبور وارد شوید",
-                            2000,
-                            type: 2,
-                          );
-                          // Wait until snackbar disappears
-                          Future.delayed(
-                            const Duration(milliseconds: 2000),
-                            () {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                  builder: (_) => const AuthWrapper(),
-                                ), // your initial screen
-                                (route) => false,
-                              );
-                            },
-                          );
-                        } catch (e) {
-                          final detail = extractDetailFromException(e);
-                          value.Show_Snackbar(detail!, 1000, type: 3);
-                        }
-                      },
-                    ),
-                    SizedBox(height: 350.h),
-                  ],
+                      SizedBox(
+                        height: 15.h,
+                        width: 302.w,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                "1390 مثلا",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: FIGMA.estre,
+                                  color: FIGMA.Gray3,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 4.sp),
+                            const Expanded(
+                              child: Text(
+                                "5 مثلا",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: FIGMA.estre,
+                                  color: FIGMA.Gray3,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 4.sp),
+                            const Expanded(
+                              child: Text(
+                                "29 مثلا",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: FIGMA.estre,
+                                  color: FIGMA.Gray3,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 61.h),
+                      EasyContainer(
+                        height: 72.h,
+                        width: 302.w,
+                        color: FIGMA.Prn,
+                        borderWidth: 0,
+                        elevation: 0,
+                        borderRadius: 17.sp,
+                        padding: 0,
+                        margin: 0,
+                        child: Text(
+                          'تکمیل ثبت نام',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15.sp,
+                            fontFamily: FIGMA.estsb,
+                          ),
+                        ),
+                        onTap: () async {
+                          if (!checkAll(value)) {
+                            return;
+                          }
+                          try {
+                            await NetClass()
+                                .signUp(
+                                  CacheService.instance.token!,
+                                  formFirst.text,
+                                  formLast.text,
+                                  _pickedDateToIso(),
+                                  "",
+                                )
+                                .timeout(const Duration(seconds: 45));
+                            value.Show_Snackbar(
+                              "حساب شما تکمیل شد",
+                              1000,
+                              type: 2,
+                            );
+
+                            Future.delayed(
+                              const Duration(milliseconds: 1000),
+                              () {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                    builder: (_) => const AuthWrapper(),
+                                  ), // your initial screen
+                                  (route) => false,
+                                );
+                                final provData = Provider.of<ProvData>(context);
+                                provData.logoutAndReset();
+                              },
+                            );
+                          } catch (e) {
+                            final detail = extractDetailFromException(e);
+                            value.Show_Snackbar(detail!, 1000, type: 3);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
               // SVG pattern layer
@@ -265,11 +304,11 @@ class SignupState extends State<Signup> {
     );
   }
 
-  DateTime? _pickedDateToIso() {
+  String _pickedDateToIso() {
     if (_yearController.text.isEmpty ||
         _monthController.text.isEmpty ||
         _dayController.text.isEmpty) {
-      return null;
+      return "";
     }
     try {
       final year = int.parse(_yearController.text);
@@ -279,18 +318,16 @@ class SignupState extends State<Signup> {
       final jalaliDate = Jalali(year, month, day);
       final g = jalaliDate.toGregorian();
       final dateTime = DateTime(g.year, g.month, g.day).toUtc();
-      return dateTime;
+      return dateTime.toIso8601String();
     } catch (e) {
       // Return empty string if parsing fails, validation will catch it
-      return null;
+      return "";
     }
   }
 
   bool checkAll(RegisterProvider value) {
-    final usernameRegex = RegExp(r'^[A-Za-z][A-Za-z0-9]{4,}$');
-
     if (formFirst.text.isEmpty || formLast.text.isEmpty) {
-      value.Show_Snackbar("نام و نام خانوادگی خود را وار کنید", 1000, type: 3);
+      value.Show_Snackbar("نام و نام خانوادگی خود را وارد کنید", 1000, type: 3);
       return false;
     }
 
@@ -322,15 +359,6 @@ class SignupState extends State<Signup> {
       }
     } catch (e) {
       value.Show_Snackbar("تاریخ تولد وارد شده معتبر نیست", 1000, type: 3);
-      return false;
-    }
-
-    if (!usernameRegex.hasMatch(formUsername.text)) {
-      value.Show_Snackbar(
-        "نام کاربری باید با حروف انگلیسی شروع شود و حداقل 3 کاراکتر باشد",
-        1500,
-        type: 3,
-      );
       return false;
     }
 

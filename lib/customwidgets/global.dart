@@ -260,3 +260,16 @@ Future<bool> hasInternet() async {
       result == ConnectivityResult.wifi ||
       result == ConnectivityResult.ethernet;
 }
+
+void showLoading(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false, // user can't close it
+    builder: (_) =>
+        const Center(child: CircularProgressIndicator(color: FIGMA.Orn)),
+  );
+}
+
+void hideLoading(BuildContext context) {
+  Navigator.pop(context);
+}

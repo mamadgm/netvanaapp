@@ -8,6 +8,7 @@ import 'package:netvana/Login/otp_check.dart';
 import 'package:netvana/Network/netmain.dart';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/customwidgets/EyeText.dart';
+import 'package:netvana/customwidgets/global.dart';
 import 'package:netvana/data/ble/provMain.dart';
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,7 @@ class _LoginState extends State<Login> {
                       child: RotatedBox(
                         quarterTurns: 90,
                         child: SvgPicture.asset(
-                          'pattern.svg', // Replace with your SVG file path
+                          'assets/pattern.svg', // Replace with your SVG file path
                           width: MediaQuery.of(
                             context,
                           ).size.width, // Full width
@@ -154,10 +155,11 @@ class _LoginState extends State<Login> {
                         ),
                         onTap: () async {
                           try {
+                            showLoading(context);
                             await NetClass()
                                 .sendOtp(formphone.text)
-                                .timeout(const Duration(seconds: 20));
-
+                                .timeout(const Duration(seconds: 30));
+                            hideLoading(context);
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) =>
@@ -165,6 +167,7 @@ class _LoginState extends State<Login> {
                               ),
                             );
                           } catch (e) {
+                            hideLoading(context);
                             final detail = extractDetailFromException(e);
                             value.Show_Snackbar(detail!, 1000, type: 3);
                           }
