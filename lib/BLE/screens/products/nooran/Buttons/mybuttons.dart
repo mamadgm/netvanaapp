@@ -240,7 +240,7 @@ void calculateTimeStore(int minutes) {
     final newTime = now.add(Duration(minutes: minutes));
     final formattedTime =
         "${newTime.hour.toString().padLeft(2, '0')}:${newTime.minute.toString().padLeft(2, '0')}";
-    debugPrint(formattedTime);
+    // debugPrint(formattedTime);
     sdcard.put("Timeofdie", formattedTime);
   }
 }

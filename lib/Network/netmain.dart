@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:netvana/const/figma.dart';
 import 'package:netvana/data/ble/provMain.dart';
+import 'package:netvana/data/cache_service.dart';
 
 class NetClass {
   static final NetClass _instance = NetClass._internal();
@@ -97,7 +98,9 @@ class NetClass {
       },
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 401) {
+      throw Exception("Auth");
+    } else if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return json;
     } else {
@@ -198,12 +201,12 @@ class NetClass {
       if (response.statusCode == 200) {
         // debugPrint("Theme 200");
       } else {
-        debugPrint(
-          "Failed to set theme: ${response.statusCode} - ${response.body}",
-        );
+        // debugPrint(
+        //   "Failed to set theme: ${response.statusCode} - ${response.body}",
+        // );
       }
     } catch (e) {
-      debugPrint("Error setting theme: $e");
+      // debugPrint("Error setting theme: $e");
     }
   }
 
@@ -220,15 +223,15 @@ class NetClass {
       final response = await http.put(url, headers: headers, body: body);
 
       if (response.statusCode == 200) {
-        debugPrint("Data Updated successfully: ${response.body}");
+        // debugPrint("Data Updated successfully: ${response.body}");
       } else {
-        debugPrint(
-          "Failed to update: ${response.statusCode} - ${response.body}",
-        );
+        // debugPrint(
+        //   "Failed to update: ${response.statusCode} - ${response.body}",
+        // );
         throw Exception();
       }
     } catch (e) {
-      debugPrint("Error setting Data: $e");
+      // debugPrint("Error setting Data: $e");
       throw Exception();
     }
   }
@@ -313,7 +316,7 @@ class NetClass {
         throw Exception('Failed to get device variables: ${response.body}');
       }
     } catch (e) {
-      debugPrint('Error fetching device variables: $e');
+      // debugPrint('Error fetching device variables: $e');
       return null;
     }
   }

@@ -45,7 +45,6 @@ class _RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
       if (result != null) {
         setState(() => _state = RegisterState.success);
         await Future.delayed(const Duration(seconds: 2));
-
         final provData = Provider.of<ProvData>(context, listen: false);
         provData.logoutAndReset();
         Navigator.of(context).pop();

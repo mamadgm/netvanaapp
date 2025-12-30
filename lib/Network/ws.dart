@@ -29,7 +29,7 @@ class NetvanaWS {
     _provData = provData;
 
     if (_isConnecting || _channel != null) {
-      debugPrint('WS: Already connected or connecting');
+      // debugPrint('WS: Already connected or connecting');
       return;
     }
 
@@ -45,7 +45,7 @@ class NetvanaWS {
     _isConnecting = true;
     prov.setWsChannel(WSStatus.connecting);
 
-    debugPrint('WS: Connecting...');
+    // debugPrint('WS: Connecting...');
     try {
       _channel = WebSocketChannel.connect(
         Uri.parse('wss://api.netvana.ir/devices/up'),
@@ -55,7 +55,7 @@ class NetvanaWS {
       _channel!.sink.add(jsonEncode({"token": token, "type": "auth"}));
       prov.setWsChannel(WSStatus.connected);
       _isConnecting = false;
-      debugPrint('WS: Connected and authenticated');
+      // debugPrint('WS: Connected and authenticated');
 
       _subscription = _channel!.stream.listen(
         (message) => _onMessage(message, prov),
@@ -64,7 +64,7 @@ class NetvanaWS {
         cancelOnError: true,
       );
     } catch (e) {
-      debugPrint('WS: Exception while connecting $e');
+      // debugPrint('WS: Exception while connecting $e');
       _onError(e, prov);
     }
   }
@@ -80,18 +80,18 @@ class NetvanaWS {
         prov.hand_update();
       }
     } catch (e) {
-      debugPrint('WS: Error decoding message $e');
+      // debugPrint('WS: Error decoding message $e');
     }
   }
 
   void _onError(Object error, ProvData prov) {
-    debugPrint('WS: Error $error');
+    // debugPrint('WS: Error $error');
     prov.setWsChannel(WSStatus.error);
     _scheduleReconnect();
   }
 
   void _onDone(ProvData prov) {
-    debugPrint('WS: Connection closed');
+    // debugPrint('WS: Connection closed');
     prov.setWsChannel(WSStatus.disconnected);
     _scheduleReconnect();
   }
@@ -100,7 +100,7 @@ class NetvanaWS {
     _disposeChannel();
 
     if (_reconnectTimer?.isActive ?? false) return;
-    debugPrint('WS: Reconnecting in 5s...');
+    // debugPrint('WS: Reconnecting in 5s...');
     _reconnectTimer = Timer(const Duration(seconds: 5), () {
       _reconnectTimer = null;
       _createConnection();
@@ -111,12 +111,12 @@ class NetvanaWS {
     try {
       _channel?.sink.add(jsonEncode(data));
     } catch (e) {
-      debugPrint('WS: Send failed $e');
+      // debugPrint('WS: Send failed $e');
     }
   }
 
   void disconnect() {
-    debugPrint('WS: Manual disconnect');
+    // debugPrint('WS: Manual disconnect');
     _disposeChannel();
     _reconnectTimer?.cancel();
   }

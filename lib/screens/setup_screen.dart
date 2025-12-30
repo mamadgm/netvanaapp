@@ -15,7 +15,7 @@ class SetupScreen extends StatefulWidget {
   State<SetupScreen> createState() => _SetupScreenState();
 }
 
-enum SetupResult { success, noDevices, error }
+enum SetupResult { success, noDevices, error, auth }
 
 class _SetupScreenState extends State<SetupScreen> {
   late Future<SetupResult> _setupFuture;
@@ -27,24 +27,19 @@ class _SetupScreenState extends State<SetupScreen> {
   }
 
   Future<SetupResult> _performSetup() async {
-    // debugPrint(CacheService.instance.)
+    final provData = Provider.of<ProvData>(context, listen: false);
+    final result = await setup(provData);
 
-    try {
-      final provData = Provider.of<ProvData>(context, listen: false);
-      final result = await setup(provData);
-
-      if (provData.firstName.isEmpty || provData.lastName.isEmpty) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const Signup()),
-          );
-        });
-      }
-
-      return result;
-    } catch (e) {
-      return SetupResult.error;
+    if (provData.firstName.isEmpty || provData.lastName.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const Signup()),
+        );
+      });
     }
+
+    // debugPrint("in screen Top $result");
+    return result;
   }
 
   @override
@@ -89,7 +84,9 @@ class _SetupScreenState extends State<SetupScreen> {
         if (snapshot.connectionState == ConnectionState.done) {
           final prov = Provider.of<ProvData>(context, listen: false);
           // If error happened
-          if (snapshot.hasError || snapshot.data == SetupResult.error) {
+          if (snapshot.hasError ||
+              snapshot.data == SetupResult.error ||
+              snapshot.data == SetupResult.auth) {
             return FutureBuilder<bool>(
               future: hasInternet(),
               builder: (context, internetSnap) {
@@ -126,8 +123,21 @@ class _SetupScreenState extends State<SetupScreen> {
                   );
                 } else {
                   WidgetsBinding.instance.addPostFrameCallback((_) async {
-                    await CacheService.instance.saveToken(null);
-                    prov.logoutAndReset();
+                    if (snapshot.data == SetupResult.auth) {
+                      await CacheService.instance.saveToken(null);
+                      prov.Show_Snackbar(
+                        "لطفا دوباره وارد شوید",
+                        1500,
+                        type: 3,
+                      );
+                      prov.logoutAndReset();
+                    } else {
+                      prov.Show_Snackbar(
+                        "مشکلی در ورود پیش آمد",
+                        1500,
+                        type: 3,
+                      );
+                    }
                   });
                   return const SizedBox.shrink();
                 }

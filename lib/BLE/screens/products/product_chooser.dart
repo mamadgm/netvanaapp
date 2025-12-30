@@ -24,16 +24,16 @@ class Choose_Product extends StatelessWidget {
   Widget build(BuildContext context) {
     int selectedWdiget = 0;
     if (prefix.contains("nv-")) {
-      debugPrint("Selected Product is Nooran");
+      // debugPrint("Selected Product is Nooran");
       selectedWdiget = 1;
     } else if (prefix.contains("Lp-")) {
-      debugPrint("Selected Product is Lamp");
+      // debugPrint("Selected Product is Lamp");
       selectedWdiget = 2;
     } else if (prefix.contains("neol-gm")) {
-      debugPrint("Selected Product is In Development");
+      // debugPrint("Selected Product is In Development");
       selectedWdiget = 3;
     } else if (prefix.contains("null")) {
-      debugPrint("Selected Product is Null");
+      // debugPrint("Selected Product is Null");
       selectedWdiget = 0;
     } else {
       selectedWdiget = 0;

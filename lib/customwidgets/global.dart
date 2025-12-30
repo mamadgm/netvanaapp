@@ -245,7 +245,9 @@ Future<SetupResult> setup(ProvData funcy) async {
 
     return SetupResult.success;
   } catch (e) {
-    debugPrint("Error during setup: $e");
+    if (e.toString() == "Exception: Auth") {
+      return SetupResult.auth;
+    }
     return SetupResult.error;
   }
 }

@@ -255,7 +255,7 @@ class ProvData extends ChangeNotifier {
       themes = list;
       notifyListeners();
     } catch (e) {
-      debugPrint("Error fetching themes (provider): $e");
+      // debugPrint("Error fetching themes (provider): $e");
       notifyListeners();
     }
   }
@@ -333,13 +333,13 @@ class ProvData extends ChangeNotifier {
       );
 
       if (result!.toString().length < 15) {
-        debugPrint("empty device");
+        // debugPrint("empty device");
         hand_update();
         return;
       }
       Set_Screen_Values_From_JSON(result);
     } catch (e) {
-      debugPrint("Error in vars $e");
+      // debugPrint("Error in vars $e");
     }
   }
 
@@ -364,7 +364,7 @@ class ProvData extends ChangeNotifier {
       // debugPrint("temp : $temp");
       return Color(temp);
     } catch (e) {
-      debugPrint("Invalid color string: $input");
+      // debugPrint("Invalid color string: $input");
       return Colors.red;
     }
   }
@@ -435,7 +435,7 @@ class ProvData extends ChangeNotifier {
     }, orElse: () => null);
 
     if (matchedTheme == null) {
-      debugPrint('⚠️ No theme found for mode $maincycle_mode');
+      // debugPrint('⚠️ No theme found for mode $maincycle_mode');
       return;
     }
     final content = matchedTheme['content'][0];

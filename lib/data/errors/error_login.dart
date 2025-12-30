@@ -23,7 +23,7 @@ String? extractDetailFromException(Object? e) {
       final errorMessage = data['detail']?['detail']?['message'];
       return (errorMessage); // prints: کد وارد شده اشتباه است
     } catch (e) {
-      debugPrint('Error parsing message: $e');
+      // debugPrint('Error parsing message: $e');
     }
 
     return message;

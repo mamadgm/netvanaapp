@@ -62,8 +62,6 @@ class AuthWrapper extends StatelessWidget {
 
     if (token == null || token.isEmpty) {
       return const Login();
-    } else {
-      debugPrint(token);
     }
 
     if (provData.isUserLoggedIn) {
